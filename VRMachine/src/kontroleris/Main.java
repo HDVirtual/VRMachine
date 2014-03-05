@@ -6,6 +6,7 @@ public class Main {
 
 		System.out.println("Konnihiwa bithes!");
 		System.out.println("Konnihiwa bithes!");
+		System.out.println("Konnihiwa bithes!");
 		
 	}
 
