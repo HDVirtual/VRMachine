@@ -10,13 +10,17 @@ public class Main{
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
+				MainWindow frame = new MainWindow();
 				try {
-					MainWindow frame = new MainWindow();
+					
 					frame.setVisible(true);
 					frame.setResizable(false);
+					frame.setLocationRelativeTo(null);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				
+				frame.changeField("TEST");
 			}
 		});
 	}

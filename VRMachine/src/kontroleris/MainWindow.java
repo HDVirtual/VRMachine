@@ -181,4 +181,10 @@ public class MainWindow extends JFrame {
 		panel.add(textField_12);
 		textField_12.setColumns(10);
 	}
+	
+	public void changeField(String name){
+		textField_1.setText(name);
+		System.out.println("Ilgis: " + name.length());
+	}
+
 }
