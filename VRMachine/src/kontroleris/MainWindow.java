@@ -20,6 +20,7 @@ import java.awt.TextField;
 import java.awt.Button;
 
 import javax.swing.SwingConstants;
+import javax.swing.JSpinner;
 
 public class MainWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -67,6 +68,8 @@ public class MainWindow extends JFrame {
 	private JList<String> list_RM;
 
 	private static DefaultListModel<String> listEMemory;
+	private JTextField textField;
+	private JTextField textField_1;
 
 	// --------------------------------------
 
@@ -76,7 +79,7 @@ public class MainWindow extends JFrame {
 	public MainWindow() {
 		setTitle("Virtuali Maðina");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 926, 421);
+		setBounds(100, 100, 926, 448);
 		contentPane = new JPanel();
 		contentPane.setAutoscrolls(true);
 		contentPane.setBackground(SystemColor.control);
@@ -404,6 +407,18 @@ public class MainWindow extends JFrame {
 		text_reg_CHST_Lempute.setBounds(240, 95, 20, 20);
 		panel_registrai.add(text_reg_CHST_Lempute);
 		text_reg_CHST_Lempute.setColumns(10);
+		
+		JLabel lblNewLabel_1 = new JLabel("BAR");
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_1.setBounds(140, 137, 40, 20);
+		panel_registrai.add(lblNewLabel_1);
+		
+		textField = new JTextField();
+		textField.setHorizontalAlignment(SwingConstants.CENTER);
+		textField.setText("00");
+		textField.setBounds(180, 137, 40, 20);
+		panel_registrai.add(textField);
+		textField.setColumns(10);
 		// ----------------------------------------------------------------
 
 		// ------------ATMINTIS--------------------------------------------
@@ -414,9 +429,11 @@ public class MainWindow extends JFrame {
 
 		// ---ISORINE---
 		listEMemory = new DefaultListModel<String>();
-		for (int i = 0; i < 16; i++) {
-			for (int n = 0; n < 16; n++) {
-				listEMemory.addElement(String.format("%02X", i * 16 + n) + ": "+ "0000");
+		for (int e = 0; e < 16; e++){
+			for (int i = 0; i < 16; i++) {
+				for (int n = 0; n < 16; n++) {
+					listEMemory.addElement(String.format("%02X", e * 16 * 16+ i * 16 + n) + ": "+ "0000");
+				}
 			}
 		}
 
@@ -494,81 +511,100 @@ public class MainWindow extends JFrame {
 		Button btn_Step = new Button("Po \u017Eingsn\u012F");
 		btn_Step.setBounds(305, 335, 83, 22);
 		contentPane.add(btn_Step);
+		
+		textField_1 = new JTextField();
+		textField_1.setBounds(450, 375, 40, 20);
+		contentPane.add(textField_1);
+		textField_1.setColumns(10);
+		
+		Button button = new Button("\u012Evesti");
+		button.setBounds(490, 375, 70, 20);
+		contentPane.add(button);
+		
+		JSpinner spinner = new JSpinner();
+		spinner.setBounds(410, 370, 40, 30);
+		contentPane.add(spinner);
 		// -----------------------------------------------------------------
 	}
 
-	public void set(String register, String value) {
-		if (register == "RM_AR") {
-			text_reg_RM_AR.setText(value);
+	public void set(String register, int value) {
+		String str_value = String.valueOf(value);
+		switch (register) 
+		{
+            case "RM_AR": 
+            {
+            	text_reg_RM_AR.setText(str_value);
+                break;
+            }
 		}
 		if (register == "RM_BR") {
-			text_reg_RM_BR.setText(value);
+			text_reg_RM_BR.setText(str_value);
 		}
 		if (register == "RM_IP") {
-			text_reg_RM_IP.setText(value);
+			text_reg_RM_IP.setText(str_value);
 		}
 		if (register == "RM_Z") {
-			text_flag_RM_Z.setText(value);
+			text_flag_RM_Z.setText(str_value);
 		}
 		if (register == "RM_C") {
-			text_flag_RM_C.setText(value);
+			text_flag_RM_C.setText(str_value);
 		}
 		if (register == "RM_B") {
-			text_flag_RM_B.setText(value);
+			text_flag_RM_B.setText(str_value);
 		}
 		if (register == "RM_S") {
-			text_flag_RM_S.setText(value);
+			text_flag_RM_S.setText(str_value);
 		}
 		if (register == "VM_AR") {
-			text_reg_VM_AR.setText(value);
+			text_reg_VM_AR.setText(str_value);
 		}
 		if (register == "VM_BR") {
-			text_reg_VM_BR.setText(value);
+			text_reg_VM_BR.setText(str_value);
 		}
 		if (register == "VM_IP") {
-			text_reg_VM_IP.setText(value);
+			text_reg_VM_IP.setText(str_value);
 		}
 		if (register == "VM_Z") {
-			text_flag_VM_Z.setText(value);
+			text_flag_VM_Z.setText(str_value);
 		}
 		if (register == "VM_C") {
-			text_flag_VM_C.setText(value);
+			text_flag_VM_C.setText(str_value);
 		}
 		if (register == "VM_B") {
-			text_flag_VM_B.setText(value);
+			text_flag_VM_B.setText(str_value);
 		}
 		if (register == "VM_S") {
-			text_flag_VM_S.setText(value);
+			text_flag_VM_S.setText(str_value);
 		}
 		if (register == "TIMER") {
-			text_reg_TIMER.setText(value);
+			text_reg_TIMER.setText(str_value);
 		}
 		if (register == "MODE") {
-			text_reg_MODE.setText(value);
+			text_reg_MODE.setText(str_value);
 		}
 		if (register == "PTR") {
-			text_reg_PTR.setText(value);
+			text_reg_PTR.setText(str_value);
 		}
 		if (register == "PI") {
-			text_reg_PI.setText(value);
+			text_reg_PI.setText(str_value);
 		}
 		if (register == "SI") {
-			text_reg_SI.setText(value);
+			text_reg_SI.setText(str_value);
 		}
 		if (register == "TI") {
-			text_reg_TI.setText(value);
+			text_reg_TI.setText(str_value);
 		}
 		if (register == "INPUT") {
-			text_reg_CHST_Input.setText(value);
+			text_reg_CHST_Input.setText(str_value);
 		}
 		if (register == "EMEMORY") {
-			text_reg_CHST_EMemory.setText(value);
+			text_reg_CHST_EMemory.setText(str_value);
 		}
 		if (register == "LEMPUTE") {
-			text_reg_CHST_Lempute.setText(value);
+			text_reg_CHST_Lempute.setText(str_value);
 		}
 		if (register == "OUTPUT") {
-			text_reg_CHST_Output.setText(value);
+			text_reg_CHST_Output.setText(str_value);
 		}
 	}
 	
