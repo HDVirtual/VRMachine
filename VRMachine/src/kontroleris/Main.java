@@ -31,8 +31,8 @@ public class Main{
 				AR.set("FFFF");
 				S = new Register();
 				S.set("1");
-			//	frame.set("RM_AR",AR.get());
-			//	frame.set("RM_S",S.get());
+			    frame.set("RM_AR",AR.get());
+			    frame.set("RM_S",S.get());
 				System.out.println(frame.get("RM_S"));
 				System.out.println(frame.get("RM_AR"));
 				////////////////////

@@ -527,15 +527,9 @@ public class MainWindow extends JFrame {
 		// -----------------------------------------------------------------
 	}
 
-	public void set(String register, int value) {
-		String str_value = String.valueOf(value);
-		switch (register) 
-		{
-            case "RM_AR": 
-            {
-            	text_reg_RM_AR.setText(str_value);
-                break;
-            }
+	public void set(String register, String str_value) {
+		if (register == "RM_AR") {
+			text_reg_RM_AR.setText(str_value);
 		}
 		if (register == "RM_BR") {
 			text_reg_RM_BR.setText(str_value);
