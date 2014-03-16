@@ -11,4 +11,11 @@ public class RealMemory {
 					memory.add(i, "_____");
     	}
     }
+	public ArrayList<String> getBlock(int block) {
+		ArrayList<String> blokas = new ArrayList<String>();
+		for (int i = block*16-16; i < block*16; i++) {
+			blokas.add(memory.get(i));
+		}
+    	return blokas;
+    }
 }
