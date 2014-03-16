@@ -497,8 +497,8 @@ public class MainWindow extends JFrame {
 		// -----------------------------------------------------------------
 	}
 
-	public void changeField(String name) {
-		text_reg_RM_BR.setText(name);
+	public void setText_reg_RM_AR(String name) {
+		text_reg_RM_AR.setText(name);
 		System.out.println("Ilgis: " + name.length());
 	}
 }
