@@ -572,4 +572,81 @@ public class MainWindow extends JFrame {
 			text_reg_CHST_Output.setText(str_value);
 		}
 	}
+	
+	public String get(String register) {
+		if (register == "RM_AR") {
+			return text_reg_RM_AR.getText();
+		}
+		if (register == "RM_BR") {
+			return text_reg_RM_BR.getText();
+		}
+		if (register == "RM_IP") {
+			return text_reg_RM_IP.getText();
+		}
+		if (register == "RM_Z") {
+			return text_flag_RM_Z.getText();
+		}
+		if (register == "RM_C") {
+			return text_flag_RM_C.getText();
+		}
+		if (register == "RM_B") {
+			return text_flag_RM_B.getText();
+		}
+		if (register == "RM_S") {
+			return text_flag_RM_S.getText();
+		}
+		if (register == "VM_AR") {
+			return text_reg_VM_AR.getText();
+		}
+		if (register == "VM_BR") {
+			return text_reg_VM_BR.getText();
+		}
+		if (register == "VM_IP") {
+			return text_reg_VM_IP.getText();
+		}
+		if (register == "VM_Z") {
+			return text_flag_VM_Z.getText();
+		}
+		if (register == "VM_C") {
+			return text_flag_VM_C.getText();
+		}
+		if (register == "VM_B") {
+			return text_flag_VM_B.getText();
+		}
+		if (register == "VM_S") {
+			return text_flag_VM_S.getText();
+		}
+		if (register == "TIMER") {
+			return text_reg_TIMER.getText();
+		}
+		if (register == "MODE") {
+			return text_reg_MODE.getText();
+		}
+		if (register == "PTR") {
+			return text_reg_PTR.getText();
+		}
+		if (register == "PI") {
+			return text_reg_PI.getText();
+		}
+		if (register == "SI") {
+			return text_reg_SI.getText();
+		}
+		if (register == "TI") {
+			return text_reg_TI.getText();
+		}
+		if (register == "INPUT") {
+			return text_reg_CHST_Input.getText();
+		}
+		if (register == "EMEMORY") {
+			return text_reg_CHST_EMemory.getText();
+		}
+		if (register == "LEMPUTE") {
+			return text_reg_CHST_Lempute.getText();
+		}
+		if (register == "OUTPUT") {
+			return text_reg_CHST_Output.getText();
+		}
+		
+		return "Klaida!";
+	}
 }

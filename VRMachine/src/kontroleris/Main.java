@@ -24,10 +24,14 @@ public class Main{
 					
 				}
 				// test ////////////
-				AR = new ARegister();
-				AR.set(30);
-				frame.set("RM_AR",AR.get());
+				// AR = new ARegister();
+				// AR.set(30);
+				frame.set("RM_AR",4848);
 				frame.set("RM_S",1);
+				frame.set("TIMER",3);
+				System.out.println(frame.get("RM_S"));
+				System.out.println(frame.get("RM_AR"));
+				System.out.println(frame.get("TIMER"));
 				////////////////////
 			}
 		});
