@@ -25,4 +25,21 @@ public class RealMemory {
     	String Word = list.get(index);
     	return Word;
     }
+	
+	public String getWord(String adress) {
+		int cell = getAdress(adress);
+    	return memory.get(cell);
+    }
+	
+	private int getAdress(String adress) {
+		String result = adress.substring(2, 4);
+		int cell = Integer.parseInt(result, 16);
+		return cell;
+    }
+	
+	public void set(String adress, String value) {
+		String result = adress.substring(2, 4);
+		int cell = Integer.parseInt(result, 16);
+		memory.set(cell,value);
+	}
 }

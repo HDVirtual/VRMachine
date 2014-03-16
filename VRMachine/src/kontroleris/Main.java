@@ -1,6 +1,7 @@
 package kontroleris;
 
 import java.awt.EventQueue;
+
 import registers.Register;
 
 public class Main{
