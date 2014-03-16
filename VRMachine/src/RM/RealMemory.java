@@ -38,8 +38,6 @@ public class RealMemory {
     }
 	
 	public void set(String adress, String value) {
-		String result = adress.substring(2, 4);
-		int cell = Integer.parseInt(result, 16);
-		memory.set(cell,value);
+		memory.set(getAdress(adress),value);
 	}
 }
