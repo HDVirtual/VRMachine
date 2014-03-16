@@ -10,12 +10,15 @@ import java.awt.Cursor;
 import java.awt.Component;
 import java.awt.SystemColor;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JSeparator;
+
 import java.awt.TextField;
 import java.awt.Button;
+
 import javax.swing.SwingConstants;
 
 public class MainWindow extends JFrame {
@@ -30,7 +33,7 @@ public class MainWindow extends JFrame {
 	private JTextField text_flag_RM_C;
 	private JTextField text_flag_RM_B;
 	private JTextField text_flag_RM_S;
-	
+
 	private JTextField text_reg_VM_AR;
 	private JTextField text_reg_VM_BR;
 	private JTextField text_reg_VM_IP;
@@ -38,15 +41,15 @@ public class MainWindow extends JFrame {
 	private JTextField text_flag_VM_C;
 	private JTextField text_flag_VM_B;
 	private JTextField text_flag_VM_S;
-	
+
 	private JTextField text_reg_TIMER;
 	private JTextField text_reg_MODE;
 	private JTextField text_reg_PTR;
-	
+
 	private JTextField text_reg_PI;
 	private JTextField text_reg_SI;
 	private JTextField text_reg_TI;
-	
+
 	private JTextField text_reg_CHST_Input;
 	private JTextField text_reg_CHST_EMemory;
 	private JTextField text_reg_CHST_Lempute;
@@ -54,15 +57,16 @@ public class MainWindow extends JFrame {
 	// --------------------------------------
 
 	// --------ATMINTIES-LANGAI--------------
-	private JScrollPane scrollPane_VM;
+	private JScrollPane scrollPane_VA;
 	private JList<String> list_EM;
 
-	private JScrollPane scrollPane_RM;
+	private JScrollPane scrollPane_RA;
 	private JList<String> list_VM;
 
 	private JScrollPane scrollPane_EM;
 	private JList<String> list_RM;
-	
+
+	private static DefaultListModel<String> listEMemory;
 
 	// --------------------------------------
 
@@ -70,6 +74,7 @@ public class MainWindow extends JFrame {
 	 * Create the frame.
 	 */
 	public MainWindow() {
+		setTitle("Virtuali Maðina");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 926, 421);
 		contentPane = new JPanel();
@@ -351,7 +356,7 @@ public class MainWindow extends JFrame {
 		text_flag_VM_B.setBounds(20, 60, 20, 20);
 		panel_VM_SF.add(text_flag_VM_B);
 
-		//---CHST[]---
+		// ---CHST[]---
 		JLabel lbl_reg_CHST_Input = new JLabel("I");
 		lbl_reg_CHST_Input.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_reg_CHST_Input.setBounds(180, 115, 20, 20);
@@ -403,33 +408,55 @@ public class MainWindow extends JFrame {
 
 		// ------------ATMINTIS--------------------------------------------
 		JPanel panel_atmintis = new JPanel();
-		panel_atmintis.setBounds(398, 0, 502, 370);
+		panel_atmintis.setBounds(400, 0, 502, 370);
 		contentPane.add(panel_atmintis);
 		panel_atmintis.setLayout(null);
 
 		// ---ISORINE---
+		listEMemory = new DefaultListModel<String>();
+		for (int i = 0; i < 16; i++) {
+			for (int n = 0; n < 16; n++) {
+				listEMemory.addElement(String.format("%02X", i * 16 + n) + ": "+ "0000");
+			}
+		}
+
+		JLabel lblEm = new JLabel("EM");
+		lblEm.setHorizontalAlignment(SwingConstants.CENTER);
+		lblEm.setBounds(10, 0, 150, 20);
+		panel_atmintis.add(lblEm);
+
 		scrollPane_EM = new JScrollPane();
-		scrollPane_EM.setBounds(10, 11, 153, 337);
+		scrollPane_EM.setBounds(10, 20, 150, 340);
 		panel_atmintis.add(scrollPane_EM);
 
-		list_EM = new JList<String>();
+		list_EM = new JList<String>(listEMemory);
 		scrollPane_EM.setViewportView(list_EM);
 
 		// ---REALI---
-		scrollPane_RM = new JScrollPane();
-		scrollPane_RM.setBounds(173, 11, 153, 337);
-		panel_atmintis.add(scrollPane_RM);
+		JLabel lblNewLabel = new JLabel("RA");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setBounds(175, 0, 150, 20);
+		panel_atmintis.add(lblNewLabel);
+
+		scrollPane_RA = new JScrollPane();
+		scrollPane_RA.setBounds(175, 20, 150, 340);
+		panel_atmintis.add(scrollPane_RA);
 
 		list_RM = new JList<String>();
-		scrollPane_RM.setViewportView(list_RM);
+		scrollPane_RA.setViewportView(list_RM);
 
 		// ---VIRTUALI---
-		scrollPane_VM = new JScrollPane();
-		scrollPane_VM.setBounds(336, 11, 153, 337);
-		panel_atmintis.add(scrollPane_VM);
+		JLabel lblVm = new JLabel("VA");
+		lblVm.setHorizontalAlignment(SwingConstants.CENTER);
+		lblVm.setBounds(340, 0, 150, 20);
+		panel_atmintis.add(lblVm);
+
+		scrollPane_VA = new JScrollPane();
+		scrollPane_VA.setBounds(340, 20, 150, 340);
+		panel_atmintis.add(scrollPane_VA);
 
 		list_VM = new JList<String>();
-		scrollPane_VM.setViewportView(list_VM);
+		scrollPane_VA.setViewportView(list_VM);
 		// -----------------------------------------------------------------
 
 		JSeparator separator = new JSeparator();
