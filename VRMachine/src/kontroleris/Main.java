@@ -19,8 +19,6 @@ public class Main{
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
-				frame.changeField("TEST");
 			}
 		});
 	}
