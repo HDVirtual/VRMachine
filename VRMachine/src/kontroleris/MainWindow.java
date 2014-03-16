@@ -407,12 +407,12 @@ public class MainWindow extends JFrame {
 		text_reg_CHST_Lempute.setBounds(240, 95, 20, 20);
 		panel_registrai.add(text_reg_CHST_Lempute);
 		text_reg_CHST_Lempute.setColumns(10);
-		
+
 		JLabel lblNewLabel_1 = new JLabel("BAR");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1.setBounds(140, 137, 40, 20);
 		panel_registrai.add(lblNewLabel_1);
-		
+
 		textField = new JTextField();
 		textField.setHorizontalAlignment(SwingConstants.CENTER);
 		textField.setText("00");
@@ -429,10 +429,12 @@ public class MainWindow extends JFrame {
 
 		// ---ISORINE---
 		listEMemory = new DefaultListModel<String>();
-		for (int e = 0; e < 16; e++){
+		for (int e = 0; e < 16; e++) {
 			for (int i = 0; i < 16; i++) {
 				for (int n = 0; n < 16; n++) {
-					listEMemory.addElement(String.format("%02X", e * 16 * 16+ i * 16 + n) + ": "+ "0000");
+					listEMemory.addElement(String.format("%02X", e * 16 * 16
+							+ i * 16 + n)
+							+ ": " + "0000");
 				}
 			}
 		}
@@ -511,16 +513,16 @@ public class MainWindow extends JFrame {
 		Button btn_Step = new Button("Po \u017Eingsn\u012F");
 		btn_Step.setBounds(305, 335, 83, 22);
 		contentPane.add(btn_Step);
-		
+
 		textField_1 = new JTextField();
 		textField_1.setBounds(450, 375, 40, 20);
 		contentPane.add(textField_1);
 		textField_1.setColumns(10);
-		
+
 		Button button = new Button("\u012Evesti");
 		button.setBounds(490, 375, 70, 20);
 		contentPane.add(button);
-		
+
 		JSpinner spinner = new JSpinner();
 		spinner.setBounds(410, 370, 40, 30);
 		contentPane.add(spinner);
@@ -530,6 +532,7 @@ public class MainWindow extends JFrame {
 	public void set(String register, String str_value) {
 		if (register == "RM_AR") {
 			text_reg_RM_AR.setText(str_value);
+
 		}
 		if (register == "RM_BR") {
 			text_reg_RM_BR.setText(str_value);
@@ -601,7 +604,7 @@ public class MainWindow extends JFrame {
 			text_reg_CHST_Output.setText(str_value);
 		}
 	}
-	
+
 	public String get(String register) {
 		if (register == "RM_AR") {
 			return text_reg_RM_AR.getText();
@@ -675,7 +678,7 @@ public class MainWindow extends JFrame {
 		if (register == "OUTPUT") {
 			return text_reg_CHST_Output.getText();
 		}
-		
+
 		return "Klaida!";
 	}
 }
