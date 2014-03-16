@@ -497,8 +497,79 @@ public class MainWindow extends JFrame {
 		// -----------------------------------------------------------------
 	}
 
-	public void setText_reg_RM_AR(String name) {
-		text_reg_RM_AR.setText(name);
-		System.out.println("Ilgis: " + name.length());
+	public void set(String register, int value) {
+		String str_value = String.valueOf(value);
+		if (register == "RM_AR") {
+			text_reg_RM_AR.setText(str_value);
+		}
+		if (register == "RM_BR") {
+			text_reg_RM_BR.setText(str_value);
+		}
+		if (register == "RM_IP") {
+			text_reg_RM_IP.setText(str_value);
+		}
+		if (register == "RM_Z") {
+			text_flag_RM_Z.setText(str_value);
+		}
+		if (register == "RM_C") {
+			text_flag_RM_C.setText(str_value);
+		}
+		if (register == "RM_B") {
+			text_flag_RM_B.setText(str_value);
+		}
+		if (register == "RM_S") {
+			text_flag_RM_S.setText(str_value);
+		}
+		if (register == "VM_AR") {
+			text_reg_VM_AR.setText(str_value);
+		}
+		if (register == "VM_BR") {
+			text_reg_VM_BR.setText(str_value);
+		}
+		if (register == "VM_IP") {
+			text_reg_VM_IP.setText(str_value);
+		}
+		if (register == "VM_Z") {
+			text_flag_VM_Z.setText(str_value);
+		}
+		if (register == "VM_C") {
+			text_flag_VM_C.setText(str_value);
+		}
+		if (register == "VM_B") {
+			text_flag_VM_B.setText(str_value);
+		}
+		if (register == "VM_S") {
+			text_flag_VM_S.setText(str_value);
+		}
+		if (register == "TIMER") {
+			text_reg_TIMER.setText(str_value);
+		}
+		if (register == "MODE") {
+			text_reg_MODE.setText(str_value);
+		}
+		if (register == "PTR") {
+			text_reg_PTR.setText(str_value);
+		}
+		if (register == "PI") {
+			text_reg_PI.setText(str_value);
+		}
+		if (register == "SI") {
+			text_reg_SI.setText(str_value);
+		}
+		if (register == "TI") {
+			text_reg_TI.setText(str_value);
+		}
+		if (register == "INPUT") {
+			text_reg_CHST_Input.setText(str_value);
+		}
+		if (register == "EMEMORY") {
+			text_reg_CHST_EMemory.setText(str_value);
+		}
+		if (register == "LEMPUTE") {
+			text_reg_CHST_Lempute.setText(str_value);
+		}
+		if (register == "OUTPUT") {
+			text_reg_CHST_Output.setText(str_value);
+		}
 	}
 }

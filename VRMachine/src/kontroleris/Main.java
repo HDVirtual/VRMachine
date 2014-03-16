@@ -23,9 +23,12 @@ public class Main{
 					e.printStackTrace();
 					
 				}
+				// test ////////////
 				AR = new ARegister();
-				AR.set(16);
-				frame.setText_reg_RM_AR(String.format("%02X", AR.get()));
+				AR.set(30);
+				frame.set("RM_AR",AR.get());
+				frame.set("RM_S",1);
+				////////////////////
 			}
 		});
 	}
