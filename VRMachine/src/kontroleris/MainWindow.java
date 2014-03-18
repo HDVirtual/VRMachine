@@ -532,7 +532,6 @@ public class MainWindow extends JFrame {
 	public void set(String register, String str_value) {
 		if (register == "RM_AR") {
 			text_reg_RM_AR.setText(str_value);
-
 		}
 		if (register == "RM_BR") {
 			text_reg_RM_BR.setText(str_value);
