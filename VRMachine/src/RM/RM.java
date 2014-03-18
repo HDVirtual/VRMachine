@@ -53,7 +53,7 @@ public class RM {
         SI = new IntRegister();
         MODE  = new ModeRegister();
         BAR = new BARRegister();
-        Register[] CHST = new Register[4];
+      //  Register[] CHST = new Register[4];
         
         //InterruptPrograms();
         

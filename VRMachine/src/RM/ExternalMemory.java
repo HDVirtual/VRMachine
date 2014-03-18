@@ -6,15 +6,15 @@ import java.util.ArrayList;
 
 public class ExternalMemory {
 	
-	ArrayList<String> memory = new ArrayList<String>();
+	static ArrayList<String> memory = new ArrayList<String>();
 
 	public ExternalMemory() {
 		for (int i = 0; i < 16*16; i++) {
-					memory.add(i, "_____");
+					memory.add(i, "____");
     	}
     }
 	
-	public ArrayList<String> getBlock(int block) {
+	public static ArrayList<String> getBlock(int block) {
 		ArrayList<String> blokas = new ArrayList<String>();
 		for (int i = (block+1)*16-16; i < (block+1)*16; i++) {
 			blokas.add(memory.get(i));
@@ -22,7 +22,7 @@ public class ExternalMemory {
     	return blokas;
     }
 	
-	public String getWord(int block, int index){
+	public static String getWord(int block, int index){
     	ArrayList<String> list = getBlock(block);
     	String Word = list.get(index);
     	return Word;
@@ -65,4 +65,6 @@ public class ExternalMemory {
 			System.err.println("Error: " + e.getMessage());
 		}
     }
+	
+	
 }
