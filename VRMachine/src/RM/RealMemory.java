@@ -31,6 +31,10 @@ public class RealMemory {
     	return memory.get(cell);
     }
 	
+	public String getWord(int adress) {
+    	return memory.get(adress);
+    }
+	
 	private int getAdress(String adress) {
 		String result = adress.substring(2, 4);
 		int cell = Integer.parseInt(result, 16);
@@ -39,5 +43,9 @@ public class RealMemory {
 	
 	public void set(String adress, String value) {
 		memory.set(getAdress(adress),value);
+	}
+	
+	public void set(int adress, String value) {
+		memory.set(adress,value);
 	}
 }

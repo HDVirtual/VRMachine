@@ -28,6 +28,10 @@ public class ExternalMemory {
     	return Word;
     }
 	
+	public String getWord(int adress) {
+    	return memory.get(adress);
+    }
+	
 	public String getWord(String adress) {
 		int cell = getAdress(adress);
     	return memory.get(cell);
@@ -41,6 +45,10 @@ public class ExternalMemory {
 	
 	public void set(String adress, String value) {
 		memory.set(getAdress(adress),value);
+	}
+	
+	public void set(int adress, String value) {
+		memory.set(adress,value);
 	}
 	
 	public void save() {
