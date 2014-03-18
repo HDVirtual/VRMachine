@@ -212,7 +212,7 @@ public class RM {
             case "LX":
             {
             	String result = command.substring(2, 4);
-            	switch (OPK) 
+            	switch (result) 
         		{
         			case "ON":
         			{
