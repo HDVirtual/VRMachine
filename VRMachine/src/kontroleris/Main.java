@@ -2,14 +2,18 @@ package kontroleris;
 
 import java.awt.EventQueue;
 
+///// test /////////////////
 import RM.ExternalMemory;
+import RM.RealMemory;
 import registers.Register;
+////////////////////////////
 
 public class Main {
 
 	// //// test//////////////
 	public static Register AR;
 	public static Register S;
+	public static RealMemory Rmemory;
 	public static ExternalMemory Ememory;
 	// ///////////////////////
 	/**
@@ -37,6 +41,7 @@ public class Main {
 				frame.set("RM_S", S.get());
 				System.out.println(frame.get("RM_S"));
 				System.out.println(frame.get("RM_AR"));
+				Rmemory = new RealMemory();
 				Ememory = new ExternalMemory();
 				Ememory.set("AA18", "AA12");
 				System.out.println(Ememory.getWord("CC18"));
