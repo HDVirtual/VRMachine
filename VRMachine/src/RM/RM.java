@@ -49,7 +49,7 @@ public class RM {
         SI = new IntRegister();
         MODE  = new ModeRegister();
         BAR = new BARRegister();
-        Register[] CHST = new Register[4];
+      //  Register[] CHST = new Register[4];
         
         //InterruptPrograms();
         
@@ -517,7 +517,7 @@ public class RM {
 		}
 		IP.set(IP.get()+1);
 		MODE.set(0);
-		kontroleris.MainWindow.updateConsole(text);
+		//kontroleris.MainWindow.updateConsole(text);
 	}
 	
 	public static void GD(int xx) {

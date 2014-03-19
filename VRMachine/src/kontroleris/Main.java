@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 
 ///// test /////////////////
 import RM.ExternalMemory;
+import RM.RM;
 import RM.RealMemory;
 import registers.Register;
 ////////////////////////////
@@ -23,9 +24,10 @@ public class Main {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				MainWindow frame = new MainWindow();
+				
 				try {
-
+					final RM os = new RM();
+					MainWindow frame = new MainWindow(os);
 					frame.setVisible(true);
 					frame.setResizable(false);
 					frame.setLocationRelativeTo(null);
@@ -38,14 +40,11 @@ public class Main {
 				AR.set("FFFF");
 				S = new Register();
 				S.set("1");
-				frame.set("RM_AR", AR.get());
-				frame.set("RM_S", S.get());
-				System.out.println(frame.get("RM_S"));
-				System.out.println(frame.get("RM_AR"));
+
 				Rmemory = new RealMemory();
 				Ememory = new ExternalMemory();
-				Ememory.set("AA18", "AA12");
-				System.out.println(Ememory.getWord("CC18"));
+				Ememory.set("0003", "AA12");
+				//System.out.println(Ememory.getWord("CC18"));
 				Ememory.save();
 				////////////////////
 			}

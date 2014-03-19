@@ -22,6 +22,15 @@ import java.awt.Button;
 import javax.swing.SwingConstants;
 import javax.swing.JSpinner;
 
+import RM.ExternalMemory;
+import RM.RM;
+
+import javax.swing.JButton;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+
 public class MainWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -60,25 +69,25 @@ public class MainWindow extends JFrame {
 	private static JTextPane txtpnconsole;
 	
 	// --------ATMINTIES-LANGAI--------------
-	private JScrollPane scrollPane_VA;
-	private JList<String> list_EM;
+	private static JScrollPane scrollPane_VA;
+	private static JList<String> list_EM;
 
-	private JScrollPane scrollPane_RA;
-	private JList<String> list_VM;
+	private static JScrollPane scrollPane_RA;
+	private static JList<String> list_VM;
 
-	private JScrollPane scrollPane_EM;
-	private JList<String> list_RM;
+	private static JScrollPane scrollPane_EM;
+	private static JList<String> list_RM;
 
 	private static DefaultListModel<String> listEMemory;
-	private JTextField textField;
-	private JTextField textField_1;
+	private static JTextField textField;
+	private static JTextField textField_1;
 
 	// --------------------------------------
 
 	/**
 	 * Create the frame.
 	 */
-	public MainWindow() {
+	public MainWindow(final RM rm) {
 		setTitle("Virtuali Maðina");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 926, 448);
@@ -431,15 +440,11 @@ public class MainWindow extends JFrame {
 
 		// ---ISORINE---
 		listEMemory = new DefaultListModel<String>();
-		for (int e = 0; e < 16; e++) {
 			for (int i = 0; i < 16; i++) {
 				for (int n = 0; n < 16; n++) {
-					listEMemory.addElement(String.format("%02X", e * 16 * 16
-							+ i * 16 + n)
-							+ ": " + "0000");
-				}
+					listEMemory.addElement(String.format("%02X",  i * 16 + n)+ ": " + rm.externalMemory.getWord(i, n));
+				} 
 			}
-		}
 
 		JLabel lblEm = new JLabel("EM");
 		lblEm.setHorizontalAlignment(SwingConstants.CENTER);
@@ -528,6 +533,16 @@ public class MainWindow extends JFrame {
 		JSpinner spinner = new JSpinner();
 		spinner.setBounds(410, 370, 40, 30);
 		contentPane.add(spinner);
+		
+		JButton btnUpdate = new JButton("Update");
+		btnUpdate.setBounds(121, 374, 89, 23);
+		contentPane.add(btnUpdate);
+		
+		btnUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//updateListEM(rm.externalMemory)
+			}
+		});
 		// -----------------------------------------------------------------
 	}
 
@@ -682,9 +697,16 @@ public class MainWindow extends JFrame {
 
 		return "Klaida!";
 	}
-	
-	public static void updateConsole(String text) {
-		txtpnconsole.setText(txtpnconsole.getText() + "\n"+text);
+
+/*	public static void updateListEM(ExternalMemory Atmintis) {
+		for (int i = 0; i < 16*16; i++) {
+			for(int n=0;n<16;n++) {
+				listEMemory.set(i*10+n,String.format("%02X", i*10+n) + ": " + ExternalMemory.getWord(i, n));
+			}
+		}
+		list_EM.setSelectedIndex(0);
+		scrollPane_EM.revalidate();
+		scrollPane_EM.repaint();
 	}
-	
+	*/
 }

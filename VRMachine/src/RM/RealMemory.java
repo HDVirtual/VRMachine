@@ -8,7 +8,7 @@ public class RealMemory {
 
 	public RealMemory() {
 		for (int i = 0; i < 16*16*16-16; i++) {
-					memory.add(i, "_____");
+					memory.add(i, "____");
     	}
     }
 	
