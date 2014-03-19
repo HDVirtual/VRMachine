@@ -56,7 +56,9 @@ public class MainWindow extends JFrame {
 	private JTextField text_reg_CHST_Lempute;
 	private JTextField text_reg_CHST_Output;
 	// --------------------------------------
-
+	
+	private static JTextPane txtpnconsole;
+	
 	// --------ATMINTIES-LANGAI--------------
 	private JScrollPane scrollPane_VA;
 	private JList<String> list_EM;
@@ -487,7 +489,7 @@ public class MainWindow extends JFrame {
 		scrollPane.setBounds(10, 207, 378, 94);
 		contentPane.add(scrollPane);
 
-		JTextPane txtpnconsole = new JTextPane();
+		txtpnconsole = new JTextPane();
 		scrollPane.setViewportView(txtpnconsole);
 		txtpnconsole.setText(">>> Console");
 		txtpnconsole.setEditable(false);
@@ -680,4 +682,9 @@ public class MainWindow extends JFrame {
 
 		return "Klaida!";
 	}
+	
+	public static void updateConsole(String text) {
+		txtpnconsole.setText(txtpnconsole.getText() + "\n"+text);
+	}
+	
 }
