@@ -698,6 +698,10 @@ public class MainWindow extends JFrame {
 		return "Klaida!";
 	}
 
+	public static void updateConsole(String text) {
+		txtpnconsole.setText(txtpnconsole.getText() + "\n"+text);
+	}
+	
 /*	public static void updateListEM(ExternalMemory Atmintis) {
 		for (int i = 0; i < 16*16; i++) {
 			for(int n=0;n<16;n++) {

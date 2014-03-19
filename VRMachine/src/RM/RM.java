@@ -517,7 +517,7 @@ public class RM {
 		}
 		IP.set(IP.get()+1);
 		MODE.set(0);
-		//kontroleris.MainWindow.updateConsole(text);
+		kontroleris.MainWindow.updateConsole(text);
 	}
 	
 	public static void GD(int xx) {
