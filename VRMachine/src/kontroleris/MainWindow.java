@@ -3,11 +3,15 @@ package kontroleris;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.TableModel;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.SystemColor;
 
 import javax.swing.DefaultListModel;
@@ -22,13 +26,21 @@ import java.awt.Button;
 import javax.swing.SwingConstants;
 import javax.swing.JSpinner;
 
-import RM.ExternalMemory;
 import RM.RM;
 
 import javax.swing.JButton;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.ListSelectionModel;
+
+import java.awt.Canvas;
+import javax.swing.JInternalFrame;
+import javax.swing.JTextArea;
+import java.awt.Font;
 
 
 public class MainWindow extends JFrame {
@@ -43,14 +55,6 @@ public class MainWindow extends JFrame {
 	private JTextField text_flag_RM_C;
 	private JTextField text_flag_RM_B;
 	private JTextField text_flag_RM_S;
-
-	private JTextField text_reg_VM_AR;
-	private JTextField text_reg_VM_BR;
-	private JTextField text_reg_VM_IP;
-	private JTextField text_flag_VM_Z;
-	private JTextField text_flag_VM_C;
-	private JTextField text_flag_VM_B;
-	private JTextField text_flag_VM_S;
 
 	private JTextField text_reg_TIMER;
 	private JTextField text_reg_MODE;
@@ -70,17 +74,16 @@ public class MainWindow extends JFrame {
 	
 	// --------ATMINTIES-LANGAI--------------
 	private static JScrollPane scrollPane_VA;
-	private static JList<String> list_EM;
 
 	private static JScrollPane scrollPane_RA;
-	private static JList<String> list_VM;
 
 	private static JScrollPane scrollPane_EM;
-	private static JList<String> list_RM;
 
 	private static DefaultListModel<String> listEMemory;
 	private static JTextField textField;
-	private static JTextField textField_1;
+	private JTable table_VA;
+	private JTable table_RA;
+	private JTable table_EM;
 
 	// --------------------------------------
 
@@ -90,7 +93,7 @@ public class MainWindow extends JFrame {
 	public MainWindow(final RM rm) {
 		setTitle("Virtuali Maðina");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 926, 448);
+		setBounds(100, 100, 1179, 538);
 		contentPane = new JPanel();
 		contentPane.setAutoscrolls(true);
 		contentPane.setBackground(SystemColor.control);
@@ -102,14 +105,9 @@ public class MainWindow extends JFrame {
 		JPanel panel_registrai = new JPanel();
 		panel_registrai.setCursor(Cursor
 				.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		panel_registrai.setBounds(10, 0, 378, 183);
+		panel_registrai.setBounds(10, 0, 380, 183);
 		contentPane.add(panel_registrai);
 		panel_registrai.setLayout(null);
-
-		JLabel lbl_VM = new JLabel("VM");
-		lbl_VM.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_VM.setBounds(80, 0, 35, 20);
-		panel_registrai.add(lbl_VM);
 
 		JLabel lbl_RM = new JLabel("RM");
 		lbl_RM.setHorizontalAlignment(SwingConstants.CENTER);
@@ -129,13 +127,6 @@ public class MainWindow extends JFrame {
 		text_reg_RM_AR.setAlignmentX(Component.LEFT_ALIGNMENT);
 		text_reg_RM_AR.setColumns(10);
 
-		text_reg_VM_AR = new JTextField();
-		text_reg_VM_AR.setHorizontalAlignment(SwingConstants.CENTER);
-		text_reg_VM_AR.setText("0000");
-		text_reg_VM_AR.setBounds(80, 20, 40, 20);
-		panel_registrai.add(text_reg_VM_AR);
-		text_reg_VM_AR.setColumns(10);
-
 		// ---BR---
 		JLabel lbl_reg_BR = new JLabel("BR");
 		lbl_reg_BR.setHorizontalAlignment(SwingConstants.CENTER);
@@ -148,13 +139,6 @@ public class MainWindow extends JFrame {
 		panel_registrai.add(text_reg_RM_BR);
 		text_reg_RM_BR.setAlignmentX(Component.LEFT_ALIGNMENT);
 		text_reg_RM_BR.setColumns(10);
-
-		text_reg_VM_BR = new JTextField();
-		text_reg_VM_BR.setHorizontalAlignment(SwingConstants.CENTER);
-		text_reg_VM_BR.setText("0000");
-		text_reg_VM_BR.setBounds(80, 45, 40, 20);
-		panel_registrai.add(text_reg_VM_BR);
-		text_reg_VM_BR.setColumns(10);
 
 		// ---IP---
 		JLabel lbl_reg_IP = new JLabel("IP");
@@ -171,91 +155,87 @@ public class MainWindow extends JFrame {
 				.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
 		text_reg_RM_IP.setColumns(10);
 
-		text_reg_VM_IP = new JTextField();
-		text_reg_VM_IP.setHorizontalAlignment(SwingConstants.CENTER);
-		text_reg_VM_IP.setText("0000");
-		text_reg_VM_IP.setBounds(80, 70, 40, 20);
-		panel_registrai.add(text_reg_VM_IP);
-		text_reg_VM_IP.setColumns(10);
-
 		// ---TIMER---
 		JLabel lbl_reg_TIMER = new JLabel("TIMER");
 		lbl_reg_TIMER.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_reg_TIMER.setBounds(140, 20, 40, 20);
+		lbl_reg_TIMER.setBounds(90, 20, 40, 20);
 		panel_registrai.add(lbl_reg_TIMER);
 
 		text_reg_TIMER = new JTextField();
 		text_reg_TIMER.setHorizontalAlignment(SwingConstants.CENTER);
 		text_reg_TIMER.setText("0");
-		text_reg_TIMER.setBounds(180, 20, 40, 20);
+		text_reg_TIMER.setBounds(130, 20, 40, 20);
 		panel_registrai.add(text_reg_TIMER);
 		text_reg_TIMER.setColumns(10);
 
 		// ---MODE---
 		JLabel lbl_reg_MODE = new JLabel("MODE");
 		lbl_reg_MODE.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_reg_MODE.setBounds(140, 45, 40, 20);
+		lbl_reg_MODE.setBounds(90, 45, 40, 20);
 		panel_registrai.add(lbl_reg_MODE);
 
 		text_reg_MODE = new JTextField();
 		text_reg_MODE.setHorizontalAlignment(SwingConstants.CENTER);
 		text_reg_MODE.setText("0");
-		text_reg_MODE.setBounds(180, 45, 40, 20);
+		text_reg_MODE.setBounds(130, 45, 40, 20);
 		panel_registrai.add(text_reg_MODE);
 		text_reg_MODE.setColumns(10);
 
 		// ---PTR---
 		JLabel lbl_reg_PTR = new JLabel("PTR");
 		lbl_reg_PTR.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_reg_PTR.setBounds(140, 70, 40, 20);
+		lbl_reg_PTR.setBounds(90, 70, 40, 20);
 		panel_registrai.add(lbl_reg_PTR);
 
 		text_reg_PTR = new JTextField();
 		text_reg_PTR.setHorizontalAlignment(SwingConstants.CENTER);
 		text_reg_PTR.setText("0000");
-		text_reg_PTR.setBounds(180, 70, 40, 20);
+		text_reg_PTR.setBounds(130, 70, 40, 20);
 		panel_registrai.add(text_reg_PTR);
 		text_reg_PTR.setColumns(10);
 
 		// ---PI---
 		JLabel lbl_reg_PI = new JLabel("PI");
-		lbl_reg_PI.setBounds(280, 20, 20, 20);
+		lbl_reg_PI.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_reg_PI.setBounds(230, 20, 20, 20);
 		panel_registrai.add(lbl_reg_PI);
 
 		text_reg_PI = new JTextField();
 		text_reg_PI.setHorizontalAlignment(SwingConstants.CENTER);
 		text_reg_PI.setText("0");
-		text_reg_PI.setBounds(300, 20, 20, 20);
+		text_reg_PI.setBounds(250, 20, 20, 20);
 		panel_registrai.add(text_reg_PI);
 		text_reg_PI.setColumns(10);
 
 		// ---SI---
 		JLabel lbl_reg_SI = new JLabel("SI");
-		lbl_reg_SI.setBounds(280, 45, 20, 20);
+		lbl_reg_SI.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_reg_SI.setBounds(230, 45, 20, 20);
 		panel_registrai.add(lbl_reg_SI);
 
 		text_reg_SI = new JTextField();
 		text_reg_SI.setHorizontalAlignment(SwingConstants.CENTER);
 		text_reg_SI.setText("0");
-		text_reg_SI.setBounds(300, 45, 20, 20);
+		text_reg_SI.setBounds(250, 45, 20, 20);
 		panel_registrai.add(text_reg_SI);
 		text_reg_SI.setColumns(10);
 
 		// ---TI---
 		JLabel lbl_reg_TI = new JLabel("TI");
-		lbl_reg_TI.setBounds(280, 70, 20, 20);
+		lbl_reg_TI.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_reg_TI.setBounds(230, 70, 20, 20);
 		panel_registrai.add(lbl_reg_TI);
 
 		text_reg_TI = new JTextField();
 		text_reg_TI.setHorizontalAlignment(SwingConstants.CENTER);
 		text_reg_TI.setText("0");
-		text_reg_TI.setBounds(300, 70, 20, 20);
+		text_reg_TI.setBounds(250, 70, 20, 20);
 		panel_registrai.add(text_reg_TI);
 		text_reg_TI.setColumns(10);
 
 		JLabel lbl_reg_CHST = new JLabel("CHST");
 		lbl_reg_CHST.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_reg_CHST.setBounds(140, 95, 40, 20);
+		lbl_reg_CHST.setBounds(90, 95, 40, 20);
 		panel_registrai.add(lbl_reg_CHST);
 
 		// ---SF---
@@ -317,124 +297,71 @@ public class MainWindow extends JFrame {
 		text_flag_RM_B.setBounds(20, 60, 20, 20);
 		panel_RM_SF.add(text_flag_RM_B);
 
-		JPanel panel_VM_SF = new JPanel();
-		panel_VM_SF.setLayout(null);
-		panel_VM_SF.setBounds(80, 95, 40, 80);
-		panel_registrai.add(panel_VM_SF);
-
-		JLabel lbl_flag_VM_Z = new JLabel("Z");
-		lbl_flag_VM_Z.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_flag_VM_Z.setBounds(0, 0, 20, 20);
-		panel_VM_SF.add(lbl_flag_VM_Z);
-
-		text_flag_VM_Z = new JTextField("0");
-		text_flag_VM_Z.setHorizontalAlignment(SwingConstants.CENTER);
-		text_flag_VM_Z.setColumns(10);
-		text_flag_VM_Z.setAlignmentX(0.0f);
-		text_flag_VM_Z.setBounds(20, 0, 20, 20);
-		panel_VM_SF.add(text_flag_VM_Z);
-
-		JLabel lbl_flag_VM_C = new JLabel("C");
-		lbl_flag_VM_C.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_flag_VM_C.setBounds(0, 20, 20, 20);
-		panel_VM_SF.add(lbl_flag_VM_C);
-
-		text_flag_VM_C = new JTextField();
-		text_flag_VM_C.setText("0");
-		text_flag_VM_C.setHorizontalAlignment(SwingConstants.CENTER);
-		text_flag_VM_C.setColumns(10);
-		text_flag_VM_C.setBounds(20, 20, 20, 20);
-		panel_VM_SF.add(text_flag_VM_C);
-
-		JLabel lbl_flag_VM_S = new JLabel("S");
-		lbl_flag_VM_S.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_flag_VM_S.setBounds(0, 40, 20, 20);
-		panel_VM_SF.add(lbl_flag_VM_S);
-
-		text_flag_VM_S = new JTextField();
-		text_flag_VM_S.setText("0");
-		text_flag_VM_S.setHorizontalAlignment(SwingConstants.CENTER);
-		text_flag_VM_S.setColumns(10);
-		text_flag_VM_S.setBounds(20, 40, 20, 20);
-		panel_VM_SF.add(text_flag_VM_S);
-
-		JLabel lbl_flag_VM_B = new JLabel("B");
-		lbl_flag_VM_B.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_flag_VM_B.setBounds(0, 60, 20, 20);
-		panel_VM_SF.add(lbl_flag_VM_B);
-
-		text_flag_VM_B = new JTextField();
-		text_flag_VM_B.setText("0");
-		text_flag_VM_B.setHorizontalAlignment(SwingConstants.CENTER);
-		text_flag_VM_B.setColumns(10);
-		text_flag_VM_B.setBounds(20, 60, 20, 20);
-		panel_VM_SF.add(text_flag_VM_B);
-
 		// ---CHST[]---
 		JLabel lbl_reg_CHST_Input = new JLabel("I");
 		lbl_reg_CHST_Input.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_reg_CHST_Input.setBounds(180, 115, 20, 20);
+		lbl_reg_CHST_Input.setBounds(130, 115, 20, 20);
 		panel_registrai.add(lbl_reg_CHST_Input);
 
 		text_reg_CHST_Input = new JTextField();
 		text_reg_CHST_Input.setHorizontalAlignment(SwingConstants.CENTER);
 		text_reg_CHST_Input.setText("0");
-		text_reg_CHST_Input.setBounds(180, 95, 20, 20);
+		text_reg_CHST_Input.setBounds(130, 95, 20, 20);
 		panel_registrai.add(text_reg_CHST_Input);
 		text_reg_CHST_Input.setColumns(10);
 
 		JLabel lbl_reg_CHST_Output = new JLabel("O");
 		lbl_reg_CHST_Output.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_reg_CHST_Output.setBounds(200, 115, 20, 20);
+		lbl_reg_CHST_Output.setBounds(150, 115, 20, 20);
 		panel_registrai.add(lbl_reg_CHST_Output);
 
 		text_reg_CHST_Output = new JTextField();
 		text_reg_CHST_Output.setHorizontalAlignment(SwingConstants.CENTER);
 		text_reg_CHST_Output.setText("0");
-		text_reg_CHST_Output.setBounds(200, 95, 20, 20);
+		text_reg_CHST_Output.setBounds(150, 95, 20, 20);
 		panel_registrai.add(text_reg_CHST_Output);
 		text_reg_CHST_Output.setColumns(10);
 
 		JLabel lbl_reg_CHST_EMemory = new JLabel("EM");
 		lbl_reg_CHST_EMemory.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_reg_CHST_EMemory.setBounds(220, 115, 20, 20);
+		lbl_reg_CHST_EMemory.setBounds(170, 115, 20, 20);
 		panel_registrai.add(lbl_reg_CHST_EMemory);
 
 		text_reg_CHST_EMemory = new JTextField();
 		text_reg_CHST_EMemory.setText("0");
 		text_reg_CHST_EMemory.setHorizontalAlignment(SwingConstants.CENTER);
-		text_reg_CHST_EMemory.setBounds(220, 95, 20, 20);
+		text_reg_CHST_EMemory.setBounds(170, 95, 20, 20);
 		panel_registrai.add(text_reg_CHST_EMemory);
 		text_reg_CHST_EMemory.setColumns(10);
 
 		JLabel lbl_reg_CHST_Lempute = new JLabel("L");
 		lbl_reg_CHST_Lempute.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_reg_CHST_Lempute.setBounds(240, 115, 20, 20);
+		lbl_reg_CHST_Lempute.setBounds(190, 115, 20, 20);
 		panel_registrai.add(lbl_reg_CHST_Lempute);
 
 		text_reg_CHST_Lempute = new JTextField();
 		text_reg_CHST_Lempute.setText("0");
 		text_reg_CHST_Lempute.setHorizontalAlignment(SwingConstants.CENTER);
-		text_reg_CHST_Lempute.setBounds(240, 95, 20, 20);
+		text_reg_CHST_Lempute.setBounds(190, 95, 20, 20);
 		panel_registrai.add(text_reg_CHST_Lempute);
 		text_reg_CHST_Lempute.setColumns(10);
 
 		JLabel lblNewLabel_1 = new JLabel("BAR");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1.setBounds(140, 137, 40, 20);
+		lblNewLabel_1.setBounds(90, 137, 40, 20);
 		panel_registrai.add(lblNewLabel_1);
 
 		textField = new JTextField();
 		textField.setHorizontalAlignment(SwingConstants.CENTER);
 		textField.setText("00");
-		textField.setBounds(180, 137, 40, 20);
+		textField.setBounds(130, 137, 40, 20);
 		panel_registrai.add(textField);
 		textField.setColumns(10);
 		// ----------------------------------------------------------------
 
 		// ------------ATMINTIS--------------------------------------------
 		JPanel panel_atmintis = new JPanel();
-		panel_atmintis.setBounds(400, 0, 502, 370);
+		panel_atmintis.setBounds(400, 0, 753, 506);
 		contentPane.add(panel_atmintis);
 		panel_atmintis.setLayout(null);
 
@@ -447,42 +374,164 @@ public class MainWindow extends JFrame {
 			}
 
 		JLabel lblEm = new JLabel("EM");
-		lblEm.setHorizontalAlignment(SwingConstants.CENTER);
-		lblEm.setBounds(10, 0, 150, 20);
+		lblEm.setBounds(10, 20, 20, 150);
 		panel_atmintis.add(lblEm);
 
 		scrollPane_EM = new JScrollPane();
-		scrollPane_EM.setBounds(10, 20, 150, 340);
+		scrollPane_EM.setBounds(30, 20, 700, 150);
 		panel_atmintis.add(scrollPane_EM);
-
-		list_EM = new JList<String>(listEMemory);
-		scrollPane_EM.setViewportView(list_EM);
-
-		// ---REALI---
-		JLabel lblNewLabel = new JLabel("RA");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(175, 0, 150, 20);
-		panel_atmintis.add(lblNewLabel);
+		
+		table_EM = new JTable();
+		scrollPane_EM.setViewportView(table_EM);
+		
+		JLabel lblRa = new JLabel("RA");
+		lblRa.setBounds(10, 181, 20, 150);
+		panel_atmintis.add(lblRa);
 
 		scrollPane_RA = new JScrollPane();
-		scrollPane_RA.setBounds(175, 20, 150, 340);
+		scrollPane_RA.setBounds(30, 181, 700, 150);
 		panel_atmintis.add(scrollPane_RA);
-
-		list_RM = new JList<String>();
-		scrollPane_RA.setViewportView(list_RM);
-
-		// ---VIRTUALI---
-		JLabel lblVm = new JLabel("VA");
-		lblVm.setHorizontalAlignment(SwingConstants.CENTER);
-		lblVm.setBounds(340, 0, 150, 20);
-		panel_atmintis.add(lblVm);
+		
+		table_RA = new JTable();
+		table_RA.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table_RA.setRowSelectionAllowed(false);
+		table_RA.setShowVerticalLines(false);
+		table_RA.setShowGrid(false);
+		table_RA.getTableHeader().setReorderingAllowed(false);
+		table_RA.setModel(new DefaultTableModel(
+				new Object[][] {
+					{"00:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+					{"01:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+					{"02:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+					{"03:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+					{"04:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+					{"05:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				},
+				new String[] {
+					"Blokas", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"
+				}
+			));
+			table_RA.getColumnModel().getColumn(0).setPreferredWidth(60);
+			table_RA.getColumnModel().getColumn(0).setMinWidth(40);
+		//	table_RA.getColumnModel().getColumn(0).
+			table_RA.getColumnModel().getColumn(1).setPreferredWidth(40);
+			table_RA.getColumnModel().getColumn(1).setMinWidth(40);
+			table_RA.getColumnModel().getColumn(2).setPreferredWidth(40);
+			table_RA.getColumnModel().getColumn(2).setMinWidth(40);
+			table_RA.getColumnModel().getColumn(3).setPreferredWidth(40);
+			table_RA.getColumnModel().getColumn(3).setMinWidth(40);
+			table_RA.getColumnModel().getColumn(4).setPreferredWidth(40);
+			table_RA.getColumnModel().getColumn(4).setMinWidth(40);
+			table_RA.getColumnModel().getColumn(5).setPreferredWidth(40);
+			table_RA.getColumnModel().getColumn(5).setMinWidth(40);
+			table_RA.getColumnModel().getColumn(6).setPreferredWidth(40);
+			table_RA.getColumnModel().getColumn(6).setMinWidth(40);
+			table_RA.getColumnModel().getColumn(7).setPreferredWidth(40);
+			table_RA.getColumnModel().getColumn(7).setMinWidth(40);
+			table_RA.getColumnModel().getColumn(8).setPreferredWidth(40);
+			table_RA.getColumnModel().getColumn(8).setMinWidth(40);
+			table_RA.getColumnModel().getColumn(9).setPreferredWidth(40);
+			table_RA.getColumnModel().getColumn(9).setMinWidth(40);
+			table_RA.getColumnModel().getColumn(10).setPreferredWidth(40);
+			table_RA.getColumnModel().getColumn(10).setMinWidth(40);
+			table_RA.getColumnModel().getColumn(11).setPreferredWidth(40);
+			table_RA.getColumnModel().getColumn(11).setMinWidth(40);
+			table_RA.getColumnModel().getColumn(12).setPreferredWidth(40);
+			table_RA.getColumnModel().getColumn(12).setMinWidth(40);
+			table_RA.getColumnModel().getColumn(13).setPreferredWidth(40);
+			table_RA.getColumnModel().getColumn(13).setMinWidth(40);
+			table_RA.getColumnModel().getColumn(14).setPreferredWidth(40);
+			table_RA.getColumnModel().getColumn(14).setMinWidth(40);
+			table_RA.getColumnModel().getColumn(15).setPreferredWidth(40);
+			table_RA.getColumnModel().getColumn(15).setMinWidth(40);
+			table_RA.getColumnModel().getColumn(16).setPreferredWidth(40);
+			table_RA.getColumnModel().getColumn(16).setMinWidth(40);
+		scrollPane_RA.setViewportView(table_RA);
+		
+		JLabel lblVa = new JLabel("VA");
+		lblVa.setBounds(10, 342, 20, 150);
+		panel_atmintis.add(lblVa);
 
 		scrollPane_VA = new JScrollPane();
-		scrollPane_VA.setBounds(340, 20, 150, 340);
+		scrollPane_VA.setBounds(30, 342, 700, 150);
 		panel_atmintis.add(scrollPane_VA);
+		
+		table_VA = new JTable();
+		table_VA.setRowSelectionAllowed(false);
+		table_VA.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table_VA.setShowGrid(false);
+		table_VA.setShowVerticalLines(false);
+		table_VA.getTableHeader().setReorderingAllowed(false);
+		table_VA.setModel(new DefaultTableModel(
+			new Object[][] {
+				{"0:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{"1:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{"2:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{"3:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{"4:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{"5:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{"6:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{"7:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{"8:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{"9:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{"A:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{"B:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{"C:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{"D:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{"E:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{"F:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+			},
+			new String[] {
+				"Blokas", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"
+			}
+		) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			boolean[] columnEditables = new boolean[] {
+				false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		table_VA.getColumnModel().getColumn(0).setPreferredWidth(60);
+		table_VA.getColumnModel().getColumn(0).setMinWidth(40);
+		table_VA.getColumnModel().getColumn(1).setPreferredWidth(40);
+		table_VA.getColumnModel().getColumn(1).setMinWidth(40);
+		table_VA.getColumnModel().getColumn(2).setPreferredWidth(40);
+		table_VA.getColumnModel().getColumn(2).setMinWidth(40);
+		table_VA.getColumnModel().getColumn(3).setPreferredWidth(40);
+		table_VA.getColumnModel().getColumn(3).setMinWidth(40);
+		table_VA.getColumnModel().getColumn(4).setPreferredWidth(40);
+		table_VA.getColumnModel().getColumn(4).setMinWidth(40);
+		table_VA.getColumnModel().getColumn(5).setPreferredWidth(40);
+		table_VA.getColumnModel().getColumn(5).setMinWidth(40);
+		table_VA.getColumnModel().getColumn(6).setPreferredWidth(40);
+		table_VA.getColumnModel().getColumn(6).setMinWidth(40);
+		table_VA.getColumnModel().getColumn(7).setPreferredWidth(40);
+		table_VA.getColumnModel().getColumn(7).setMinWidth(40);
+		table_VA.getColumnModel().getColumn(8).setPreferredWidth(40);
+		table_VA.getColumnModel().getColumn(8).setMinWidth(40);
+		table_VA.getColumnModel().getColumn(9).setPreferredWidth(40);
+		table_VA.getColumnModel().getColumn(9).setMinWidth(40);
+		table_VA.getColumnModel().getColumn(10).setPreferredWidth(40);
+		table_VA.getColumnModel().getColumn(10).setMinWidth(40);
+		table_VA.getColumnModel().getColumn(11).setPreferredWidth(40);
+		table_VA.getColumnModel().getColumn(11).setMinWidth(40);
+		table_VA.getColumnModel().getColumn(12).setPreferredWidth(40);
+		table_VA.getColumnModel().getColumn(12).setMinWidth(40);
+		table_VA.getColumnModel().getColumn(13).setPreferredWidth(40);
+		table_VA.getColumnModel().getColumn(13).setMinWidth(40);
+		table_VA.getColumnModel().getColumn(14).setPreferredWidth(40);
+		table_VA.getColumnModel().getColumn(14).setMinWidth(40);
+		table_VA.getColumnModel().getColumn(15).setPreferredWidth(40);
+		table_VA.getColumnModel().getColumn(15).setMinWidth(40);
+		table_VA.getColumnModel().getColumn(16).setPreferredWidth(40);
+		table_VA.getColumnModel().getColumn(16).setMinWidth(40);
+		scrollPane_VA.setViewportView(table_VA);
 
-		list_VM = new JList<String>();
-		scrollPane_VA.setViewportView(list_VM);
 		// -----------------------------------------------------------------
 
 		JSeparator separator = new JSeparator();
@@ -502,6 +551,16 @@ public class MainWindow extends JFrame {
 		TextField console = new TextField();
 		console.setBounds(10, 307, 378, 22);
 		contentPane.add(console);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(370, 393, 20, 20);
+		contentPane.add(scrollPane_1);
+		//----------------------------------------------------------------
+		
+		//-----------LEMPUTES-LANGELIS------------------------------------
+		Canvas canvas = new Canvas();
+		scrollPane_1.setViewportView(canvas);
+		canvas.setBackground(Color.lightGray);
 		// ----------------------------------------------------------------
 
 		// ------------MYGTUKAI--------------------------------------------
@@ -520,32 +579,15 @@ public class MainWindow extends JFrame {
 		Button btn_Step = new Button("Po \u017Eingsn\u012F");
 		btn_Step.setBounds(305, 335, 83, 22);
 		contentPane.add(btn_Step);
-
-		textField_1 = new JTextField();
-		textField_1.setBounds(450, 375, 40, 20);
-		contentPane.add(textField_1);
-		textField_1.setColumns(10);
-
-		Button button = new Button("\u012Evesti");
-		button.setBounds(490, 375, 70, 20);
-		contentPane.add(button);
-
-		JSpinner spinner = new JSpinner();
-		spinner.setBounds(410, 370, 40, 30);
-		contentPane.add(spinner);
 		
-		JButton btnUpdate = new JButton("Update");
-		btnUpdate.setBounds(121, 374, 89, 23);
-		contentPane.add(btnUpdate);
+		JLabel lblLemput = new JLabel("Lemput\u0117:");
+		lblLemput.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblLemput.setBounds(317, 393, 51, 20);
+		contentPane.add(lblLemput);
 		
-		btnUpdate.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				//updateListEM(rm.externalMemory)
-			}
-		});
 		// -----------------------------------------------------------------
 	}
-
+	
 	public void set(String register, String str_value) {
 		if (register == "RM_AR") {
 			text_reg_RM_AR.setText(str_value);
@@ -567,27 +609,6 @@ public class MainWindow extends JFrame {
 		}
 		if (register == "RM_S") {
 			text_flag_RM_S.setText(str_value);
-		}
-		if (register == "VM_AR") {
-			text_reg_VM_AR.setText(str_value);
-		}
-		if (register == "VM_BR") {
-			text_reg_VM_BR.setText(str_value);
-		}
-		if (register == "VM_IP") {
-			text_reg_VM_IP.setText(str_value);
-		}
-		if (register == "VM_Z") {
-			text_flag_VM_Z.setText(str_value);
-		}
-		if (register == "VM_C") {
-			text_flag_VM_C.setText(str_value);
-		}
-		if (register == "VM_B") {
-			text_flag_VM_B.setText(str_value);
-		}
-		if (register == "VM_S") {
-			text_flag_VM_S.setText(str_value);
 		}
 		if (register == "TIMER") {
 			text_reg_TIMER.setText(str_value);
@@ -643,27 +664,6 @@ public class MainWindow extends JFrame {
 		if (register == "RM_S") {
 			return text_flag_RM_S.getText();
 		}
-		if (register == "VM_AR") {
-			return text_reg_VM_AR.getText();
-		}
-		if (register == "VM_BR") {
-			return text_reg_VM_BR.getText();
-		}
-		if (register == "VM_IP") {
-			return text_reg_VM_IP.getText();
-		}
-		if (register == "VM_Z") {
-			return text_flag_VM_Z.getText();
-		}
-		if (register == "VM_C") {
-			return text_flag_VM_C.getText();
-		}
-		if (register == "VM_B") {
-			return text_flag_VM_B.getText();
-		}
-		if (register == "VM_S") {
-			return text_flag_VM_S.getText();
-		}
 		if (register == "TIMER") {
 			return text_reg_TIMER.getText();
 		}
@@ -701,16 +701,4 @@ public class MainWindow extends JFrame {
 	public static void updateConsole(String text) {
 		txtpnconsole.setText(txtpnconsole.getText() + "\n"+text);
 	}
-	
-/*	public static void updateListEM(ExternalMemory Atmintis) {
-		for (int i = 0; i < 16*16; i++) {
-			for(int n=0;n<16;n++) {
-				listEMemory.set(i*10+n,String.format("%02X", i*10+n) + ": " + ExternalMemory.getWord(i, n));
-			}
-		}
-		list_EM.setSelectedIndex(0);
-		scrollPane_EM.revalidate();
-		scrollPane_EM.repaint();
-	}
-	*/
 }
