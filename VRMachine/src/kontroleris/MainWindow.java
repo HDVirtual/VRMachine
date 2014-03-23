@@ -3,19 +3,15 @@ package kontroleris;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.TableModel;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.SystemColor;
 
 import javax.swing.DefaultListModel;
-import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JSeparator;
@@ -24,24 +20,15 @@ import java.awt.TextField;
 import java.awt.Button;
 
 import javax.swing.SwingConstants;
-import javax.swing.JSpinner;
 
 import RM.RM;
-
-import javax.swing.JButton;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.ListSelectionModel;
 
 import java.awt.Canvas;
-import javax.swing.JInternalFrame;
-import javax.swing.JTextArea;
 import java.awt.Font;
-
 
 public class MainWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -69,9 +56,9 @@ public class MainWindow extends JFrame {
 	private JTextField text_reg_CHST_Lempute;
 	private JTextField text_reg_CHST_Output;
 	// --------------------------------------
-	
+
 	private static JTextPane txtpnconsole;
-	
+
 	// --------ATMINTIES-LANGAI--------------
 	private static JScrollPane scrollPane_VA;
 
@@ -84,6 +71,8 @@ public class MainWindow extends JFrame {
 	private JTable table_VA;
 	private JTable table_RA;
 	private JTable table_EM;
+
+	private static Canvas canvas_Lempute;
 
 	// --------------------------------------
 
@@ -108,11 +97,6 @@ public class MainWindow extends JFrame {
 		panel_registrai.setBounds(10, 0, 380, 183);
 		contentPane.add(panel_registrai);
 		panel_registrai.setLayout(null);
-
-		JLabel lbl_RM = new JLabel("RM");
-		lbl_RM.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_RM.setBounds(30, 0, 35, 20);
-		panel_registrai.add(lbl_RM);
 
 		// ---AR---
 		JLabel lbl_reg_AR = new JLabel("AR");
@@ -367,12 +351,13 @@ public class MainWindow extends JFrame {
 
 		// ---ISORINE---
 		listEMemory = new DefaultListModel<String>();
-			for (int i = 0; i < 16; i++) {
-				for (int n = 0; n < 16; n++) {
-					listEMemory.addElement(String.format("%02X",  i * 16 + n)+ ": " + rm.externalMemory.getWord(i, n));
-				} 
+		for (int i = 0; i < 16; i++) {
+			for (int n = 0; n < 16; n++) {
+				listEMemory.addElement(String.format("%02X", i * 16 + n) + ": "
+						+ rm.externalMemory.getWord(i, n));
 			}
-
+		}
+		
 		JLabel lblEm = new JLabel("EM");
 		lblEm.setBounds(10, 20, 20, 150);
 		panel_atmintis.add(lblEm);
@@ -380,10 +365,43 @@ public class MainWindow extends JFrame {
 		scrollPane_EM = new JScrollPane();
 		scrollPane_EM.setBounds(30, 20, 700, 150);
 		panel_atmintis.add(scrollPane_EM);
-		
+
 		table_EM = new JTable();
-		scrollPane_EM.setViewportView(table_EM);
+		table_EM.setRowSelectionAllowed(false);
+		table_EM.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table_EM.setShowGrid(false);
+		table_EM.setShowVerticalLines(false);
+		table_EM.getTableHeader().setReorderingAllowed(false);
 		
+
+		DefaultTableModel table_model_EM = new DefaultTableModel(Main.EMdata,Main.EMcolumnNames){
+
+			private static final long serialVersionUID = 1L;
+			boolean[] columnEditables = new boolean[Main.blokoDydis];
+
+			public boolean isCellEditable(int row, int column) {
+				columnEditables[0] = false;
+				for (int i = 1;i < Main.blokoDydis;i++){
+					columnEditables[i] = true; 
+				}
+				return columnEditables[column];
+			}
+		};
+		table_EM.setModel(table_model_EM);
+		table_EM.getColumnModel().getColumn(0).setPreferredWidth(60);
+		table_EM.getColumnModel().getColumn(0).setMinWidth(40);
+		for (int i = 1;i < Main.blokoDydis;i++){
+			table_EM.getColumnModel().getColumn(i).setPreferredWidth(40);
+			table_EM.getColumnModel().getColumn(i).setMinWidth(40);
+		}
+		scrollPane_EM.setViewportView(table_EM);
+
+		
+		
+		
+		
+		
+		// ---REALI---
 		JLabel lblRa = new JLabel("RA");
 		lblRa.setBounds(10, 181, 20, 150);
 		panel_atmintis.add(lblRa);
@@ -391,63 +409,38 @@ public class MainWindow extends JFrame {
 		scrollPane_RA = new JScrollPane();
 		scrollPane_RA.setBounds(30, 181, 700, 150);
 		panel_atmintis.add(scrollPane_RA);
-		
+
 		table_RA = new JTable();
-		table_RA.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table_RA.setRowSelectionAllowed(false);
-		table_RA.setShowVerticalLines(false);
+		table_RA.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table_RA.setShowGrid(false);
+		table_RA.setShowVerticalLines(false);
 		table_RA.getTableHeader().setReorderingAllowed(false);
-		table_RA.setModel(new DefaultTableModel(
-				new Object[][] {
-					{"00:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-					{"01:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-					{"02:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-					{"03:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-					{"04:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-					{"05:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				},
-				new String[] {
-					"Blokas", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"
+		DefaultTableModel table_model_RA = new DefaultTableModel(Main.RMdata,Main.RMcolumnNames){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			boolean[] columnEditables = new boolean[Main.blokoDydis];
+
+			public boolean isCellEditable(int row, int column) {
+				columnEditables[0] = false;
+				for (int i = 1;i < Main.blokoDydis;i++){
+					columnEditables[i] = true; 
 				}
-			));
-			table_RA.getColumnModel().getColumn(0).setPreferredWidth(60);
-			table_RA.getColumnModel().getColumn(0).setMinWidth(40);
-		//	table_RA.getColumnModel().getColumn(0).
-			table_RA.getColumnModel().getColumn(1).setPreferredWidth(40);
-			table_RA.getColumnModel().getColumn(1).setMinWidth(40);
-			table_RA.getColumnModel().getColumn(2).setPreferredWidth(40);
-			table_RA.getColumnModel().getColumn(2).setMinWidth(40);
-			table_RA.getColumnModel().getColumn(3).setPreferredWidth(40);
-			table_RA.getColumnModel().getColumn(3).setMinWidth(40);
-			table_RA.getColumnModel().getColumn(4).setPreferredWidth(40);
-			table_RA.getColumnModel().getColumn(4).setMinWidth(40);
-			table_RA.getColumnModel().getColumn(5).setPreferredWidth(40);
-			table_RA.getColumnModel().getColumn(5).setMinWidth(40);
-			table_RA.getColumnModel().getColumn(6).setPreferredWidth(40);
-			table_RA.getColumnModel().getColumn(6).setMinWidth(40);
-			table_RA.getColumnModel().getColumn(7).setPreferredWidth(40);
-			table_RA.getColumnModel().getColumn(7).setMinWidth(40);
-			table_RA.getColumnModel().getColumn(8).setPreferredWidth(40);
-			table_RA.getColumnModel().getColumn(8).setMinWidth(40);
-			table_RA.getColumnModel().getColumn(9).setPreferredWidth(40);
-			table_RA.getColumnModel().getColumn(9).setMinWidth(40);
-			table_RA.getColumnModel().getColumn(10).setPreferredWidth(40);
-			table_RA.getColumnModel().getColumn(10).setMinWidth(40);
-			table_RA.getColumnModel().getColumn(11).setPreferredWidth(40);
-			table_RA.getColumnModel().getColumn(11).setMinWidth(40);
-			table_RA.getColumnModel().getColumn(12).setPreferredWidth(40);
-			table_RA.getColumnModel().getColumn(12).setMinWidth(40);
-			table_RA.getColumnModel().getColumn(13).setPreferredWidth(40);
-			table_RA.getColumnModel().getColumn(13).setMinWidth(40);
-			table_RA.getColumnModel().getColumn(14).setPreferredWidth(40);
-			table_RA.getColumnModel().getColumn(14).setMinWidth(40);
-			table_RA.getColumnModel().getColumn(15).setPreferredWidth(40);
-			table_RA.getColumnModel().getColumn(15).setMinWidth(40);
-			table_RA.getColumnModel().getColumn(16).setPreferredWidth(40);
-			table_RA.getColumnModel().getColumn(16).setMinWidth(40);
+				return columnEditables[column];
+			}
+		};
+		table_RA.setModel(table_model_RA);
+		table_RA.getColumnModel().getColumn(0).setPreferredWidth(60);
+		table_RA.getColumnModel().getColumn(0).setMinWidth(40);
+		for (int i = 1;i < Main.blokoDydis;i++){
+			table_RA.getColumnModel().getColumn(i).setPreferredWidth(40);
+			table_RA.getColumnModel().getColumn(i).setMinWidth(40);
+		}
 		scrollPane_RA.setViewportView(table_RA);
 		
+		// ---VIRTUALI---
 		JLabel lblVa = new JLabel("VA");
 		lblVa.setBounds(10, 342, 20, 150);
 		panel_atmintis.add(lblVa);
@@ -455,81 +448,37 @@ public class MainWindow extends JFrame {
 		scrollPane_VA = new JScrollPane();
 		scrollPane_VA.setBounds(30, 342, 700, 150);
 		panel_atmintis.add(scrollPane_VA);
-		
+
 		table_VA = new JTable();
 		table_VA.setRowSelectionAllowed(false);
 		table_VA.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table_VA.setShowGrid(false);
 		table_VA.setShowVerticalLines(false);
 		table_VA.getTableHeader().setReorderingAllowed(false);
-		table_VA.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"0:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{"1:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{"2:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{"3:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{"4:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{"5:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{"6:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{"7:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{"8:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{"9:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{"A:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{"B:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{"C:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{"D:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{"E:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{"F:", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-			},
-			new String[] {
-				"Blokas", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"
-			}
-		) {
+		
+
+		DefaultTableModel table_model_VA = new DefaultTableModel(Main.EMdata,Main.EMcolumnNames){
 			/**
 			 * 
 			 */
 			private static final long serialVersionUID = 1L;
-			boolean[] columnEditables = new boolean[] {
-				false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true
-			};
+			boolean[] columnEditables = new boolean[Main.blokoDydis];
+
 			public boolean isCellEditable(int row, int column) {
+				columnEditables[0] = false;
+				for (int i = 1;i < Main.blokoDydis;i++){
+					columnEditables[i] = true; 
+				}
 				return columnEditables[column];
 			}
-		});
+		};
+		table_VA.setModel(table_model_VA);
 		table_VA.getColumnModel().getColumn(0).setPreferredWidth(60);
 		table_VA.getColumnModel().getColumn(0).setMinWidth(40);
-		table_VA.getColumnModel().getColumn(1).setPreferredWidth(40);
-		table_VA.getColumnModel().getColumn(1).setMinWidth(40);
-		table_VA.getColumnModel().getColumn(2).setPreferredWidth(40);
-		table_VA.getColumnModel().getColumn(2).setMinWidth(40);
-		table_VA.getColumnModel().getColumn(3).setPreferredWidth(40);
-		table_VA.getColumnModel().getColumn(3).setMinWidth(40);
-		table_VA.getColumnModel().getColumn(4).setPreferredWidth(40);
-		table_VA.getColumnModel().getColumn(4).setMinWidth(40);
-		table_VA.getColumnModel().getColumn(5).setPreferredWidth(40);
-		table_VA.getColumnModel().getColumn(5).setMinWidth(40);
-		table_VA.getColumnModel().getColumn(6).setPreferredWidth(40);
-		table_VA.getColumnModel().getColumn(6).setMinWidth(40);
-		table_VA.getColumnModel().getColumn(7).setPreferredWidth(40);
-		table_VA.getColumnModel().getColumn(7).setMinWidth(40);
-		table_VA.getColumnModel().getColumn(8).setPreferredWidth(40);
-		table_VA.getColumnModel().getColumn(8).setMinWidth(40);
-		table_VA.getColumnModel().getColumn(9).setPreferredWidth(40);
-		table_VA.getColumnModel().getColumn(9).setMinWidth(40);
-		table_VA.getColumnModel().getColumn(10).setPreferredWidth(40);
-		table_VA.getColumnModel().getColumn(10).setMinWidth(40);
-		table_VA.getColumnModel().getColumn(11).setPreferredWidth(40);
-		table_VA.getColumnModel().getColumn(11).setMinWidth(40);
-		table_VA.getColumnModel().getColumn(12).setPreferredWidth(40);
-		table_VA.getColumnModel().getColumn(12).setMinWidth(40);
-		table_VA.getColumnModel().getColumn(13).setPreferredWidth(40);
-		table_VA.getColumnModel().getColumn(13).setMinWidth(40);
-		table_VA.getColumnModel().getColumn(14).setPreferredWidth(40);
-		table_VA.getColumnModel().getColumn(14).setMinWidth(40);
-		table_VA.getColumnModel().getColumn(15).setPreferredWidth(40);
-		table_VA.getColumnModel().getColumn(15).setMinWidth(40);
-		table_VA.getColumnModel().getColumn(16).setPreferredWidth(40);
-		table_VA.getColumnModel().getColumn(16).setMinWidth(40);
+		for (int i = 1;i < Main.blokoDydis;i++){
+			table_VA.getColumnModel().getColumn(i).setPreferredWidth(40);
+			table_VA.getColumnModel().getColumn(i).setMinWidth(40);
+		}
 		scrollPane_VA.setViewportView(table_VA);
 
 		// -----------------------------------------------------------------
@@ -551,16 +500,16 @@ public class MainWindow extends JFrame {
 		TextField console = new TextField();
 		console.setBounds(10, 307, 378, 22);
 		contentPane.add(console);
-		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(370, 393, 20, 20);
-		contentPane.add(scrollPane_1);
-		//----------------------------------------------------------------
-		
-		//-----------LEMPUTES-LANGELIS------------------------------------
-		Canvas canvas = new Canvas();
-		scrollPane_1.setViewportView(canvas);
-		canvas.setBackground(Color.lightGray);
+
+		JScrollPane scrollPane_Lempute = new JScrollPane();
+		scrollPane_Lempute.setBounds(370, 393, 20, 20);
+		contentPane.add(scrollPane_Lempute);
+		// ----------------------------------------------------------------
+
+		// -----------LEMPUTES-LANGELIS------------------------------------
+		canvas_Lempute = new Canvas();
+		scrollPane_Lempute.setViewportView(canvas_Lempute);
+		canvas_Lempute.setBackground(Color.lightGray);
 		// ----------------------------------------------------------------
 
 		// ------------MYGTUKAI--------------------------------------------
@@ -579,15 +528,23 @@ public class MainWindow extends JFrame {
 		Button btn_Step = new Button("Po \u017Eingsn\u012F");
 		btn_Step.setBounds(305, 335, 83, 22);
 		contentPane.add(btn_Step);
-		
+
 		JLabel lblLemput = new JLabel("Lemput\u0117:");
 		lblLemput.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblLemput.setBounds(317, 393, 51, 20);
 		contentPane.add(lblLemput);
-		
+
 		// -----------------------------------------------------------------
 	}
-	
+
+	public static void setLempute(boolean jungiklis) {
+		if (jungiklis)
+			canvas_Lempute.setBackground(Color.YELLOW);
+		else
+			canvas_Lempute.setBackground(Color.LIGHT_GRAY);
+
+	}
+
 	public void set(String register, String str_value) {
 		if (register == "RM_AR") {
 			text_reg_RM_AR.setText(str_value);
@@ -699,6 +656,6 @@ public class MainWindow extends JFrame {
 	}
 
 	public static void updateConsole(String text) {
-		txtpnconsole.setText(txtpnconsole.getText() + "\n"+text);
+		txtpnconsole.setText(txtpnconsole.getText() + "\n" + text);
 	}
 }

@@ -25,14 +25,14 @@ public class RM {
 	public static ModeRegister MODE;		//darbo rezimo registras
 	public static BARRegister BAR;			//bendros atminties uzimtumo reg
 	public static Register CHST;			//kanalu busenos reg
+	public static Lempute lempute;
 	
 	public static RealMemory memory;
 	public static ExternalMemory externalMemory;
 	public static CommonMemory commonMemory;
 	public static int inputKiekis;
 	 
-	public RM() {
-        memory = new RealMemory();
+	public RM(RealMemory memory) {
         externalMemory = new ExternalMemory();
         PTR = new PTRRegister(0, 9, 1, 0);
 		AR = new Register();
@@ -50,6 +50,7 @@ public class RM {
         MODE  = new ModeRegister();
         BAR = new BARRegister();
         Register[] CHST = new Register[4];
+        lempute = new Lempute();
         
         //InterruptPrograms();
         

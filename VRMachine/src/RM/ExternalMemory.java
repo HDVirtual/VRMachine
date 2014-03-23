@@ -7,11 +7,13 @@ import java.util.ArrayList;
 public class ExternalMemory {
 	
 	static ArrayList<String> memory = new ArrayList<String>();
-
+    
 	public ExternalMemory() {
+		 
 		for (int i = 0; i < 16*16; i++) {
 					memory.add(i, "____");
     	}
+		
     }
 	
 	public static ArrayList<String> getBlock(int block) {
