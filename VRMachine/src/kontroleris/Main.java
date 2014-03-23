@@ -22,30 +22,19 @@ public class Main {
 	 * Launch the application.
 	 */
 
-	public static int blokoDydis = 16;
-	public static int EMBlokuSkaicius = 16;
-	public static int RMBlokuSkaicius = 256;
+	public static final int blokoDydis = 16;
+	public static final int EMBlokuSkaicius = 16;
+	public static final int RMBlokuSkaicius = 16;
 
-	// -----ATMINTIES-LENTELES-STRUKTURA----
-	public static Object[] EMcolumnNames;
-	public static Object[][] EMdata;
-	public static Object[] RMcolumnNames;
-	public static Object[][] RMdata;
-	// -------------------------------------
+
 
 	public static void main(String[] args) {
 
-		
-		// ---REALI-ATMINTIS---
-		
-		
-		
-		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 
 				try {
-					final RM os = new RM(Rmemory);
+					final RM os = new RM();
 					MainWindow frame = new MainWindow(os);
 					frame.setVisible(true);
 					frame.setResizable(false);
@@ -59,13 +48,16 @@ public class Main {
 				AR.set("FFFF");
 				S = new Register();
 				S.set("1");
-				Rmemory = new RealMemory();
-				Ememory = new ExternalMemory();
-				Ememory.set("0003", "AA12");
+				
+			//	Rmemory = new RealMemory();
+			//	Ememory = new ExternalMemory();
+			//	Ememory.set("0003", "AA12");
 				// System.out.println(Ememory.getWord("CC18"));
-				Ememory.save();
+			//	Ememory.save();
 				// //////////////////
 			}
 		});
 	}
+	
+	public void update(){};
 }

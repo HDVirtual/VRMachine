@@ -3,6 +3,7 @@ package kontroleris;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 
@@ -11,6 +12,8 @@ import java.awt.Cursor;
 import java.awt.Component;
 import java.awt.SystemColor;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JSeparator;
@@ -21,6 +24,7 @@ import java.awt.Button;
 import javax.swing.SwingConstants;
 
 import RM.RM;
+import RM.RealMemory;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -28,34 +32,42 @@ import javax.swing.ListSelectionModel;
 
 import java.awt.Canvas;
 import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class MainWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
 	// --------REGISTRAI--------------------
-	private JTextField text_reg_RM_AR;
-	private JTextField text_reg_RM_BR;
-	private JTextField text_reg_RM_IP;
-	private JTextField text_flag_RM_Z;
-	private JTextField text_flag_RM_C;
-	private JTextField text_flag_RM_B;
-	private JTextField text_flag_RM_S;
+	private static JTextField text_reg_AR;
+	private static JTextField text_reg_BR;
+	private static JTextField text_reg_IP;
+	private static JTextField text_flag_Z;
+	private static JTextField text_flag_C;
+	private static JTextField text_flag_B;
+	private static JTextField text_flag_S;
 
-	private JTextField text_reg_TIMER;
-	private JTextField text_reg_MODE;
-	private JTextField text_reg_PTR;
+	private static JTextField text_reg_TIMER;
+	private static JTextField text_reg_MODE;
+	private static JTextField text_reg_PTR;
 
-	private JTextField text_reg_PI;
-	private JTextField text_reg_SI;
-	private JTextField text_reg_TI;
+	private static JTextField text_reg_PI;
+	private static JTextField text_reg_SI;
+	private static JTextField text_reg_TI;
 
-	private JTextField text_reg_CHST_Input;
-	private JTextField text_reg_CHST_EMemory;
-	private JTextField text_reg_CHST_Lempute;
-	private JTextField text_reg_CHST_Output;
+	private static JTextField text_reg_CHST_Input;
+	private static JTextField text_reg_CHST_EMemory;
+	private static JTextField text_reg_CHST_Lempute;
+	private static JTextField text_reg_CHST_Output;
 	// --------------------------------------
 
+	private JFileChooser fc;
+	private static DefaultListModel<String> listModel;
 	private static JTextPane txtpnconsole;
 
 	// --------ATMINTIES-LANGAI--------------
@@ -67,12 +79,25 @@ public class MainWindow extends JFrame {
 
 	private static JTextField textField;
 	private JTable table_VA;
-	private JTable table_RA;
+	private static JTable table_RA;
 	private JTable table_EM;
 
 	private static Canvas canvas_Lempute;
 
 	// --------------------------------------
+
+	// -----ATMINTIES-LENTELES-STRUKTURA----
+	public static Object[] EMcolumnNames;
+	public static Object[][] EMdata;
+	public static Object[] RMcolumnNames;
+	public static Object[][] RMdata;
+
+	Button btn_Load = new Button("Pakrauti program\u0105");
+	Button btn_Start = new Button("Vykdyti");
+	Button btn_End = new Button("Pabaigti");
+	Button btn_Step = new Button("Po \u017Eingsn\u012F");
+
+	// -------------------------------------
 
 	/**
 	 * Create the frame.
@@ -102,12 +127,12 @@ public class MainWindow extends JFrame {
 		lbl_reg_AR.setBounds(10, 20, 20, 20);
 		panel_registrai.add(lbl_reg_AR);
 
-		text_reg_RM_AR = new JTextField("0000");
-		text_reg_RM_AR.setHorizontalAlignment(SwingConstants.CENTER);
-		text_reg_RM_AR.setBounds(30, 20, 40, 20);
-		panel_registrai.add(text_reg_RM_AR);
-		text_reg_RM_AR.setAlignmentX(Component.LEFT_ALIGNMENT);
-		text_reg_RM_AR.setColumns(10);
+		text_reg_AR = new JTextField("0000");
+		text_reg_AR.setHorizontalAlignment(SwingConstants.CENTER);
+		text_reg_AR.setBounds(30, 20, 40, 20);
+		panel_registrai.add(text_reg_AR);
+		text_reg_AR.setAlignmentX(Component.LEFT_ALIGNMENT);
+		text_reg_AR.setColumns(10);
 
 		// ---BR---
 		JLabel lbl_reg_BR = new JLabel("BR");
@@ -115,12 +140,12 @@ public class MainWindow extends JFrame {
 		lbl_reg_BR.setBounds(10, 45, 20, 20);
 		panel_registrai.add(lbl_reg_BR);
 
-		text_reg_RM_BR = new JTextField("0000");
-		text_reg_RM_BR.setHorizontalAlignment(SwingConstants.CENTER);
-		text_reg_RM_BR.setBounds(30, 45, 40, 20);
-		panel_registrai.add(text_reg_RM_BR);
-		text_reg_RM_BR.setAlignmentX(Component.LEFT_ALIGNMENT);
-		text_reg_RM_BR.setColumns(10);
+		text_reg_BR = new JTextField("0000");
+		text_reg_BR.setHorizontalAlignment(SwingConstants.CENTER);
+		text_reg_BR.setBounds(30, 45, 40, 20);
+		panel_registrai.add(text_reg_BR);
+		text_reg_BR.setAlignmentX(Component.LEFT_ALIGNMENT);
+		text_reg_BR.setColumns(10);
 
 		// ---IP---
 		JLabel lbl_reg_IP = new JLabel("IP");
@@ -128,14 +153,13 @@ public class MainWindow extends JFrame {
 		lbl_reg_IP.setBounds(10, 70, 20, 20);
 		panel_registrai.add(lbl_reg_IP);
 
-		text_reg_RM_IP = new JTextField("0000");
-		text_reg_RM_IP.setHorizontalAlignment(SwingConstants.CENTER);
-		text_reg_RM_IP.setBounds(30, 70, 40, 20);
-		panel_registrai.add(text_reg_RM_IP);
-		text_reg_RM_IP.setAlignmentX(Component.LEFT_ALIGNMENT);
-		text_reg_RM_IP
-				.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-		text_reg_RM_IP.setColumns(10);
+		text_reg_IP = new JTextField("0000");
+		text_reg_IP.setHorizontalAlignment(SwingConstants.CENTER);
+		text_reg_IP.setBounds(30, 70, 40, 20);
+		panel_registrai.add(text_reg_IP);
+		text_reg_IP.setAlignmentX(Component.LEFT_ALIGNMENT);
+		text_reg_IP.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+		text_reg_IP.setColumns(10);
 
 		// ---TIMER---
 		JLabel lbl_reg_TIMER = new JLabel("TIMER");
@@ -236,48 +260,48 @@ public class MainWindow extends JFrame {
 		lbl_flag_RM_Z.setBounds(0, 0, 20, 20);
 		panel_RM_SF.add(lbl_flag_RM_Z);
 
-		text_flag_RM_Z = new JTextField("0");
-		text_flag_RM_Z.setHorizontalAlignment(SwingConstants.CENTER);
-		text_flag_RM_Z.setColumns(10);
-		text_flag_RM_Z.setAlignmentX(0.0f);
-		text_flag_RM_Z.setBounds(20, 0, 20, 20);
-		panel_RM_SF.add(text_flag_RM_Z);
+		text_flag_Z = new JTextField("0");
+		text_flag_Z.setHorizontalAlignment(SwingConstants.CENTER);
+		text_flag_Z.setColumns(10);
+		text_flag_Z.setAlignmentX(0.0f);
+		text_flag_Z.setBounds(20, 0, 20, 20);
+		panel_RM_SF.add(text_flag_Z);
 
 		JLabel lbl_flag_RM_C = new JLabel("C");
 		lbl_flag_RM_C.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_flag_RM_C.setBounds(0, 20, 20, 20);
 		panel_RM_SF.add(lbl_flag_RM_C);
 
-		text_flag_RM_C = new JTextField();
-		text_flag_RM_C.setText("0");
-		text_flag_RM_C.setHorizontalAlignment(SwingConstants.CENTER);
-		text_flag_RM_C.setColumns(10);
-		text_flag_RM_C.setBounds(20, 20, 20, 20);
-		panel_RM_SF.add(text_flag_RM_C);
+		text_flag_C = new JTextField();
+		text_flag_C.setText("0");
+		text_flag_C.setHorizontalAlignment(SwingConstants.CENTER);
+		text_flag_C.setColumns(10);
+		text_flag_C.setBounds(20, 20, 20, 20);
+		panel_RM_SF.add(text_flag_C);
 
 		JLabel lbl_flag_RM_S = new JLabel("S");
 		lbl_flag_RM_S.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_flag_RM_S.setBounds(0, 40, 20, 20);
 		panel_RM_SF.add(lbl_flag_RM_S);
 
-		text_flag_RM_S = new JTextField();
-		text_flag_RM_S.setText("0");
-		text_flag_RM_S.setHorizontalAlignment(SwingConstants.CENTER);
-		text_flag_RM_S.setColumns(10);
-		text_flag_RM_S.setBounds(20, 40, 20, 20);
-		panel_RM_SF.add(text_flag_RM_S);
+		text_flag_S = new JTextField();
+		text_flag_S.setText("0");
+		text_flag_S.setHorizontalAlignment(SwingConstants.CENTER);
+		text_flag_S.setColumns(10);
+		text_flag_S.setBounds(20, 40, 20, 20);
+		panel_RM_SF.add(text_flag_S);
 
 		JLabel lbl_flag_RM_B = new JLabel("B");
 		lbl_flag_RM_B.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_flag_RM_B.setBounds(0, 60, 20, 20);
 		panel_RM_SF.add(lbl_flag_RM_B);
 
-		text_flag_RM_B = new JTextField();
-		text_flag_RM_B.setText("0");
-		text_flag_RM_B.setHorizontalAlignment(SwingConstants.CENTER);
-		text_flag_RM_B.setColumns(10);
-		text_flag_RM_B.setBounds(20, 60, 20, 20);
-		panel_RM_SF.add(text_flag_RM_B);
+		text_flag_B = new JTextField();
+		text_flag_B.setText("0");
+		text_flag_B.setHorizontalAlignment(SwingConstants.CENTER);
+		text_flag_B.setColumns(10);
+		text_flag_B.setBounds(20, 60, 20, 20);
+		panel_RM_SF.add(text_flag_B);
 
 		// ---CHST[]---
 		JLabel lbl_reg_CHST_Input = new JLabel("I");
@@ -348,7 +372,7 @@ public class MainWindow extends JFrame {
 		panel_atmintis.setLayout(null);
 
 		// ---ISORINE---
-		
+
 		JLabel lblEm = new JLabel("EM");
 		lblEm.setBounds(10, 20, 20, 150);
 		panel_atmintis.add(lblEm);
@@ -363,50 +387,47 @@ public class MainWindow extends JFrame {
 		table_EM.setShowGrid(false);
 		table_EM.setShowVerticalLines(false);
 		table_EM.getTableHeader().setReorderingAllowed(false);
-		
-		Object[] EMcolumnNames = new Object[Main.blokoDydis + 1];
+
+		EMcolumnNames = new Object[Main.blokoDydis + 1];
 		EMcolumnNames[0] = "Blokas";
 		for (int i = 0; i < Main.blokoDydis; i++) {
 			EMcolumnNames[i + 1] = String.format("%01X", i);
 		}
-		Object[][] EMdata = new Object[Main.EMBlokuSkaicius][Main.blokoDydis];
+		EMdata = new Object[Main.EMBlokuSkaicius][Main.blokoDydis];
 		for (int i = 0; i < Main.EMBlokuSkaicius; i++) {
 			EMdata[i][0] = String.format("%01X", i) + ":";
 			for (int j = 1; j < Main.blokoDydis; j++) {
 				EMdata[i][j] = "____";
 			}
 		}
-		
-		DefaultTableModel table_model_EM = new DefaultTableModel(EMdata, EMcolumnNames){
 
-			
+		DefaultTableModel table_model_EM = new DefaultTableModel(EMdata,
+				EMcolumnNames) {
+
 			private static final long serialVersionUID = 1L;
 			boolean[] columnEditables = new boolean[Main.blokoDydis];
 
 			public boolean isCellEditable(int row, int column) {
 				columnEditables[0] = false;
-				for (int i = 1;i < Main.blokoDydis;i++){
-					columnEditables[i] = true; 
+				for (int i = 1; i < Main.blokoDydis; i++) {
+					columnEditables[i] = true;
 				}
 				return columnEditables[column];
 			}
 		};
-		
-		
+
 		table_EM.setModel(table_model_EM);
 		table_EM.getColumnModel().getColumn(0).setPreferredWidth(60);
 		table_EM.getColumnModel().getColumn(0).setMinWidth(40);
-		for (int i = 1;i < Main.blokoDydis;i++){
+		for (int i = 1; i < Main.blokoDydis; i++) {
 			table_EM.getColumnModel().getColumn(i).setPreferredWidth(40);
 			table_EM.getColumnModel().getColumn(i).setMinWidth(40);
 		}
 		scrollPane_EM.setViewportView(table_EM);
 
-		
 		table_EM.setValueAt("LM05", 2, 3);
 		table_EM.setValueAt(table_EM.getValueAt(2, 3), 3, 3);
-		
-		
+
 		// ---REALI---
 		JLabel lblRa = new JLabel("RA");
 		lblRa.setBounds(10, 181, 20, 150);
@@ -422,19 +443,20 @@ public class MainWindow extends JFrame {
 		table_RA.setShowGrid(false);
 		table_RA.setShowVerticalLines(false);
 		table_RA.getTableHeader().setReorderingAllowed(false);
-		Object[] RMcolumnNames = new Object[Main.blokoDydis + 1];
+		RMcolumnNames = new Object[Main.blokoDydis + 1];
 		RMcolumnNames[0] = "Blokas";
 		for (int i = 0; i < Main.blokoDydis; i++) {
 			RMcolumnNames[i + 1] = String.format("%01X", i);
 		}
-		Object[][] RMdata = new Object[Main.RMBlokuSkaicius][Main.blokoDydis];
+		RMdata = new Object[Main.RMBlokuSkaicius][Main.blokoDydis];
 		for (int i = 0; i < Main.RMBlokuSkaicius; i++) {
 			RMdata[i][0] = String.format("%01X", i) + ":";
 			for (int j = 1; j < Main.blokoDydis; j++) {
 				RMdata[i][j] = "____";
 			}
 		}
-		DefaultTableModel table_model_RA = new DefaultTableModel(RMdata, RMcolumnNames){
+		DefaultTableModel table_model_RA = new DefaultTableModel(RMdata,
+				RMcolumnNames) {
 			/**
 			 * 
 			 */
@@ -443,8 +465,8 @@ public class MainWindow extends JFrame {
 
 			public boolean isCellEditable(int row, int column) {
 				columnEditables[0] = false;
-				for (int i = 1;i < Main.blokoDydis;i++){
-					columnEditables[i] = true; 
+				for (int i = 1; i < Main.blokoDydis; i++) {
+					columnEditables[i] = true;
 				}
 				return columnEditables[column];
 			}
@@ -452,12 +474,12 @@ public class MainWindow extends JFrame {
 		table_RA.setModel(table_model_RA);
 		table_RA.getColumnModel().getColumn(0).setPreferredWidth(60);
 		table_RA.getColumnModel().getColumn(0).setMinWidth(40);
-		for (int i = 1;i < Main.blokoDydis;i++){
+		for (int i = 1; i < Main.blokoDydis; i++) {
 			table_RA.getColumnModel().getColumn(i).setPreferredWidth(40);
 			table_RA.getColumnModel().getColumn(i).setMinWidth(40);
 		}
 		scrollPane_RA.setViewportView(table_RA);
-		
+
 		// ---VIRTUALI---
 		JLabel lblVa = new JLabel("VA");
 		lblVa.setBounds(10, 342, 20, 150);
@@ -473,9 +495,9 @@ public class MainWindow extends JFrame {
 		table_VA.setShowGrid(false);
 		table_VA.setShowVerticalLines(false);
 		table_VA.getTableHeader().setReorderingAllowed(false);
-		
 
-		DefaultTableModel table_model_VA = new DefaultTableModel(EMdata,EMcolumnNames){
+		DefaultTableModel table_model_VA = new DefaultTableModel(EMdata,
+				EMcolumnNames) {
 			/**
 			 * 
 			 */
@@ -484,8 +506,8 @@ public class MainWindow extends JFrame {
 
 			public boolean isCellEditable(int row, int column) {
 				columnEditables[0] = false;
-				for (int i = 1;i < Main.blokoDydis;i++){
-					columnEditables[i] = true; 
+				for (int i = 1; i < Main.blokoDydis; i++) {
+					columnEditables[i] = true;
 				}
 				return columnEditables[column];
 			}
@@ -493,7 +515,7 @@ public class MainWindow extends JFrame {
 		table_VA.setModel(table_model_VA);
 		table_VA.getColumnModel().getColumn(0).setPreferredWidth(60);
 		table_VA.getColumnModel().getColumn(0).setMinWidth(40);
-		for (int i = 1;i < Main.blokoDydis;i++){
+		for (int i = 1; i < Main.blokoDydis; i++) {
 			table_VA.getColumnModel().getColumn(i).setPreferredWidth(40);
 			table_VA.getColumnModel().getColumn(i).setMinWidth(40);
 		}
@@ -528,22 +550,133 @@ public class MainWindow extends JFrame {
 		canvas_Lempute = new Canvas();
 		scrollPane_Lempute.setViewportView(canvas_Lempute);
 		canvas_Lempute.setBackground(Color.lightGray);
+
 		// ----------------------------------------------------------------
 
 		// ------------MYGTUKAI--------------------------------------------
-		Button btn_Load = new Button("Pakrauti program\u0105");
+
+		btn_Load.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				fc = new JFileChooser();
+				fc.addChoosableFileFilter(new FileNameExtensionFilter(
+						"VM Failai", "vm"));
+				int returnVal = fc.showOpenDialog(MainWindow.this);
+
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File file = fc.getSelectedFile();
+					try {
+						FileReader fr = new FileReader(file);
+						BufferedReader br = new BufferedReader(fr);
+						String s;
+						s = br.readLine();
+						int key1 = 0;
+						int key2 = 0;
+						if ((s) == "$STR")
+							while ((s != null) || (s != "$END")) {
+								s = br.readLine();
+								String[] value = s.split("(?<=\\G.{1})");
+								String Word = "";
+								if (value.length == 4)
+									if (value[0] == "$") {
+										key1 = Integer.parseInt(value[2]);
+										key2 = Integer.parseInt(value[3]);
+									}
+									else {
+
+										int key = key1 * 10 + key2;
+										String keyWord = String.format("%02d",
+												key);
+
+										Word = value[0] + value[1] + value[2]
+												+ value[3];
+
+										rm.Atmintis.set(key, Word);
+										listModel.set(key, keyWord + ": "
+												+ rm.Atmintis.get(key));
+									}
+
+							}
+						fr.close();
+					} catch (IOException e1) {
+						// e1.printStackTrace();
+					}
+					rm.IP.set("0");
+					// listas.setSelectedIndex(0);
+					scrollPane_RA.revalidate();
+					scrollPane_RA.repaint();
+					updateListRM(rm.memory);
+				}
+				else {
+					// Vartotojas atðaukia pasirinkimà
+					txtpnconsole.setText(txtpnconsole.getText()
+							+ "\n> File Chooser closed.");
+				}
+			}
+		});
+
 		btn_Load.setBounds(10, 335, 111, 22);
 		contentPane.add(btn_Load);
 
-		Button btn_Start = new Button("Vykdyti");
+		btn_Start.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				rm.startProgram();
+				btn_End.setEnabled(true);
+			}
+		});
 		btn_Start.setBounds(127, 335, 83, 22);
 		contentPane.add(btn_Start);
+		btn_End.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Iðsaugom duomenis iðorinë atmintyje
+				// rm.saveMemory();
 
-		Button btn_End = new Button("Pabaigti");
+				txtpnconsole.setText(">> Console restart");
+				rm.Z.set("0");
+				rm.S.set("0");
+				rm.C.set("0");
+				rm.B.set("0");
+				rm.IP.set("0");
+				rm.AR.set("0000");
+				rm.BR.set("0000");
+				rm.SI.set(0);
+				rm.PI.set(0);
+				rm.TI.set(0);
+				rm.TIMER.update();
+				rm.MODE.set(0);
+
+				text_reg_AR.setText(rm.AR.get());
+				text_reg_BR.setText(rm.BR.get());
+				text_flag_Z.setText(rm.Z.get());
+				text_flag_C.setText(rm.C.get());
+				text_flag_S.setText(rm.S.get());
+				text_flag_B.setText(rm.B.get());
+				text_reg_IP.setText(rm.IP.get());
+				text_reg_TIMER.setText(Integer.toString(RM.TIMER.get()));
+				text_reg_SI.setText(Integer.toString(RM.SI.get()));
+				text_reg_PI.setText(Integer.toString(RM.PI.get()));
+				text_reg_TI.setText(Integer.toString(RM.TI.get()));
+				text_reg_MODE.setText(Integer.toString(RM.MODE.get()));
+				text_reg_CHST_Input.setText(Integer.toString(RM.CHST.get(0)));
+				text_reg_CHST_EMemory.setText(Integer.toString(RM.CHST.get(1)));
+				text_reg_CHST_Lempute.setText(Integer.toString(RM.CHST.get(2)));
+				text_reg_CHST_Output.setText(Integer.toString(RM.CHST.get(3)));
+				text_reg_PTR.setText(RM.PTR.get());
+
+				btn_End.setEnabled(false);
+				btn_Start.setEnabled(false);
+				btn_Step.setEnabled(false);
+			}
+		});
 		btn_End.setBounds(216, 335, 83, 22);
 		contentPane.add(btn_End);
 
-		Button btn_Step = new Button("Po \u017Eingsn\u012F");
+		btn_Step.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btn_End.setEnabled(true);
+				// Vykdyti programà po þingsná
+				rm.startProgramStepByStep();
+			}
+		});
 		btn_Step.setBounds(305, 335, 83, 22);
 		contentPane.add(btn_Step);
 
@@ -563,117 +696,119 @@ public class MainWindow extends JFrame {
 
 	}
 
-	public void set(String register, String str_value) {
-		if (register == "RM_AR") {
-			text_reg_RM_AR.setText(str_value);
-		}
-		if (register == "RM_BR") {
-			text_reg_RM_BR.setText(str_value);
-		}
-		if (register == "RM_IP") {
-			text_reg_RM_IP.setText(str_value);
-		}
-		if (register == "RM_Z") {
-			text_flag_RM_Z.setText(str_value);
-		}
-		if (register == "RM_C") {
-			text_flag_RM_C.setText(str_value);
-		}
-		if (register == "RM_B") {
-			text_flag_RM_B.setText(str_value);
-		}
-		if (register == "RM_S") {
-			text_flag_RM_S.setText(str_value);
-		}
-		if (register == "TIMER") {
+	public static void set(String register, String str_value) {
+
+		switch (register) {
+		case "RM_AR":
+			text_reg_AR.setText(str_value);
+			break;
+		case "RM_BR":
+			text_reg_BR.setText(str_value);
+			break;
+		case "RM_IP":
+			text_reg_IP.setText(str_value);
+			break;
+		case "RM_Z":
+			text_flag_Z.setText(str_value);
+			break;
+		case "RM_C":
+			text_flag_C.setText(str_value);
+			break;
+		case "RM_B":
+			text_flag_B.setText(str_value);
+			break;
+		case "RM_S":
+			text_flag_S.setText(str_value);
+			break;
+		case "TIMER":
 			text_reg_TIMER.setText(str_value);
-		}
-		if (register == "MODE") {
+			break;
+		case "RM_MODE":
 			text_reg_MODE.setText(str_value);
-		}
-		if (register == "PTR") {
+			break;
+		case "RM_PTR":
 			text_reg_PTR.setText(str_value);
-		}
-		if (register == "PI") {
+			break;
+		case "RM_PI":
 			text_reg_PI.setText(str_value);
-		}
-		if (register == "SI") {
+			break;
+		case "RM_SI":
 			text_reg_SI.setText(str_value);
-		}
-		if (register == "TI") {
+			break;
+		case "RM_TI":
 			text_reg_TI.setText(str_value);
-		}
-		if (register == "INPUT") {
+			break;
+		case "INPUT":
 			text_reg_CHST_Input.setText(str_value);
-		}
-		if (register == "EMEMORY") {
-			text_reg_CHST_EMemory.setText(str_value);
-		}
-		if (register == "LEMPUTE") {
-			text_reg_CHST_Lempute.setText(str_value);
-		}
-		if (register == "OUTPUT") {
+			break;
+		case "OUTPUT":
 			text_reg_CHST_Output.setText(str_value);
+			break;
+		case "EMEMORY":
+			text_reg_CHST_EMemory.setText(str_value);
+			break;
+		case "LEMPUTE":
+			text_reg_CHST_Lempute.setText(str_value);
+			break;
 		}
 	}
 
 	public String get(String register) {
-		if (register == "RM_AR") {
-			return text_reg_RM_AR.getText();
-		}
-		if (register == "RM_BR") {
-			return text_reg_RM_BR.getText();
-		}
-		if (register == "RM_IP") {
-			return text_reg_RM_IP.getText();
-		}
-		if (register == "RM_Z") {
-			return text_flag_RM_Z.getText();
-		}
-		if (register == "RM_C") {
-			return text_flag_RM_C.getText();
-		}
-		if (register == "RM_B") {
-			return text_flag_RM_B.getText();
-		}
-		if (register == "RM_S") {
-			return text_flag_RM_S.getText();
-		}
-		if (register == "TIMER") {
+		switch (register) {
+		case "RM_AR":
+			return text_reg_AR.getText();
+		case "RM_BR":
+			return text_reg_BR.getText();
+		case "RM_IP":
+			return text_reg_IP.getText();
+		case "RM_Z":
+			return text_flag_Z.getText();
+		case "RM_C":
+			return text_flag_C.getText();
+		case "RM_B":
+			return text_flag_B.getText();
+		case "RM_S":
+			return text_flag_S.getText();
+		case "TIMER":
 			return text_reg_TIMER.getText();
-		}
-		if (register == "MODE") {
+		case "RM_MODE":
 			return text_reg_MODE.getText();
-		}
-		if (register == "PTR") {
+		case "RM_PTR":
 			return text_reg_PTR.getText();
-		}
-		if (register == "PI") {
+		case "RM_PI":
 			return text_reg_PI.getText();
-		}
-		if (register == "SI") {
+		case "RM_SI":
 			return text_reg_SI.getText();
-		}
-		if (register == "TI") {
+		case "RM_TI":
 			return text_reg_TI.getText();
-		}
-		if (register == "INPUT") {
+		case "INPUT":
 			return text_reg_CHST_Input.getText();
-		}
-		if (register == "EMEMORY") {
+		case "EMEMORY":
 			return text_reg_CHST_EMemory.getText();
-		}
-		if (register == "LEMPUTE") {
+		case "LEMPUTE":
 			return text_reg_CHST_Lempute.getText();
-		}
-		if (register == "OUTPUT") {
+		case "OUTPUT":
 			return text_reg_CHST_Output.getText();
+		default:
+			return "Klaida!";
 		}
+	}
 
-		return "Klaida!";
+	public void setEMemory(String reiksme, int blokas, int elementas) {
+		table_EM.setValueAt(reiksme, blokas, elementas);
 	}
 
 	public static void updateConsole(String text) {
 		txtpnconsole.setText(txtpnconsole.getText() + "\n" + text);
+	}
+
+	public static void updateListRM(RealMemory Atmintis) {
+		for (int i = 1; i < Main.RMBlokuSkaicius; i++) {
+			for (int n = 0; n < Main.blokoDydis; n++) {
+				table_RA.setValueAt(Atmintis.getWord(i, n), n, i);
+			}
+		}
+		scrollPane_RA.revalidate();
+		scrollPane_RA.repaint();
 	}
 }

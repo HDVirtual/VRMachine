@@ -4,13 +4,15 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
+import kontroleris.Main;
+
 public class ExternalMemory {
 	
 	static ArrayList<String> memory = new ArrayList<String>();
     
-	public ExternalMemory() {
+	public ExternalMemory(int blokai) {
 		 
-		for (int i = 0; i < 16*16; i++) {
+		for (int i = 0; i < blokai*Main.blokoDydis; i++) {
 					memory.add(i, "____");
     	}
 		
