@@ -52,6 +52,7 @@ public class RM {
         Register[] CHST = new Register[4];
         lempute = new Lempute();
         
+        
         //InterruptPrograms();
         
         externalMemory.save();

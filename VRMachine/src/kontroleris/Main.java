@@ -34,34 +34,10 @@ public class Main {
 	// -------------------------------------
 
 	public static void main(String[] args) {
-		// ---ISORINE-ATMINTIS---
-		EMcolumnNames = new Object[blokoDydis + 1];
-		EMcolumnNames[0] = "Blokas";
-		for (int i = 0; i < blokoDydis; i++) {
-			EMcolumnNames[i + 1] = String.format("%01X", i);
-		}
-		EMdata = new Object[EMBlokuSkaicius][blokoDydis];
-		for (int i = 0; i < EMBlokuSkaicius; i++) {
-			EMdata[i][0] = String.format("%01X", i) + ":";
-			for (int j = 1; j < blokoDydis; j++) {
-				EMdata[i][j] = "____";
-			}
-		}
-		//------
+
 		
 		// ---REALI-ATMINTIS---
-		RMcolumnNames = new Object[blokoDydis + 1];
-		RMcolumnNames[0] = "Blokas";
-		for (int i = 0; i < blokoDydis; i++) {
-			RMcolumnNames[i + 1] = String.format("%01X", i);
-		}
-		RMdata = new Object[RMBlokuSkaicius][blokoDydis];
-		for (int i = 0; i < RMBlokuSkaicius; i++) {
-			RMdata[i][0] = String.format("%01X", i) + ":";
-			for (int j = 1; j < blokoDydis; j++) {
-				RMdata[i][j] = "____";
-			}
-		}
+		
 		
 		
 		

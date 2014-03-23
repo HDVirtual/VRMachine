@@ -11,7 +11,6 @@ import java.awt.Cursor;
 import java.awt.Component;
 import java.awt.SystemColor;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JSeparator;
@@ -66,7 +65,6 @@ public class MainWindow extends JFrame {
 
 	private static JScrollPane scrollPane_EM;
 
-	private static DefaultListModel<String> listEMemory;
 	private static JTextField textField;
 	private JTable table_VA;
 	private JTable table_RA;
@@ -350,13 +348,6 @@ public class MainWindow extends JFrame {
 		panel_atmintis.setLayout(null);
 
 		// ---ISORINE---
-		listEMemory = new DefaultListModel<String>();
-		for (int i = 0; i < 16; i++) {
-			for (int n = 0; n < 16; n++) {
-				listEMemory.addElement(String.format("%02X", i * 16 + n) + ": "
-						+ rm.externalMemory.getWord(i, n));
-			}
-		}
 		
 		JLabel lblEm = new JLabel("EM");
 		lblEm.setBounds(10, 20, 20, 150);
@@ -373,9 +364,22 @@ public class MainWindow extends JFrame {
 		table_EM.setShowVerticalLines(false);
 		table_EM.getTableHeader().setReorderingAllowed(false);
 		
+		Object[] EMcolumnNames = new Object[Main.blokoDydis + 1];
+		EMcolumnNames[0] = "Blokas";
+		for (int i = 0; i < Main.blokoDydis; i++) {
+			EMcolumnNames[i + 1] = String.format("%01X", i);
+		}
+		Object[][] EMdata = new Object[Main.EMBlokuSkaicius][Main.blokoDydis];
+		for (int i = 0; i < Main.EMBlokuSkaicius; i++) {
+			EMdata[i][0] = String.format("%01X", i) + ":";
+			for (int j = 1; j < Main.blokoDydis; j++) {
+				EMdata[i][j] = "____";
+			}
+		}
+		
+		DefaultTableModel table_model_EM = new DefaultTableModel(EMdata, EMcolumnNames){
 
-		DefaultTableModel table_model_EM = new DefaultTableModel(Main.EMdata,Main.EMcolumnNames){
-
+			
 			private static final long serialVersionUID = 1L;
 			boolean[] columnEditables = new boolean[Main.blokoDydis];
 
@@ -387,6 +391,8 @@ public class MainWindow extends JFrame {
 				return columnEditables[column];
 			}
 		};
+		
+		
 		table_EM.setModel(table_model_EM);
 		table_EM.getColumnModel().getColumn(0).setPreferredWidth(60);
 		table_EM.getColumnModel().getColumn(0).setMinWidth(40);
@@ -397,8 +403,8 @@ public class MainWindow extends JFrame {
 		scrollPane_EM.setViewportView(table_EM);
 
 		
-		
-		
+		table_EM.setValueAt("LM05", 2, 3);
+		table_EM.setValueAt(table_EM.getValueAt(2, 3), 3, 3);
 		
 		
 		// ---REALI---
@@ -416,7 +422,19 @@ public class MainWindow extends JFrame {
 		table_RA.setShowGrid(false);
 		table_RA.setShowVerticalLines(false);
 		table_RA.getTableHeader().setReorderingAllowed(false);
-		DefaultTableModel table_model_RA = new DefaultTableModel(Main.RMdata,Main.RMcolumnNames){
+		Object[] RMcolumnNames = new Object[Main.blokoDydis + 1];
+		RMcolumnNames[0] = "Blokas";
+		for (int i = 0; i < Main.blokoDydis; i++) {
+			RMcolumnNames[i + 1] = String.format("%01X", i);
+		}
+		Object[][] RMdata = new Object[Main.RMBlokuSkaicius][Main.blokoDydis];
+		for (int i = 0; i < Main.RMBlokuSkaicius; i++) {
+			RMdata[i][0] = String.format("%01X", i) + ":";
+			for (int j = 1; j < Main.blokoDydis; j++) {
+				RMdata[i][j] = "____";
+			}
+		}
+		DefaultTableModel table_model_RA = new DefaultTableModel(RMdata, RMcolumnNames){
 			/**
 			 * 
 			 */
@@ -457,7 +475,7 @@ public class MainWindow extends JFrame {
 		table_VA.getTableHeader().setReorderingAllowed(false);
 		
 
-		DefaultTableModel table_model_VA = new DefaultTableModel(Main.EMdata,Main.EMcolumnNames){
+		DefaultTableModel table_model_VA = new DefaultTableModel(EMdata,EMcolumnNames){
 			/**
 			 * 
 			 */
