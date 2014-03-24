@@ -521,8 +521,13 @@ public class RM {
 	}
 	
 	public static void GD(int xx) {
-		
+		//String s = UI.MainWindow.getConsole();
+		for(int i=xx; i<xx+16; i++) {
+		//	text = text + memory.getWord(i);
+		}
 		IP.set(IP.get()+1);
+		MODE.set(0);
+		//kontroleris.MainWindow.updateConsole(text);
 	}
 	
 	public static void LXON() {
