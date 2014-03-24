@@ -4,14 +4,18 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
+import kontroleris.Main;
+
 public class ExternalMemory {
 	
 	static ArrayList<String> memory = new ArrayList<String>();
-
-	public ExternalMemory() {
-		for (int i = 0; i < 16*16; i++) {
+    
+	public ExternalMemory(int blokai) {
+		 
+		for (int i = 0; i < blokai*Main.blokoDydis; i++) {
 					memory.add(i, "____");
     	}
+		
     }
 	
 	public static ArrayList<String> getBlock(int block) {
@@ -22,7 +26,7 @@ public class ExternalMemory {
     	return blokas;
     }
 	
-	public static String getWord(int block, int index){
+	public String getWord(int block, int index){
     	ArrayList<String> list = getBlock(block);
     	String Word = list.get(index);
     	return Word;

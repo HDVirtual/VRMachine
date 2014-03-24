@@ -20,6 +20,10 @@ public class TimerMechRegister {
 			update();
 		}
 	}
+	
+	public void cleanTIMER(){
+		this.TI = 0;
+	}
 
 	public void update() {
 		this.TI = 10;
