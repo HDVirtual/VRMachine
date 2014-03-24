@@ -22,4 +22,14 @@ public class Register {
 	public void set(String value) {
 		this.reg = value;
 	}
+	
+	public void setHigh(String value) {
+		String L = value + this.reg.substring(2, 4);
+		this.reg = L;
+	}
+	
+	public void setLow(String value) {
+		String L = this.reg.substring(0, 2) + value;
+		this.reg = L;
+	}
 }

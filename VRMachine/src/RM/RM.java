@@ -275,6 +275,16 @@ public class RM {
 	public static void setWord(int xx, String R) {
 		memory.set(xx, R);
 	}
+	
+	public static void setHighWord(int xx, String R) {
+		String L = R + getWord(xx).substring(2, 4);
+		memory.set(xx, L);
+	}
+	
+	public static void setLowWord(int xx, String R) {
+		String L = getWord(xx).substring(0, 2) + R;
+		memory.set(xx, L);
+	}
 
 	/**
 	 * Isorineje atmintyje adresu XX issaugoma R registro reiksme
@@ -540,16 +550,19 @@ public class RM {
 			pointer += 4;
 		}
 		IP.set(IP.get() + 1);
+		MODE.set(0);
 	}
 
 	public static void LXON() {
 		CHST.set(1, 3);
 		IP.set(IP.get() + 1);
+		MODE.set(0);
 	}
 
 	public static void LXOF() {
 		CHST.set(0, 3);
 		IP.set(IP.get() + 1);
+		MODE.set(0);
 	}
 
 	public static void LXCH() {
@@ -561,42 +574,80 @@ public class RM {
 	}
 
 	public static void XA(int xx) {
-		// tuscias
+		int register = Integer.parseInt(AR.get(), 16);
+		int memory = Integer.parseInt(getWord(xx), 16);
+		int xor = register ^ memory;
+		AR.set(Integer.toHexString(xor));
 		IP.set(IP.get() + 1);
 	}
 
 	public static void XB(int xx) {
-		// tuscias
+		int register = Integer.parseInt(BR.get(), 16);
+		int memory = Integer.parseInt(getWord(xx), 16);
+		int xor = register ^ memory;
+		BR.set(Integer.toHexString(xor));
 		IP.set(IP.get() + 1);
 	}
 
 	public static void NA(int xx) {
-		// tuscias
+		int register = Integer.parseInt(AR.get(), 16);
+		int memory = Integer.parseInt(getWord(xx), 16);
+		int and = register & memory;
+		AR.set(Integer.toHexString(and));
 		IP.set(IP.get() + 1);
 	}
 
 	public static void NB(int xx) {
-		// tuscias
+		int register = Integer.parseInt(BR.get(), 16);
+		int memory = Integer.parseInt(getWord(xx), 16);
+		int and = register & memory;
+		BR.set(Integer.toHexString(and));
 		IP.set(IP.get() + 1);
 	}
 
 	public static void OA(int xx) {
-		// tuscias
+		int register = Integer.parseInt(AR.get(), 16);
+		int memory = Integer.parseInt(getWord(xx), 16);
+		int or = register | memory;
+		AR.set(Integer.toHexString(or));
 		IP.set(IP.get() + 1);
 	}
 
 	public static void OB(int xx) {
-		// tuscias
+		int register = Integer.parseInt(BR.get(), 16);
+		int memory = Integer.parseInt(getWord(xx), 16);
+		int or = register | memory;
+		BR.set(Integer.toHexString(or));
 		IP.set(IP.get() + 1);
 	}
 
 	public static void STSB() {
-		// tuscias
+		String AH = AR.get().substring(0, 2);
+		String AL = AR.get().substring(2, 4);
+		int adress = getAdress(AH);
+		if (B.get() == "0") {
+			setHighWord(adress, AL);
+			B.set("1");
+		} else if (B.get() == "1") {
+			setLowWord(adress, AL);
+			B.set("0");
+			AR.setHigh(Integer.toHexString(adress+1));
+		}
 		IP.set(IP.get() + 1);
 	}
 
 	public static void LDSB() {
-		// tuscias
+		String AH = AR.get().substring(0, 2);
+		int adress = getAdress(AH);
+		String memory = getWord(adress);
+		if (B.get() == "0") {
+			AR.setLow(memory.substring(0, 2));
+			B.set("1");
+		} else if (B.get() == "1") {
+			AR.setLow(memory.substring(2, 4));
+			B.set("0");
+			AR.setHigh(Integer.toHexString(adress+1));
+		}
 		IP.set(IP.get() + 1);
 	}
 
