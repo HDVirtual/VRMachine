@@ -246,11 +246,11 @@ public class RM {
 	}
 
 	/**
-	 * IÅ? atminties adresu XX paimama reikÅ?mÄ™, bei paÅ?alinami tarpai
+	 * Iï¿½? atminties adresu XX paimama reikï¿½?mÄ™, bei paï¿½?alinami tarpai
 	 * 
 	 * @param xx
 	 *            Atminties adresas
-	 * @return XY ReikÅ?mÄ— adresu XX
+	 * @return XY Reikï¿½?mÄ— adresu XX
 	 */
 	public static String getWord(int xx) {
 		String Word = memory.getWord(xx);
@@ -282,7 +282,7 @@ public class RM {
 	 * @param xx
 	 *            Atminties adresas
 	 * @param R
-	 *            Registro reikÅ?me
+	 *            Registro reikï¿½?me
 	 */
 	public static void setWordExternal(int xx, String R) {
 		externalMemory.set(xx, R);
@@ -530,7 +530,15 @@ public class RM {
 	}
 
 	public static void GD(int xx) {
-		// tuscias
+		String buffer = MainWindow.getConsole();
+		String adress = Integer.toHexString(xx);
+		String block = adress.substring(0, 1);
+		int blokas = Integer.parseInt(block, 16);
+		int pointer = 0;
+		for (int i = 0; i < Main.blokoDydis; i++) {
+			memory.set(blokas, i, buffer.substring(pointer, pointer+4));
+			pointer += 4;
+		}
 		IP.set(IP.get() + 1);
 	}
 
@@ -624,15 +632,15 @@ public class RM {
 		if (SI.get() != 0) {
 			switch (SI.get()) {
 			case 1: {
-				MainWindow.updateConsole("PertraukimÄ… iÅ?Å?aukÄ— komanda GD.");
+				MainWindow.updateConsole("PertraukimÄ… iï¿½?ï¿½?aukÄ— komanda GD.");
 				break;
 			}
 			case 2: {
-				MainWindow.updateConsole("PertraukimÄ… iÅ?Å?aukÄ— komanda PD.");
+				MainWindow.updateConsole("PertraukimÄ… iï¿½?ï¿½?aukÄ— komanda PD.");
 				break;
 			}
 			case 3: {
-				MainWindow.updateConsole("PertraukimÄ… iÅ?Å?aukÄ— komanda HALT.");
+				MainWindow.updateConsole("PertraukimÄ… iï¿½?ï¿½?aukÄ— komanda HALT.");
 				break;
 			}
 			default: {
@@ -666,7 +674,7 @@ public class RM {
 		step();
 	}
 	/**
-	 * Vykdomos komandos po Ã¾ingsnÃ?
+	 * Vykdomos komandos po Ã¾ingsnï¿½?
 	 */
 	public void startProgramStepByStep() {
 			step();

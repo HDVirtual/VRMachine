@@ -426,9 +426,7 @@ public class MainWindow extends JFrame {
 			table_EM.getColumnModel().getColumn(i).setMinWidth(40);
 		}
 		scrollPane_EM.setViewportView(table_EM);
-
-		table_EM.setValueAt("LM05", 2, 3);
-		table_EM.setValueAt(table_EM.getValueAt(2, 3), 3, 3);
+		updateListEM(RM.externalMemory);
 
 		// ---REALI---
 		JLabel lblRa = new JLabel("RA");
@@ -813,6 +811,10 @@ public class MainWindow extends JFrame {
 	public static void updateConsole(String text) {
 		txtpnconsole.setText(txtpnconsole.getText() + "\n" + text);
 	}
+	
+	public static String getConsole() {
+		return txtpnconsole.getText();
+	}
 
 	public static void updateListRM(RealMemory Atmintis) {
 		for (int i = 0; i < Main.RMBlokuSkaicius; i++) {
@@ -825,8 +827,8 @@ public class MainWindow extends JFrame {
 	}
 
 	public static void updateListEM(ExternalMemory Atmintis) {
-		for (int i = 0; i < Main.RMBlokuSkaicius; i++) {
-			for (int n = 1; n < Main.blokoDydis; n++) {
+		for (int i = 0; i < Main.EMBlokuSkaicius; i++) {
+			for (int n = 1; n < Main.blokoDydis+1; n++) {
 				table_EM.setValueAt(Atmintis.getWord(i, n-1), i, n);
 			}
 		}
