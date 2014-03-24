@@ -12,7 +12,6 @@ import java.awt.Cursor;
 import java.awt.Component;
 import java.awt.SystemColor;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -23,8 +22,10 @@ import java.awt.Button;
 
 import javax.swing.SwingConstants;
 
+import RM.ExternalMemory;
 import RM.RM;
 import RM.RealMemory;
+import RM.VA;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -67,7 +68,6 @@ public class MainWindow extends JFrame {
 	// --------------------------------------
 
 	private JFileChooser fc;
-	private static DefaultListModel<String> listModel;
 	private static JTextPane txtpnconsole;
 
 	// --------ATMINTIES-LANGAI--------------
@@ -78,9 +78,9 @@ public class MainWindow extends JFrame {
 	private static JScrollPane scrollPane_EM;
 
 	private static JTextField textField;
-	private JTable table_VA;
+	private static JTable table_VA;
 	private static JTable table_RA;
-	private JTable table_EM;
+	private static JTable table_EM;
 
 	private static Canvas canvas_Lempute;
 
@@ -91,6 +91,8 @@ public class MainWindow extends JFrame {
 	public static Object[][] EMdata;
 	public static Object[] RMcolumnNames;
 	public static Object[][] RMdata;
+	public static Object[] VMcolumnNames;
+	public static Object[][] VMdata;
 
 	Button btn_Load = new Button("Pakrauti program\u0105");
 	Button btn_Start = new Button("Vykdyti");
@@ -393,11 +395,11 @@ public class MainWindow extends JFrame {
 		for (int i = 0; i < Main.blokoDydis; i++) {
 			EMcolumnNames[i + 1] = String.format("%01X", i);
 		}
-		EMdata = new Object[Main.EMBlokuSkaicius][Main.blokoDydis];
+		EMdata = new Object[Main.EMBlokuSkaicius][Main.blokoDydis+1];
 		for (int i = 0; i < Main.EMBlokuSkaicius; i++) {
 			EMdata[i][0] = String.format("%01X", i) + ":";
-			for (int j = 1; j < Main.blokoDydis; j++) {
-				EMdata[i][j] = "____";
+			for (int j = 1; j < Main.blokoDydis+1; j++) {
+				EMdata[i][j] = "null";
 			}
 		}
 
@@ -405,11 +407,11 @@ public class MainWindow extends JFrame {
 				EMcolumnNames) {
 
 			private static final long serialVersionUID = 1L;
-			boolean[] columnEditables = new boolean[Main.blokoDydis];
+			boolean[] columnEditables = new boolean[Main.blokoDydis+1];
 
 			public boolean isCellEditable(int row, int column) {
 				columnEditables[0] = false;
-				for (int i = 1; i < Main.blokoDydis; i++) {
+				for (int i = 1; i < Main.blokoDydis+1; i++) {
 					columnEditables[i] = true;
 				}
 				return columnEditables[column];
@@ -448,11 +450,11 @@ public class MainWindow extends JFrame {
 		for (int i = 0; i < Main.blokoDydis; i++) {
 			RMcolumnNames[i + 1] = String.format("%01X", i);
 		}
-		RMdata = new Object[Main.RMBlokuSkaicius][Main.blokoDydis];
+		RMdata = new Object[Main.RMBlokuSkaicius][Main.blokoDydis+1];
 		for (int i = 0; i < Main.RMBlokuSkaicius; i++) {
 			RMdata[i][0] = String.format("%01X", i) + ":";
-			for (int j = 1; j < Main.blokoDydis; j++) {
-				RMdata[i][j] = "____";
+			for (int j = 1; j < Main.blokoDydis+1; j++) {
+				RMdata[i][j] = "null";
 			}
 		}
 		DefaultTableModel table_model_RA = new DefaultTableModel(RMdata,
@@ -461,11 +463,11 @@ public class MainWindow extends JFrame {
 			 * 
 			 */
 			private static final long serialVersionUID = 1L;
-			boolean[] columnEditables = new boolean[Main.blokoDydis];
+			boolean[] columnEditables = new boolean[Main.blokoDydis+1];
 
 			public boolean isCellEditable(int row, int column) {
 				columnEditables[0] = false;
-				for (int i = 1; i < Main.blokoDydis; i++) {
+				for (int i = 1; i < Main.blokoDydis+1; i++) {
 					columnEditables[i] = true;
 				}
 				return columnEditables[column];
@@ -494,19 +496,31 @@ public class MainWindow extends JFrame {
 		table_VA.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table_VA.setShowGrid(false);
 		table_VA.setShowVerticalLines(false);
-		table_VA.getTableHeader().setReorderingAllowed(false);
+		table_RA.getTableHeader().setReorderingAllowed(false);
+		VMcolumnNames = new Object[Main.blokoDydis + 1];
+		VMcolumnNames[0] = "Blokas";
+		for (int i = 0; i < Main.blokoDydis; i++) {
+			VMcolumnNames[i + 1] = String.format("%01X", i);
+		}
+		VMdata = new Object[Main.VMBlokuSkaicius][Main.blokoDydis+1];
+		for (int i = 0; i < Main.VMBlokuSkaicius; i++) {
+			VMdata[i][0] = String.format("%01X", i) + ":";
+			for (int j = 1; j < Main.blokoDydis+1; j++) {
+				VMdata[i][j] = "null";
+			}
+		}
 
-		DefaultTableModel table_model_VA = new DefaultTableModel(EMdata,
-				EMcolumnNames) {
+		DefaultTableModel table_model_VA = new DefaultTableModel(VMdata,
+				VMcolumnNames) {
 			/**
 			 * 
 			 */
 			private static final long serialVersionUID = 1L;
-			boolean[] columnEditables = new boolean[Main.blokoDydis];
+			boolean[] columnEditables = new boolean[Main.blokoDydis+1];
 
 			public boolean isCellEditable(int row, int column) {
 				columnEditables[0] = false;
-				for (int i = 1; i < Main.blokoDydis; i++) {
+				for (int i = 1; i < Main.blokoDydis+1; i++) {
 					columnEditables[i] = true;
 				}
 				return columnEditables[column];
@@ -584,15 +598,13 @@ public class MainWindow extends JFrame {
 									else {
 
 										int key = key1 * 10 + key2;
-										String keyWord = String.format("%02d",
-												key);
+									//	String keyWord = String.format("%02d", key);
 
 										Word = value[0] + value[1] + value[2]
 												+ value[3];
 
-										rm.Atmintis.set(key, Word);
-										listModel.set(key, keyWord + ": "
-												+ rm.Atmintis.get(key));
+										RM.Atmintis.set(key, Word);
+										table_VA.setValueAt(RM.Atmintis.get(key), key1, key2);
 									}
 
 							}
@@ -600,11 +612,11 @@ public class MainWindow extends JFrame {
 					} catch (IOException e1) {
 						// e1.printStackTrace();
 					}
-					rm.IP.set("0");
+					RM.IP.set("0");
 					// listas.setSelectedIndex(0);
 					scrollPane_RA.revalidate();
 					scrollPane_RA.repaint();
-					updateListRM(rm.memory);
+					updateListRM(RM.memory);
 				}
 				else {
 					// Vartotojas atðaukia pasirinkimà
@@ -631,26 +643,26 @@ public class MainWindow extends JFrame {
 				// rm.saveMemory();
 
 				txtpnconsole.setText(">> Console restart");
-				rm.Z.set("0");
-				rm.S.set("0");
-				rm.C.set("0");
-				rm.B.set("0");
-				rm.IP.set("0");
-				rm.AR.set("0000");
-				rm.BR.set("0000");
-				rm.SI.set(0);
-				rm.PI.set(0);
-				rm.TI.set(0);
-				rm.TIMER.update();
-				rm.MODE.set(0);
+				RM.Z.set("0");
+				RM.S.set("0");
+				RM.C.set("0");
+				RM.B.set("0");
+				RM.IP.set("0");
+				RM.AR.set("0000");
+				RM.BR.set("0000");
+				RM.SI.set(0);
+				RM.PI.set(0);
+				RM.TI.set(0);
+				RM.TIMER.update();
+				RM.MODE.set(0);
 
-				text_reg_AR.setText(rm.AR.get());
-				text_reg_BR.setText(rm.BR.get());
-				text_flag_Z.setText(rm.Z.get());
-				text_flag_C.setText(rm.C.get());
-				text_flag_S.setText(rm.S.get());
-				text_flag_B.setText(rm.B.get());
-				text_reg_IP.setText(rm.IP.get());
+				text_reg_AR.setText(RM.AR.get());
+				text_reg_BR.setText(RM.BR.get());
+				text_flag_Z.setText(RM.Z.get());
+				text_flag_C.setText(RM.C.get());
+				text_flag_S.setText(RM.S.get());
+				text_flag_B.setText(RM.B.get());
+				text_reg_IP.setText(RM.IP.get());
 				text_reg_TIMER.setText(Integer.toString(RM.TIMER.get()));
 				text_reg_SI.setText(Integer.toString(RM.SI.get()));
 				text_reg_PI.setText(Integer.toString(RM.PI.get()));
@@ -803,12 +815,33 @@ public class MainWindow extends JFrame {
 	}
 
 	public static void updateListRM(RealMemory Atmintis) {
-		for (int i = 1; i < Main.RMBlokuSkaicius; i++) {
-			for (int n = 0; n < Main.blokoDydis; n++) {
-				table_RA.setValueAt(Atmintis.getWord(i, n), n, i);
+		for (int i = 0; i < Main.RMBlokuSkaicius; i++) {
+			for (int n = 1; n < Main.blokoDydis+1; n++) {
+				table_RA.setValueAt(Atmintis.getWord(i, n-1), i, n);
 			}
 		}
 		scrollPane_RA.revalidate();
 		scrollPane_RA.repaint();
+	}
+
+	public static void updateListEM(ExternalMemory Atmintis) {
+		for (int i = 0; i < Main.RMBlokuSkaicius; i++) {
+			for (int n = 1; n < Main.blokoDydis; n++) {
+				table_EM.setValueAt(Atmintis.getWord(i, n-1), i, n);
+			}
+		}
+		scrollPane_EM.revalidate();
+		scrollPane_EM.repaint();
+	}
+
+	public static void updateListVA(VA Atmintis) {
+		for (int i = 0; i < RM.PTR.getBlock(); i++) {
+			for (int n = 0; n < Main.blokoDydis; n++) {
+				//listModel.set(i * Main.blokoDydis + n, Atmintis.get(i * Main.blokoDydis + n));
+				table_EM.setValueAt(Atmintis.get(i* Main.blokoDydis + n-1), i, n);
+			}
+		}
+		scrollPane_VA.revalidate();
+		scrollPane_VA.repaint();
 	}
 }

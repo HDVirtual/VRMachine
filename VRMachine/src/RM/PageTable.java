@@ -1,5 +1,6 @@
 package RM;
 
+import kontroleris.Main;
 import RM.RM;
 
 
@@ -13,10 +14,10 @@ public class PageTable {
 	
 	public PageTable() {
 		this.PageTableNumber = RM.PTR.getPageTable();
-		for(int i=0;i<10;i++) {
+		for(int i=0;i<Main.blokoDydis;i++) {
 			RM.memory.set(this.PageTableNumber,""+3+i);
 		}
-		//RM.memory.set(this.PageTableNumber, 7, ""+0);
+		RM.memory.set(this.PageTableNumber, 7, ""+0);
 	}
 	public int getRealBlockNumber(int VirtualBlock) {
 		String RBN = RM.memory.getWord(RM.PTR.getPageTable(), VirtualBlock);

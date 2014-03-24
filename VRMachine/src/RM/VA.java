@@ -39,14 +39,14 @@ public class VA {
 	}
 	public int getAA(int a) {
 		int[] digit = getInt(a);
-		int AA = RM.PageTable.getRealBlockNumber(digit[0])*10+digit[1];
+		int AA = RM.PageTable.getRealBlockNumber(digit[0])*Main.blokoDydis+digit[1];
 		return AA;
 	}
 
 	public ArrayList<String> getList() {
 		ArrayList<String> list = new ArrayList<String>();
 		for (int i = 0; i < Main.RMBlokuSkaicius; i++) {
-			for (int n = 0; n < 10; n++) {
+			for (int n = 0; n < Main.blokoDydis; n++) {
 				list.add(RM.memory.getWord(i, n));
 			}
 		}

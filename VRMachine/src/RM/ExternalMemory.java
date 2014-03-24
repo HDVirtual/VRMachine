@@ -26,7 +26,7 @@ public class ExternalMemory {
     	return blokas;
     }
 	
-	public static String getWord(int block, int index){
+	public String getWord(int block, int index){
     	ArrayList<String> list = getBlock(block);
     	String Word = list.get(index);
     	return Word;

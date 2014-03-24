@@ -722,8 +722,8 @@ public class RM {
 		MainWindow.set("OUTPUT",Integer.toString(CHST.get(1)));
 		MainWindow.set("EMEMORY",Integer.toString(CHST.get(2)));
 		MainWindow.set("LEMPUTE",Integer.toString(CHST.get(3)));
-		//MainWindow.updateList(Atmintis);
-		//MainWindow.updateListRM(RM.RM.memory);
-		//MainWindow.updateListEM(RM.RM.externalMemory);
+		MainWindow.updateListVA(Atmintis);
+		MainWindow.updateListRM(RM.memory);
+		MainWindow.updateListEM(RM.externalMemory);
 	}
 }
