@@ -4,8 +4,8 @@ public class ModeRegister {
 	
 	private int Mode;
 
-	public ModeRegister() {
-		this.Mode = 0;
+	public ModeRegister(int x) {
+		this.Mode = x;
 	}
 	/**
 	 * Procesoriaus darbo reþimo reikðmë

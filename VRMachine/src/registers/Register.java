@@ -32,4 +32,11 @@ public class Register {
 		String L = this.reg.substring(0, 2) + value;
 		this.reg = L;
 	}
+	
+	public void increase() {
+		int register = Integer.parseInt(this.reg, 16);
+		register += 1;
+		String hex = Integer.toHexString(register);
+		this.reg = hex;
+	}
 }

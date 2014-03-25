@@ -46,32 +46,24 @@ public class RM {
 		PTR = new PTRRegister("0F00");
 		PageTable = new PageTable();
 		PTR.setPageTable(PageTable.getAdress());
-		AR = new Register();
-		BR = new Register();
-		IP = new Register(000);
-		Z = new Register();
-		C = new Register();
-		S = new Register();
-		B = new Register();
+		AR = new Register(0000);
+		BR = new Register(0000);
+		IP = new Register(00);
+		Z = new Register(0);
+		C = new Register(0);
+		S = new Register(0);
+		B = new Register(0);
 		TIMER = new TimerMechRegister(10);
 		TI = new TimerRegister(0);
 		IOI = new IntRegister();
 		PI = new IntRegister();
 		SI = new IntRegister();
-		MODE = new ModeRegister();
+		MODE = new ModeRegister(1);
 		BAR = new BARRegister();
 		CHST = new CHST();
 		lempute = new Lempute();
 
-		// InterruptPrograms();
-
 		externalMemory.save();
-		
-		//////////////////// test ///////////
-		Atmintis.set(11, "LA12");
-		externalMemory.set(11, "LA12");
-		System.out.print(Atmintis.get(11));
-		////////////////////test ///////////
 	}
 
 	private static String getOpk(String zodis) {
@@ -92,13 +84,17 @@ public class RM {
 				int cell = Integer.parseInt(result, 16);
 				return cell;
 			} else {
-				PI.set(2);
-	            test();
+				if (command != "HALT" && command != "LXON" && command != "____" && command != "LXOF" && command != "STSB" && command != "LDSB") {
+					PI.set(2);
+					test();
+				}
 	            return 0;
 			}
-		} catch (StringIndexOutOfBoundsException e) {
-			PI.set(2);
-            test();
+		} catch (Exception e) {
+			if (command != "HALT" && command != "LXON" && command != "LXOF" && command != "____" && command != "STSB" && command != "LDSB") {
+				PI.set(2);
+				test();
+			}
             return 0;
 		}
 	}
@@ -259,7 +255,7 @@ public class RM {
 			break;
 		}
 		default: {
-			IP.set(IP.get() + 1);
+			IP.increase();
 			PI.set(1);
 			test();
 			MODE.set(1);
@@ -297,16 +293,19 @@ public class RM {
 	 */
 	public static void setWord(int xx, String R) {
 		Atmintis.set(xx, R);
+		updateGUI();
 	}
 	
 	public static void setHighWord(int xx, String R) {
 		String L = R + getWord(xx).substring(2, 4);
 		memory.set(xx, L);
+		updateGUI();
 	}
 	
 	public static void setLowWord(int xx, String R) {
 		String L = getWord(xx).substring(0, 2) + R;
 		memory.set(xx, L);
+		updateGUI();
 	}
 
 	/**
@@ -319,30 +318,35 @@ public class RM {
 	 */
 	public static void setWordExternal(int xx, String R) {
 		externalMemory.set(xx, R);
+		updateGUI();
 	}
 
 	public static void LA(int xx) {
 		updateReg();
 		AR.set(getWord(xx));
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void LB(int xx) {
 		updateReg();
 		BR.set(getWord(xx));
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void WA(int xx) {
 		updateReg();
 		setWord(xx, AR.get());
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void WB(int xx) {
 		updateReg();
 		setWord(xx, BR.get());
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void AA(int xx) {
@@ -368,7 +372,8 @@ public class RM {
 			Z.set("1");
 			AR.set("0");
 		}
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void AB(int xx) {
@@ -394,7 +399,8 @@ public class RM {
 			Z.set("1");
 			BR.set("0");
 		}
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void SA(int xx) {
@@ -423,7 +429,8 @@ public class RM {
 			Z.set("1");
 			AR.set("0");
 		}
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void SB(int xx) {
@@ -452,7 +459,8 @@ public class RM {
 			Z.set("1");
 			BR.set("0");
 		}
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void CA(int xx) {
@@ -474,7 +482,8 @@ public class RM {
 			S.set("1");
 			Z.set("0");
 		}
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void CB(int xx) {
@@ -496,12 +505,14 @@ public class RM {
 			S.set("1");
 			Z.set("0");
 		}
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void JM(int xx) {
 		updateReg();
 		IP.set(Integer.toHexString(xx));
+		updateGUI();
 	}
 
 	public static void JG(int xx) {
@@ -510,8 +521,9 @@ public class RM {
 			IP.set(Integer.toHexString(xx));
 		}
 		else {
-			IP.set(IP.get() + 1);
+			IP.increase();
 		}
+		updateGUI();
 	}
 
 	public static void JL(int xx) {
@@ -520,8 +532,9 @@ public class RM {
 			IP.set(Integer.toHexString(xx));
 		}
 		else {
-			IP.set(IP.get() + 1);
+			IP.increase();
 		}
+		updateGUI();
 	}
 
 	public static void JC(int xx) {
@@ -530,8 +543,9 @@ public class RM {
 			IP.set(Integer.toHexString(xx));
 		}
 		else {
-			IP.set(IP.get() + 1);
+			IP.increase();
 		}
+		updateGUI();
 	}
 
 	public static void JZ(int xx) {
@@ -540,8 +554,9 @@ public class RM {
 			IP.set(Integer.toHexString(xx));
 		}
 		else {
-			IP.set(IP.get() + 1);
+			IP.increase();
 		}
+		updateGUI();
 	}
 
 	public static void JN(int xx) {
@@ -550,8 +565,9 @@ public class RM {
 			IP.set(Integer.toHexString(xx));
 		}
 		else {
-			IP.set(IP.get() + 1);
+			IP.increase();
 		}
+		updateGUI();
 	}
 
 	public static void LP(int xx) {
@@ -560,8 +576,9 @@ public class RM {
 			IP.set(Integer.toHexString(xx));
 		}
 		else {
-			IP.set(IP.get() + 1);
+			IP.increase();
 		}
+		updateGUI();
 	}
 
 	public static void HALT() {
@@ -569,6 +586,7 @@ public class RM {
 		MODE.set(1);
 		SI.set(3);
 		test();
+		updateGUI();
 	}
 
 	static public void PD(int xx) {
@@ -580,9 +598,9 @@ public class RM {
 		for (int i = xx; i < xx + 16; i++) {
 			text = text + memory.getWord(i);
 		}
-		IP.set(IP.get() + 1);
 		kontroleris.MainWindow.updateConsole(text);
 		MODE.set(0);
+		updateGUI();
 	}
 
 	public static void GD(int xx) {
@@ -599,8 +617,8 @@ public class RM {
 			memory.set(blokas, i, buffer.substring(pointer, pointer+4));
 			pointer += 4;
 		}
-		IP.set(IP.get() + 1);
 		MODE.set(0);
+		updateGUI();
 	}
 
 	public static void LXON() {
@@ -609,8 +627,8 @@ public class RM {
 		SI.set(4);
 		test();
 		CHST.set(1, 3);
-		IP.set(IP.get() + 1);
 		MODE.set(0);
+		updateGUI();
 	}
 
 	public static void LXOF() {
@@ -619,8 +637,8 @@ public class RM {
 		SI.set(5);
 		test();
 		CHST.set(0, 3);
-		IP.set(IP.get() + 1);
 		MODE.set(0);
+		updateGUI();
 	}
 
 	public static void LXCH() {
@@ -629,7 +647,8 @@ public class RM {
 			Z.set("1");
 		else
 			Z.set("0");
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void XA(int xx) {
@@ -638,7 +657,8 @@ public class RM {
 		int memory = Integer.parseInt(getWord(xx), 16);
 		int xor = register ^ memory;
 		AR.set(Integer.toHexString(xor));
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void XB(int xx) {
@@ -647,7 +667,8 @@ public class RM {
 		int memory = Integer.parseInt(getWord(xx), 16);
 		int xor = register ^ memory;
 		BR.set(Integer.toHexString(xor));
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void NA(int xx) {
@@ -656,7 +677,8 @@ public class RM {
 		int memory = Integer.parseInt(getWord(xx), 16);
 		int and = register & memory;
 		AR.set(Integer.toHexString(and));
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void NB(int xx) {
@@ -665,7 +687,8 @@ public class RM {
 		int memory = Integer.parseInt(getWord(xx), 16);
 		int and = register & memory;
 		BR.set(Integer.toHexString(and));
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void OA(int xx) {
@@ -674,7 +697,8 @@ public class RM {
 		int memory = Integer.parseInt(getWord(xx), 16);
 		int or = register | memory;
 		AR.set(Integer.toHexString(or));
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void OB(int xx) {
@@ -683,7 +707,8 @@ public class RM {
 		int memory = Integer.parseInt(getWord(xx), 16);
 		int or = register | memory;
 		BR.set(Integer.toHexString(or));
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void STSB() {
@@ -699,7 +724,8 @@ public class RM {
 			B.set("0");
 			AR.setHigh(Integer.toHexString(adress+1));
 		}
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void LDSB() {
@@ -715,7 +741,8 @@ public class RM {
 			B.set("0");
 			AR.setHigh(Integer.toHexString(adress+1));
 		}
-		IP.set(IP.get() + 1);
+		IP.increase();
+		updateGUI();
 	}
 
 	public static void Interrupt() {
@@ -742,7 +769,7 @@ public class RM {
 				break;
 			}
 			}
-			IP.set(IP.get()+1);
+			IP.increase();
 			//MODE.set(0);
 			//PI.set(0);
 		}
@@ -773,7 +800,7 @@ public class RM {
 				break;
 			}
 			}
-			IP.set(IP.get()+1);
+			IP.increase();
 			//MODE.set(0);
 		}
 		if (TIMER.get() != 0) {
@@ -786,7 +813,7 @@ public class RM {
 				MainWindow.updateConsole("Pertraukimas T neįvyko.");
 			}
 			}
-			IP.set(IP.get()+1);
+			IP.increase();
 			//MODE.set(0);
 			//TIMER.set(0);
 		}
@@ -814,7 +841,7 @@ public class RM {
 			doCommand(command);
 		} else {
 			updateGUI();
-			MainWindow.updateConsole(">> Programa baigė darbą!");
+			MainWindow.updateConsole(">>> Programa baigė darbą!");
 			MODE.set(1);
 		}
 	}

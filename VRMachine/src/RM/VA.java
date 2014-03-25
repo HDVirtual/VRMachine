@@ -14,6 +14,11 @@ public class VA {
 		int index = extractIndex(xx);
 		RM.memory.set(block, index, value);
 	}
+	
+	public void set(int block, int index, String value) {
+		int blokas = RM.PageTable.getRealBlockNumber(block);
+		RM.memory.set(blokas, index, value);
+	}
 
 	public String get(int xx) {
 		int block = RM.PageTable.getRealBlockNumber(extractBlock(xx));

@@ -38,7 +38,6 @@ import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 
 public class MainWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -578,38 +577,34 @@ public class MainWindow extends JFrame {
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = fc.getSelectedFile();
 					try {
-						FileReader fr = new FileReader(file);
-						BufferedReader br = new BufferedReader(fr);
-						String s;
-						s = br.readLine();
-						int key1 = 0;
-						int key2 = 0;
-						if ((s) == "$STR")
-							while ((s != null) || (s != "$END")) {
-								s = br.readLine();
-								String[] value = s.split("(?<=\\G.{1})");
-								String Word = "";
-								if (value.length == 4)
-									if (value[0] == "$") {
-										key1 = Integer.parseInt(value[2]);
-										key2 = Integer.parseInt(value[3]);
-									}
-									else {
-
-										int key = key1 * 10 + key2;
-									//	String keyWord = String.format("%02d", key);
-
-										Word = value[0] + value[1] + value[2]
-												+ value[3];
-
-										RM.Atmintis.set(key, Word);
-										table_VA.setValueAt(RM.Atmintis.get(key), key1, key2);
-									}
-
+						RM.updateReg();
+						FileReader fr = new FileReader(file); 
+						BufferedReader br = new BufferedReader(fr); 
+						String s; 
+						int block = 0;
+						int index = 0;
+						while((s = br.readLine()) != null) {
+							if (s.charAt(0) == '$') {
+								block = Character.digit(s.charAt(2),16);
+								index = 0;
+							} else {
+								RM.Atmintis.set(block, index, s);
+								if (index == 15) {
+									index = 0;
+									block += 1;
+								} else {
+									index += 1;
+								}
 							}
-						fr.close();
-					} catch (IOException e1) {
-						// e1.printStackTrace();
+						} 
+						fr.close(); 
+						RM.updateGUI();
+						txtpnconsole.setText(txtpnconsole.getText()
+								+ "\n>>> Program loaded succesfully.");
+					} catch (Exception e1) {
+						RM.updateGUI();
+						txtpnconsole.setText(txtpnconsole.getText()
+								+ "\n>>> Program load failed.");
 					}
 					RM.IP.set("0");
 					// listas.setSelectedIndex(0);
@@ -697,6 +692,8 @@ public class MainWindow extends JFrame {
 		contentPane.add(lblLemput);
 
 		// -----------------------------------------------------------------
+		
+		RM.updateGUI();
 	}
 
 	public static void setLempute(boolean jungiklis) {
@@ -710,43 +707,43 @@ public class MainWindow extends JFrame {
 	public static void set(String register, String str_value) {
 
 		switch (register) {
-		case "RM_AR":
+		case "AR":
 			text_reg_AR.setText(str_value);
 			break;
-		case "RM_BR":
+		case "BR":
 			text_reg_BR.setText(str_value);
 			break;
-		case "RM_IP":
+		case "IP":
 			text_reg_IP.setText(str_value);
 			break;
-		case "RM_Z":
+		case "Z":
 			text_flag_Z.setText(str_value);
 			break;
-		case "RM_C":
+		case "C":
 			text_flag_C.setText(str_value);
 			break;
-		case "RM_B":
+		case "B":
 			text_flag_B.setText(str_value);
 			break;
-		case "RM_S":
+		case "S":
 			text_flag_S.setText(str_value);
 			break;
 		case "TIMER":
 			text_reg_TIMER.setText(str_value);
 			break;
-		case "RM_MODE":
+		case "MODE":
 			text_reg_MODE.setText(str_value);
 			break;
-		case "RM_PTR":
+		case "PTR":
 			text_reg_PTR.setText(str_value);
 			break;
-		case "RM_PI":
+		case "PI":
 			text_reg_PI.setText(str_value);
 			break;
-		case "RM_SI":
+		case "SI":
 			text_reg_SI.setText(str_value);
 			break;
-		case "RM_TI":
+		case "TI":
 			text_reg_TI.setText(str_value);
 			break;
 		case "INPUT":
