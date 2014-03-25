@@ -1,7 +1,7 @@
 package registers;
 
 public class IntRegister {
-    private byte data;
+    private int data;
 
 
     public IntRegister()
@@ -11,7 +11,7 @@ public class IntRegister {
     
     public void set(int value)
     {
-        data = (byte) value;
+        this.data = value;
     }
 
 

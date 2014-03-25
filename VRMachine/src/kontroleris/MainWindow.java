@@ -38,6 +38,7 @@ import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import javax.swing.JButton;
 
 public class MainWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -68,6 +69,7 @@ public class MainWindow extends JFrame {
 
 	private JFileChooser fc;
 	private static JTextPane txtpnconsole;
+	private static TextField console;
 
 	// --------ATMINTIES-LANGAI--------------
 	private static JScrollPane scrollPane_VA;
@@ -97,6 +99,7 @@ public class MainWindow extends JFrame {
 	Button btn_Start = new Button("Vykdyti");
 	Button btn_End = new Button("Pabaigti");
 	Button btn_Step = new Button("Po \u017Eingsn\u012F");
+	public static Button SubButton = new Button("Enter");
 
 	// -------------------------------------
 
@@ -222,7 +225,6 @@ public class MainWindow extends JFrame {
 
 		text_reg_SI = new JTextField();
 		text_reg_SI.setHorizontalAlignment(SwingConstants.CENTER);
-		text_reg_SI.setText("0");
 		text_reg_SI.setBounds(250, 45, 20, 20);
 		panel_registrai.add(text_reg_SI);
 		text_reg_SI.setColumns(10);
@@ -549,7 +551,7 @@ public class MainWindow extends JFrame {
 		txtpnconsole.setText(">>> Console");
 		txtpnconsole.setEditable(false);
 
-		TextField console = new TextField();
+		console = new TextField();
 		console.setBounds(10, 307, 378, 22);
 		contentPane.add(console);
 
@@ -588,6 +590,7 @@ public class MainWindow extends JFrame {
 								block = Character.digit(s.charAt(2),16);
 								index = 0;
 							} else {
+								s = s.replaceAll("\\s", "");
 								RM.Atmintis.set(block, index, s);
 								if (index == 15) {
 									index = 0;
@@ -690,6 +693,10 @@ public class MainWindow extends JFrame {
 		lblLemput.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblLemput.setBounds(317, 393, 51, 20);
 		contentPane.add(lblLemput);
+		
+		SubButton.setBounds(10, 363, 89, 23);
+		SubButton.setEnabled(false);
+		contentPane.add(SubButton);
 
 		// -----------------------------------------------------------------
 		
@@ -761,7 +768,7 @@ public class MainWindow extends JFrame {
 		}
 	}
 
-	public String get(String register) {
+	public static String get(String register) {
 		switch (register) {
 		case "RM_AR":
 			return text_reg_AR.getText();
@@ -832,6 +839,16 @@ public class MainWindow extends JFrame {
 		}
 		scrollPane_EM.revalidate();
 		scrollPane_EM.repaint();
+	}
+	
+	public static String readConsole() { 
+		SubButton.setEnabled(true);
+		SubButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {	
+			}
+		});
+		String s = console.getText();
+		return s;
 	}
 
 	public static void updateListVA(VA Atmintis) {

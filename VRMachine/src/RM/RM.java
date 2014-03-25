@@ -71,7 +71,7 @@ public class RM {
 			String result = zodis.substring(0, 2); 
 			return result;
 		} catch (StringIndexOutOfBoundsException e) {
-			PI.set(1);
+			PI.set(2);
             test();
             return "";
 		}
@@ -84,15 +84,15 @@ public class RM {
 				int cell = Integer.parseInt(result, 16);
 				return cell;
 			} else {
-				if (command != "HALT" && command != "LXON" && command != "____" && command != "LXOF" && command != "STSB" && command != "LDSB") {
-					PI.set(2);
+				if (!command.equals("HALT") && !command.equals("LXON") && !command.equals("LXOF") && !command.equals("LXCH") && !command.equals("STSB") && !command.equals("LDSB")) {
+					PI.set(1);
 					test();
 				}
 	            return 0;
 			}
 		} catch (Exception e) {
-			if (command != "HALT" && command != "LXON" && command != "LXOF" && command != "____" && command != "STSB" && command != "LDSB") {
-				PI.set(2);
+			if (!command.equals("HALT") && !command.equals("LXON") && !command.equals("LXCH") && !command.equals("LXOF") && !command.equals("STSB") && !command.equals("LDSB")) {
+				PI.set(1);
 				test();
 			}
             return 0;
@@ -256,7 +256,7 @@ public class RM {
 		}
 		default: {
 			IP.increase();
-			PI.set(1);
+			PI.set(2);
 			test();
 			MODE.set(1);
 			break;
@@ -593,12 +593,15 @@ public class RM {
 		updateReg();
 		MODE.set(1);
 		SI.set(2);
+		CHST.set(1, 1);
 		test();
 		String text = "";
 		for (int i = xx; i < xx + 16; i++) {
-			text = text + memory.getWord(i);
+			text = text + getWord(i);
 		}
-		kontroleris.MainWindow.updateConsole(text);
+		text = text.replaceAll("_", "");
+		text = text.replaceAll("-", " ");
+		kontroleris.MainWindow.updateConsole("Isvedimas: " + text);
 		MODE.set(0);
 		updateGUI();
 	}
@@ -607,15 +610,22 @@ public class RM {
 		updateReg();
 		MODE.set(1);
 		SI.set(1);
+		CHST.set(1, 0);
 		test();
-		String buffer = MainWindow.getConsole();
+		kontroleris.MainWindow.updateConsole("Jusu tekstas buvo nuskaitytas!");
+		String buffer = MainWindow.readConsole();
 		String adress = Integer.toHexString(xx);
 		String block = adress.substring(0, 1);
 		int blokas = Integer.parseInt(block, 16);
 		int pointer = 0;
 		for (int i = 0; i < Main.blokoDydis; i++) {
-			memory.set(blokas, i, buffer.substring(pointer, pointer+4));
-			pointer += 4;
+			try {
+				setWord(blokas*16+i, buffer.substring(pointer, pointer+4));
+				pointer += 4;
+			} catch (Exception e) {
+				setWord(blokas*16+i, "____");
+				pointer += 4;
+			}
 		}
 		MODE.set(0);
 		updateGUI();
@@ -849,7 +859,9 @@ public class RM {
 	public static void updateReg() {
 		MODE.set(0);
 		SI.set(0);
-		CHST.cleanCHST();
+		if (CHST.get(3) != 1) {
+			CHST.cleanCHST();
+		}
 		PI.set(0);
 		TIMER.cleanTIMER();
 	}
@@ -859,9 +871,6 @@ public class RM {
 			MODE.set(1);
 			Interrupt();
 			updateGUI();
-			if (SI.get() != 3) {
-				updateReg();
-			}
 			return true;
 		} else {
 			return false;
@@ -889,5 +898,8 @@ public class RM {
 		MainWindow.updateListVA(Atmintis);
 		MainWindow.updateListRM(RM.memory);
 		MainWindow.updateListEM(RM.externalMemory);
+		if (CHST.get(3) == 1) {
+			MainWindow.setLempute(true);
+		} else { MainWindow.setLempute(false); }
 	}
 }
