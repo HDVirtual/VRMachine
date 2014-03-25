@@ -27,15 +27,19 @@ public class VA {
 	}
 	
 	public int extractBlock(int xx) {
-		String hex = Integer.toHexString(xx);
-		String block = hex.substring(0, 1);
-		return Integer.parseInt(block, 16);
+		if (xx > 15) {
+			String hex = Integer.toHexString(xx);
+			String block = hex.substring(0, 1);
+			return Integer.parseInt(block, 16);
+		} else { return 0; }
 	}
 	
 	public int extractIndex(int xx) {
-		String hex = Integer.toHexString(xx);
-		String index = hex.substring(1, 2);
-		return Integer.parseInt(index, 16);
+		if (xx > 15) {
+			String hex = Integer.toHexString(xx);
+			String index = hex.substring(1, 2);
+			return Integer.parseInt(index, 16);
+		} else { return xx; }
 	}
 
 }

@@ -479,7 +479,7 @@ public class MainWindow extends JFrame {
 			table_RA.getColumnModel().getColumn(i).setMinWidth(40);
 		}
 		scrollPane_RA.setViewportView(table_RA);
-
+		updateListRM(RM.memory);
 		// ---VIRTUALI---
 		JLabel lblVa = new JLabel("VA");
 		lblVa.setBounds(10, 342, 20, 150);
@@ -532,6 +532,7 @@ public class MainWindow extends JFrame {
 			table_VA.getColumnModel().getColumn(i).setMinWidth(40);
 		}
 		scrollPane_VA.setViewportView(table_VA);
+		updateListVA(RM.Atmintis);
 
 		// -----------------------------------------------------------------
 
@@ -837,10 +838,9 @@ public class MainWindow extends JFrame {
 	}
 
 	public static void updateListVA(VA Atmintis) {
-		for (int i = 0; i < RM.PTR.getBlock(); i++) {
-			for (int n = 0; n < Main.blokoDydis; n++) {
-				//listModel.set(i * Main.blokoDydis + n, Atmintis.get(i * Main.blokoDydis + n));
-				table_EM.setValueAt(Atmintis.get(i* Main.blokoDydis + n-1), i, n);
+		for (int i = 0; i < Main.VMBlokuSkaicius; i++) {
+			for (int n = 1; n < Main.blokoDydis+1; n++) {
+				table_VA.setValueAt(Atmintis.get(i* Main.blokoDydis + (n-1)), i, n);
 			}
 		}
 		scrollPane_VA.revalidate();

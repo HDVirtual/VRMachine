@@ -66,6 +66,12 @@ public class RM {
 		// InterruptPrograms();
 
 		externalMemory.save();
+		
+		//////////////////// test ///////////
+		Atmintis.set(11, "LA12");
+		externalMemory.set(11, "LA12");
+		System.out.print(Atmintis.get(11));
+		////////////////////test ///////////
 	}
 
 	private static String getOpk(String zodis) {
@@ -255,6 +261,7 @@ public class RM {
 		default: {
 			IP.set(IP.get() + 1);
 			PI.set(1);
+			test();
 			MODE.set(1);
 			break;
 		}
@@ -269,7 +276,7 @@ public class RM {
 	 * @return XY Reik�?mė adresu XX
 	 */
 	public static String getWord(int xx) {
-		String Word = memory.getWord(xx);
+		String Word = Atmintis.get(xx);
 		Word = Word.replaceAll("\\s", "");
 		return Word;
 	}
@@ -289,7 +296,7 @@ public class RM {
 	 *            Nauja reikðmë
 	 */
 	public static void setWord(int xx, String R) {
-		memory.set(xx, R);
+		Atmintis.set(xx, R);
 	}
 	
 	public static void setHighWord(int xx, String R) {
@@ -561,12 +568,14 @@ public class RM {
 		updateReg();
 		MODE.set(1);
 		SI.set(3);
+		test();
 	}
 
 	static public void PD(int xx) {
 		updateReg();
 		MODE.set(1);
 		SI.set(2);
+		test();
 		String text = "";
 		for (int i = xx; i < xx + 16; i++) {
 			text = text + memory.getWord(i);
@@ -580,6 +589,7 @@ public class RM {
 		updateReg();
 		MODE.set(1);
 		SI.set(1);
+		test();
 		String buffer = MainWindow.getConsole();
 		String adress = Integer.toHexString(xx);
 		String block = adress.substring(0, 1);
@@ -597,6 +607,7 @@ public class RM {
 		updateReg();
 		MODE.set(1);
 		SI.set(4);
+		test();
 		CHST.set(1, 3);
 		IP.set(IP.get() + 1);
 		MODE.set(0);
@@ -606,6 +617,7 @@ public class RM {
 		updateReg();
 		MODE.set(1);
 		SI.set(5);
+		test();
 		CHST.set(0, 3);
 		IP.set(IP.get() + 1);
 		MODE.set(0);
