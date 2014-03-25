@@ -1,72 +1,41 @@
 package RM;
 
-
-
 import java.util.ArrayList;
 
-import kontroleris.Main;
-
-
-/**
- * Vartotojo atmintis
- * 
- * @author Aurimas
- * 
- */
 public class VA {
 
-	int memory;
-	public VA(int memory) {
-		this.memory = memory;
-	}
-	/**
-	 * Norimu adresu gauname elementà ið vartotoji atminties
-	 * 
-	 * @param a
-	 *            Atminties adresas
-	 * @return
-	 */
-	public void set(int index, String element) {
-		int[] digit = getInt(index);
-		int AA = RM.PageTable.getRealBlockNumber(digit[0]);
-		RM.memory.set(AA, digit[1], element);
+	int size;
+	public VA(int size) {
+		this.size = size;
 	}
 
-	public String get(int a) {
-		int[] digit = getInt(a);
-		int AA = RM.PageTable.getRealBlockNumber(digit[0]);
-		return RM.memory.getWord(AA, digit[1]);
-	}
-	public int getAA(int a) {
-		int[] digit = getInt(a);
-		int AA = RM.PageTable.getRealBlockNumber(digit[0])*Main.blokoDydis+digit[1];
-		return AA;
+	public void set(int xx, String value) {
+		int block = RM.PageTable.getRealBlockNumber(extractBlock(xx));
+		int index = extractIndex(xx);
+		RM.memory.set(block, index, value);
 	}
 
-	public ArrayList<String> getList() {
-		ArrayList<String> list = new ArrayList<String>();
-		for (int i = 0; i < Main.RMBlokuSkaicius; i++) {
-			for (int n = 0; n < Main.blokoDydis; n++) {
-				list.add(RM.memory.getWord(i, n));
-			}
-		}
-		return list;
+	public String get(int xx) {
+		int block = RM.PageTable.getRealBlockNumber(extractBlock(xx));
+		int index = extractIndex(xx);
+		return RM.memory.getWord(block, index);
+	}
+	
+	public ArrayList<String> getBlock(int block) {
+		int blokas = RM.PageTable.getRealBlockNumber(block);
+		return getBlock(blokas);
+	}
+	
+	public int extractBlock(int xx) {
+		String hex = Integer.toHexString(xx);
+		String block = hex.substring(0, 1);
+		return Integer.parseInt(block, 16);
+	}
+	
+	public int extractIndex(int xx) {
+		String hex = Integer.toHexString(xx);
+		String index = hex.substring(1, 2);
+		return Integer.parseInt(index, 16);
 	}
 
-	public int getAllMemory() {
-		return this.memory;
-	}
-	private int[] getInt(int xx) {
-		String string = Integer.toString(xx);
-		int[] digits = new int[string.length()+1];
-		if (string.length() == 1) {
-			digits[1] = Integer.parseInt(string);
-			digits[0] = 0;
-		} else {
-			for (int i = 0; i < string.length(); ++i) {
-				digits[i] = Integer.parseInt(string.substring(i, i + 1));
-			}
-		}
-		return digits;
-    }
 }

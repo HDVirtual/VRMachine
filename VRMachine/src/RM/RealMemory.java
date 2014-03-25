@@ -23,9 +23,8 @@ public class RealMemory {
     }
 	
 	public String getWord(int block, int index){
-    	ArrayList<String> list = getBlock(block);
-    	String Word = list.get(index);
-    	return Word;
+		int cell = block*Main.blokoDydis+index;
+    	return memory.get(cell);
     }
 	
 	public String getWord(String adress) {
@@ -38,7 +37,7 @@ public class RealMemory {
     }
 	
 	private int getAdress(String adress) {
-		String result = adress.substring(2, 4);
+		String result = adress.substring(2, 5);
 		int cell = Integer.parseInt(result, 16);
 		return cell;
     }
@@ -50,8 +49,9 @@ public class RealMemory {
 	public void set(int adress, String value) {
 		memory.set(adress,value);
 	}
+	
 	public void set(int block, int xx, String value) {
-    	ArrayList<String> list = getBlock(block);
-    	list.set(xx, value);
+    	int cell = block*Main.blokoDydis+xx;
+    	memory.set(cell,value);
     }
 }

@@ -41,9 +41,11 @@ public class RM {
 	public RM() {
 		memory = new RealMemory(Main.RMBlokuSkaicius);
 		externalMemory = new ExternalMemory(Main.EMBlokuSkaicius);
-		Atmintis = new VA(256);
+		Atmintis = new VA(Main.VMBlokuSkaicius);
 		
-		PTR = new PTRRegister(0, 9, 1, 0);
+		PTR = new PTRRegister("0F00");
+		PageTable = new PageTable();
+		PTR.setPageTable(PageTable.getAdress());
 		AR = new Register();
 		BR = new Register();
 		IP = new Register(000);
@@ -60,7 +62,6 @@ public class RM {
 		BAR = new BARRegister();
 		CHST = new CHST();
 		lempute = new Lempute();
-		PageTable = new PageTable();
 
 		// InterruptPrograms();
 

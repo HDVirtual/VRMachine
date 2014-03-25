@@ -1,48 +1,31 @@
 package registers;
 
-import kontroleris.Main;
-
 public class PTRRegister {
 
-	// private String PTR;
-	private int[] PTR = new int[] { 0, 0, 0, 0 };
+	private String PTR;
 
-	public PTRRegister(int x, int N, int x1, int x2) {
-		this.PTR[0] = x;
-		this.PTR[1] = N;
-		this.PTR[2] = x1;
-		this.PTR[3] = x2;
+	public PTRRegister(String x) {
+		this.PTR = x;
 	}
 
-	/**
-	 * Registro PTR reikðmë
-	 * 
-	 * @return PTR puslapiavimo registro reikðmë
-	 */
 	public String get() {
-		return "" + this.PTR[0] + this.PTR[1] + this.PTR[2] + this.PTR[3];
-	}
-
-	public int getBlock() {
-		return this.PTR[1];
+		return PTR;
 	}
 
 	public int getPageTable() {
-		return this.PTR[2] * Main.blokoDydis + this.PTR[3];
+		String block = PTR.substring(2, 4);
+		return Integer.parseInt(block, 16);
 	}
 
-	/**
-	 * Nustatoma nauja PTR reikðmë
-	 * 
-	 * @param NewPtr
-	 *            puslapiø reikðmë
-	 */
-	public void setTableSize(int N) {
-		this.PTR[1] = N;
+	public void setProgramSize(int N) {
+		String Hex = Integer.toHexString(N);
+		String L = Hex + PTR.substring(1, 4);
+		this.PTR = L;
 	}
 
-	public void setPageTableNumber(int x1, int x2) {
-		this.PTR[2] = x1;
-		this.PTR[3] = x2;
+	public void setPageTable(int adress) {
+		String Hex = Integer.toHexString(adress);
+		String L = PTR.substring(0, 2) + Hex;
+		this.PTR = L;
 	}
 }

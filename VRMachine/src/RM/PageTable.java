@@ -1,26 +1,48 @@
 package RM;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import kontroleris.Main;
 import RM.RM;
 
-
-/**
- * Puslapiø lentelë
- * @author Aurimas
- *
- */
-public class PageTable {
-	int PageTableNumber;
+public class PageTable {  // galima padaryti pi=4 jei truksta tusciu bloku
+	
+	int adress;
 	
 	public PageTable() {
-		this.PageTableNumber = RM.PTR.getPageTable();
-		for(int i=0;i<Main.blokoDydis;i++) {
-			RM.memory.set(this.PageTableNumber,""+3+i);
+		ArrayList<Integer> randomList = new ArrayList<Integer>();
+		int x = 0;
+		int element = 0;
+		for (int i = 0; i < Main.RMBlokuSkaicius; i++) {
+			for (int n = 0; i < Main.blokoDydis; i++) {
+				if (RM.memory.getWord(i, n) != "____") {
+					x = 1;
+				}
+			}
+			if (x == 0) {
+				randomList.add(element, i);
+				element += 1;
+			}
+			x = 0;
 		}
-		RM.memory.set(this.PageTableNumber, 7, ""+0);
+		Collections.shuffle(randomList);
+		this.adress = randomList.get(0);
+		randomList.remove(0);
+		for (int i = 0; i < Main.blokoDydis; i++) {
+			Collections.shuffle(randomList);
+			RM.memory.set(this.adress, i, Integer.toHexString(randomList.get(0)));
+			randomList.remove(0);
+		}
 	}
+	
+	public int getAdress() {
+		return this.adress;
+	}
+	
 	public int getRealBlockNumber(int VirtualBlock) {
-		String RBN = RM.memory.getWord(RM.PTR.getPageTable(), VirtualBlock);
-		return Integer.parseInt(RBN);
+		String number = RM.memory.getWord(RM.PTR.getPageTable(), VirtualBlock);
+		int cell = Integer.parseInt(number, 16);
+		return cell;
 	}
 }
