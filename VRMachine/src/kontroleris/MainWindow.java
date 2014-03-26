@@ -23,6 +23,7 @@ import java.awt.Button;
 import javax.swing.SwingConstants;
 
 import RM.ExternalMemory;
+import RM.PageTable;
 import RM.RM;
 import RM.RealMemory;
 import RM.VA;
@@ -38,7 +39,10 @@ import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+
 import javax.swing.JButton;
+
+import registers.PTRRegister;
 
 public class MainWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -100,6 +104,7 @@ public class MainWindow extends JFrame {
 	Button btn_End = new Button("Pabaigti");
 	Button btn_Step = new Button("Po \u017Eingsn\u012F");
 	public static Button SubButton = new Button("Enter");
+	public static int kreipimusi_skaicius = 0;
 
 	// -------------------------------------
 
@@ -578,6 +583,11 @@ public class MainWindow extends JFrame {
 
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = fc.getSelectedFile();
+					//if (kreipimusi_skaicius >= 1) {
+						//PageTable tbl = new PageTable();
+						//RM.PTR.setPageTable(tbl.getAdress());    // leidzia ikelti kelias programas, bet uzraso
+					//}											   // viena ank kitos realioj atminty
+					//kreipimusi_skaicius += 1;
 					try {
 						RM.updateReg();
 						FileReader fr = new FileReader(file); 
