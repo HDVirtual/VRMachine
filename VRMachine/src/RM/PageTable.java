@@ -1,5 +1,8 @@
 package RM;
-
+/*
+ * @author Haroldas Baltrûnas
+ * @author Deividas Frolovas
+ */
 import java.util.ArrayList;
 import java.util.Collections;
 

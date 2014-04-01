@@ -1,5 +1,8 @@
 package registers;
-
+/*
+ * @author Haroldas Baltrûnas
+ * @author Deividas Frolovas
+ */
 public class TimerMechRegister {
 	private int TI;
 	public TimerMechRegister(int TI) {
@@ -11,14 +14,7 @@ public class TimerMechRegister {
 	}
 
 	public void set() {
-		if (this.TI != 1) {
 			this.TI = this.TI - 1;
-		} else {
-			this.TI = this.TI - 1;
-			//RM.RM.T.set(1);
-			RM.RM.MODE.set(1);
-			update();
-		}
 	}
 	
 	public void cleanTIMER(){

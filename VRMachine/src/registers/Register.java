@@ -1,5 +1,8 @@
 package registers;
-
+/*
+ * @author Haroldas Baltrûnas
+ * @author Deividas Frolovas
+ */
 public class Register {
 	private String reg;
 	

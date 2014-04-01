@@ -1,5 +1,10 @@
 package kontroleris;
 
+/*
+ * @author Haroldas Baltrûnas
+ * @author Deividas Frolovas
+ */
+
 import java.awt.EventQueue;
 
 import RM.RM;

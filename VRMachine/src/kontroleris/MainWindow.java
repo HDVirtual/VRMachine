@@ -1,5 +1,8 @@
 package kontroleris;
-
+/*
+ * @author Haroldas Baltrûnas
+ * @author Deividas Frolovas
+ */
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -43,6 +46,7 @@ import java.io.FileReader;
 import javax.swing.JButton;
 
 import registers.PTRRegister;
+import javax.swing.JTextArea;
 
 public class MainWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -103,8 +107,8 @@ public class MainWindow extends JFrame {
 	Button btn_Start = new Button("Vykdyti");
 	Button btn_End = new Button("Pabaigti");
 	Button btn_Step = new Button("Po \u017Eingsn\u012F");
-	public static Button SubButton = new Button("Enter");
 	public static int kreipimusi_skaicius = 0;
+	public static JTextField next_command;
 
 	// -------------------------------------
 
@@ -371,6 +375,16 @@ public class MainWindow extends JFrame {
 		textField.setBounds(130, 137, 40, 20);
 		panel_registrai.add(textField);
 		textField.setColumns(10);
+		
+		next_command = new JTextField();
+		next_command.setHorizontalAlignment(SwingConstants.CENTER);
+		next_command.setBounds(257, 137, 50, 20);
+		panel_registrai.add(next_command);
+		next_command.setColumns(10);
+		
+		JLabel lblEinamojiKomanda = new JLabel("Einamoji komanda:");
+		lblEinamojiKomanda.setBounds(234, 118, 122, 14);
+		panel_registrai.add(lblEinamojiKomanda);
 		// ----------------------------------------------------------------
 
 		// ------------ATMINTIS--------------------------------------------
@@ -583,11 +597,11 @@ public class MainWindow extends JFrame {
 
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = fc.getSelectedFile();
-					//if (kreipimusi_skaicius >= 1) {
-						//PageTable tbl = new PageTable();
-						//RM.PTR.setPageTable(tbl.getAdress());    // leidzia ikelti kelias programas, bet uzraso
-					//}											   // viena ank kitos realioj atminty
-					//kreipimusi_skaicius += 1;
+					if (kreipimusi_skaicius >= 1) {
+						PageTable tbl = new PageTable();
+						RM.PTR.setPageTable(tbl.getAdress());    // leidzia ikelti kelias programas, bet uzraso
+					}											   // viena ank kitos realioj atminty
+					kreipimusi_skaicius += 1;
 					try {
 						RM.updateReg();
 						FileReader fr = new FileReader(file); 
@@ -703,10 +717,6 @@ public class MainWindow extends JFrame {
 		lblLemput.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblLemput.setBounds(317, 393, 51, 20);
 		contentPane.add(lblLemput);
-		
-		SubButton.setBounds(10, 363, 89, 23);
-		SubButton.setEnabled(false);
-		contentPane.add(SubButton);
 
 		// -----------------------------------------------------------------
 		
@@ -724,6 +734,9 @@ public class MainWindow extends JFrame {
 	public static void set(String register, String str_value) {
 
 		switch (register) {
+		case "cmd":
+			next_command.setText(str_value);
+			break;
 		case "AR":
 			text_reg_AR.setText(str_value);
 			break;
@@ -852,11 +865,6 @@ public class MainWindow extends JFrame {
 	}
 	
 	public static String readConsole() { 
-		SubButton.setEnabled(true);
-		SubButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {	
-			}
-		});
 		String s = console.getText();
 		return s;
 	}

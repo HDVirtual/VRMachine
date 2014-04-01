@@ -1,5 +1,8 @@
 package RM;
-
+/*
+ * @author Haroldas Baltrûnas
+ * @author Deividas Frolovas
+ */
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;

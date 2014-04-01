@@ -1,5 +1,8 @@
 package RM;
-
+/*
+ * @author Haroldas Baltrūnas
+ * @author Deividas Frolovas
+ */
 import java.util.ArrayList;
 
 public class VA {

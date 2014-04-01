@@ -1,5 +1,8 @@
 package RM;
-
+/*
+ * @author Haroldas Baltrūnas
+ * @author Deividas Frolovas
+ */
 import kontroleris.Main;
 import kontroleris.MainWindow;
 import registers.CHST;
@@ -72,7 +75,6 @@ public class RM {
 			return result;
 		} catch (StringIndexOutOfBoundsException e) {
 			PI.set(2);
-            test();
             return "";
 		}
 	}
@@ -86,14 +88,12 @@ public class RM {
 			} else {
 				if (!command.equals("HALT") && !command.equals("LXON") && !command.equals("LXOF") && !command.equals("LXCH") && !command.equals("STSB") && !command.equals("LDSB")) {
 					PI.set(1);
-					test();
 				}
 	            return 0;
 			}
 		} catch (Exception e) {
 			if (!command.equals("HALT") && !command.equals("LXON") && !command.equals("LXCH") && !command.equals("LXOF") && !command.equals("STSB") && !command.equals("LDSB")) {
 				PI.set(1);
-				test();
 			}
             return 0;
 		}
@@ -257,7 +257,6 @@ public class RM {
 		default: {
 			IP.increase();
 			PI.set(2);
-			test();
 			MODE.set(1);
 			break;
 		}
@@ -322,35 +321,30 @@ public class RM {
 	}
 
 	public static void LA(int xx) {
-		updateReg();
 		AR.set(getWord(xx));
 		IP.increase();
 		updateGUI();
 	}
 
 	public static void LB(int xx) {
-		updateReg();
 		BR.set(getWord(xx));
 		IP.increase();
 		updateGUI();
 	}
 
 	public static void WA(int xx) {
-		updateReg();
 		setWord(xx, AR.get());
 		IP.increase();
 		updateGUI();
 	}
 
 	public static void WB(int xx) {
-		updateReg();
 		setWord(xx, BR.get());
 		IP.increase();
 		updateGUI();
 	}
 
 	public static void AA(int xx) {
-		updateReg();
 		int number = Integer.parseInt(AR.get(), 16)
 				+ Integer.parseInt(getWord(xx), 16);
 		String hex = Integer.toHexString(number);
@@ -377,7 +371,6 @@ public class RM {
 	}
 
 	public static void AB(int xx) {
-		updateReg();
 		int number = Integer.parseInt(BR.get(), 16)
 				+ Integer.parseInt(getWord(xx), 16);
 		String hex = Integer.toHexString(number);
@@ -404,7 +397,6 @@ public class RM {
 	}
 
 	public static void SA(int xx) {
-		updateReg();
 		int number = Integer.parseInt(AR.get(), 16)
 				- Integer.parseInt(getWord(xx), 16);
 		String hex = Integer.toHexString(number);
@@ -434,7 +426,6 @@ public class RM {
 	}
 
 	public static void SB(int xx) {
-		updateReg();
 		int number = Integer.parseInt(BR.get(), 16)
 				- Integer.parseInt(getWord(xx), 16);
 		String hex = Integer.toHexString(number);
@@ -464,7 +455,6 @@ public class RM {
 	}
 
 	public static void CA(int xx) {
-		updateReg();
 		int number = Integer.parseInt(AR.get(), 16)
 				- Integer.parseInt(getWord(xx), 16);
 		if (number == 0) {
@@ -487,7 +477,6 @@ public class RM {
 	}
 
 	public static void CB(int xx) {
-		updateReg();
 		int number = Integer.parseInt(BR.get(), 16)
 				- Integer.parseInt(getWord(xx), 16);
 		if (number == 0) {
@@ -510,13 +499,11 @@ public class RM {
 	}
 
 	public static void JM(int xx) {
-		updateReg();
 		IP.set(Integer.toHexString(xx));
 		updateGUI();
 	}
 
 	public static void JG(int xx) {
-		updateReg();
 		if ((C.get() == "0") && (S.get() == "0") && (Z.get() == "0")) {
 			IP.set(Integer.toHexString(xx));
 		}
@@ -527,7 +514,6 @@ public class RM {
 	}
 
 	public static void JL(int xx) {
-		updateReg();
 		if ((C.get() == "1") && (S.get() == "1") && (Z.get() == "0")) {
 			IP.set(Integer.toHexString(xx));
 		}
@@ -538,7 +524,6 @@ public class RM {
 	}
 
 	public static void JC(int xx) {
-		updateReg();
 		if (C.get() == "1") {
 			IP.set(Integer.toHexString(xx));
 		}
@@ -549,7 +534,6 @@ public class RM {
 	}
 
 	public static void JZ(int xx) {
-		updateReg();
 		if (Z.get() == "1") {
 			IP.set(Integer.toHexString(xx));
 		}
@@ -560,7 +544,6 @@ public class RM {
 	}
 
 	public static void JN(int xx) {
-		updateReg();
 		if (Z.get() == "0") {
 			IP.set(Integer.toHexString(xx));
 		}
@@ -571,7 +554,6 @@ public class RM {
 	}
 
 	public static void LP(int xx) {
-		updateReg();
 		if (Integer.parseInt(BR.get(), 16) > 0) {
 			IP.set(Integer.toHexString(xx));
 		}
@@ -582,19 +564,16 @@ public class RM {
 	}
 
 	public static void HALT() {
-		updateReg();
 		MODE.set(1);
 		SI.set(3);
-		test();
+		IP.increase();
 		updateGUI();
 	}
 
 	static public void PD(int xx) {
-		updateReg();
 		MODE.set(1);
 		SI.set(2);
 		CHST.set(1, 1);
-		test();
 		String text = "";
 		for (int i = xx; i < xx + 16; i++) {
 			text = text + getWord(i);
@@ -602,16 +581,14 @@ public class RM {
 		text = text.replaceAll("_", "");
 		text = text.replaceAll("-", " ");
 		kontroleris.MainWindow.updateConsole("Isvedimas: " + text);
-		MODE.set(0);
+		IP.increase();
 		updateGUI();
 	}
 
 	public static void GD(int xx) {
-		updateReg();
 		MODE.set(1);
 		SI.set(1);
 		CHST.set(1, 0);
-		test();
 		kontroleris.MainWindow.updateConsole("Jusu tekstas buvo nuskaitytas!");
 		String buffer = MainWindow.readConsole();
 		String adress = Integer.toHexString(xx);
@@ -627,32 +604,27 @@ public class RM {
 				pointer += 4;
 			}
 		}
-		MODE.set(0);
+		IP.increase();
 		updateGUI();
 	}
 
 	public static void LXON() {
-		updateReg();
 		MODE.set(1);
 		SI.set(4);
-		test();
 		CHST.set(1, 3);
-		MODE.set(0);
+		IP.increase();
 		updateGUI();
 	}
 
 	public static void LXOF() {
-		updateReg();
 		MODE.set(1);
 		SI.set(5);
-		test();
 		CHST.set(0, 3);
-		MODE.set(0);
+		IP.increase();
 		updateGUI();
 	}
 
 	public static void LXCH() {
-		updateReg();
 		if (CHST.get(3) == 1)
 			Z.set("1");
 		else
@@ -662,7 +634,6 @@ public class RM {
 	}
 
 	public static void XA(int xx) {
-		updateReg();
 		int register = Integer.parseInt(AR.get(), 16);
 		int memory = Integer.parseInt(getWord(xx), 16);
 		int xor = register ^ memory;
@@ -672,7 +643,6 @@ public class RM {
 	}
 
 	public static void XB(int xx) {
-		updateReg();
 		int register = Integer.parseInt(BR.get(), 16);
 		int memory = Integer.parseInt(getWord(xx), 16);
 		int xor = register ^ memory;
@@ -682,7 +652,6 @@ public class RM {
 	}
 
 	public static void NA(int xx) {
-		updateReg();
 		int register = Integer.parseInt(AR.get(), 16);
 		int memory = Integer.parseInt(getWord(xx), 16);
 		int and = register & memory;
@@ -692,7 +661,6 @@ public class RM {
 	}
 
 	public static void NB(int xx) {
-		updateReg();
 		int register = Integer.parseInt(BR.get(), 16);
 		int memory = Integer.parseInt(getWord(xx), 16);
 		int and = register & memory;
@@ -702,7 +670,6 @@ public class RM {
 	}
 
 	public static void OA(int xx) {
-		updateReg();
 		int register = Integer.parseInt(AR.get(), 16);
 		int memory = Integer.parseInt(getWord(xx), 16);
 		int or = register | memory;
@@ -712,7 +679,6 @@ public class RM {
 	}
 
 	public static void OB(int xx) {
-		updateReg();
 		int register = Integer.parseInt(BR.get(), 16);
 		int memory = Integer.parseInt(getWord(xx), 16);
 		int or = register | memory;
@@ -722,7 +688,6 @@ public class RM {
 	}
 
 	public static void STSB() {
-		updateReg();
 		String AH = AR.get().substring(0, 2);
 		String AL = AR.get().substring(2, 4);
 		int adress = getAdress(AH);
@@ -739,7 +704,6 @@ public class RM {
 	}
 
 	public static void LDSB() {
-		updateReg();
 		String AH = AR.get().substring(0, 2);
 		int adress = getAdress(AH);
 		String memory = getWord(adress);
@@ -779,9 +743,6 @@ public class RM {
 				break;
 			}
 			}
-			IP.increase();
-			//MODE.set(0);
-			//PI.set(0);
 		}
 		if (SI.get() != 0) {
 			switch (SI.get()) {
@@ -810,11 +771,9 @@ public class RM {
 				break;
 			}
 			}
-			IP.increase();
-			//MODE.set(0);
 		}
-		if (TIMER.get() != 0) {
-			switch (TIMER.get()) {
+		if (TI.get() != 0) {
+			switch (TI.get()) {
 			case 1: {
 				MainWindow.updateConsole("Taimerio pertraukimas.");
 				break;
@@ -823,9 +782,6 @@ public class RM {
 				MainWindow.updateConsole("Pertraukimas T neįvyko.");
 			}
 			}
-			IP.increase();
-			//MODE.set(0);
-			//TIMER.set(0);
 		}
 	}
 	
@@ -845,10 +801,17 @@ public class RM {
 	 * Komandos vykdymo þingsnis
 	 */
 	private static void step() {
+		updateReg();
+		TIMER.set();
+		if (TIMER.get() == 0) {
+			TI.set(1);
+			TIMER.update();
+		}
 		if(SI.get() != 3) {
 			updateGUI();
 			String command = Atmintis.get(Integer.parseInt(IP.get(), 16));
 			doCommand(command);
+			test();
 		} else {
 			updateGUI();
 			MainWindow.updateConsole(">>> Programa baigė darbą!");
@@ -858,16 +821,16 @@ public class RM {
 	
 	public static void updateReg() {
 		MODE.set(0);
-		SI.set(0);
+		if(SI.get() != 3) { SI.set(0); }
 		if (CHST.get(3) != 1) {
 			CHST.cleanCHST();
 		}
 		PI.set(0);
-		TIMER.cleanTIMER();
+		TI.set(0);
 	}
 	
-	private static boolean test() {
-		if (SI.get() + PI.get() + TIMER.get() != 0) {
+	public static boolean test() {
+		if (SI.get() + PI.get() + TI.get() != 0) {
 			MODE.set(1);
 			Interrupt();
 			updateGUI();
@@ -898,6 +861,7 @@ public class RM {
 		MainWindow.updateListVA(Atmintis);
 		MainWindow.updateListRM(RM.memory);
 		MainWindow.updateListEM(RM.externalMemory);
+		MainWindow.set("cmd",Atmintis.get(Integer.parseInt(IP.get(), 16)));
 		if (CHST.get(3) == 1) {
 			MainWindow.setLempute(true);
 		} else { MainWindow.setLempute(false); }
