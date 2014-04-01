@@ -4,13 +4,13 @@ package registers;
  * @author Deividas Frolovas
  */
 public class TimerMechRegister {
-	private int TI;
+	private int TIMER;
 	public TimerMechRegister(int TI) {
-		this.TI = TI;
+		this.TIMER = TI;
 	}
 
 	public int get() {
-		return this.TI;
+		return this.TIMER;
 	}
 
 	public void set() {
@@ -18,10 +18,10 @@ public class TimerMechRegister {
 	}
 	
 	public void cleanTIMER(){
-		this.TI = 0;
+		this.TIMER = 0;
 	}
 
-	public void update() {
-		this.TI = 10;
+	public void reset() {
+		this.TIMER = 10;
 	}
 }

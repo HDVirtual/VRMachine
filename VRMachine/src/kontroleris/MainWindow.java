@@ -73,6 +73,9 @@ public class MainWindow extends JFrame {
 	private static JTextField text_reg_CHST_EMemory;
 	private static JTextField text_reg_CHST_Lempute;
 	private static JTextField text_reg_CHST_Output;
+	
+	private static JTextField text_reg_BAR;
+	private static JTextField text_reg_next_command;
 	// --------------------------------------
 
 	private JFileChooser fc;
@@ -86,7 +89,7 @@ public class MainWindow extends JFrame {
 
 	private static JScrollPane scrollPane_EM;
 
-	private static JTextField textField;
+	
 	private static JTable table_VA;
 	private static JTable table_RA;
 	private static JTable table_EM;
@@ -103,10 +106,11 @@ public class MainWindow extends JFrame {
 	public static Object[] VMcolumnNames;
 	public static Object[][] VMdata;
 
-	Button btn_Load = new Button("Pakrauti program\u0105");
-	Button btn_Start = new Button("Vykdyti");
-	Button btn_End = new Button("Pabaigti");
-	Button btn_Step = new Button("Po \u017Eingsn\u012F");
+	public static Button btn_Load = new Button("Pakrauti program\u0105");
+	public static Button btn_Start = new Button("Vykdyti");
+	public static Button btn_End = new Button("Pabaigti");
+	public static Button btn_Step = new Button("Po \u017Eingsn\u012F");
+	public static Button SubButton = new Button("Enter");
 	public static int kreipimusi_skaicius = 0;
 	public static JTextField next_command;
 
@@ -364,27 +368,26 @@ public class MainWindow extends JFrame {
 		panel_registrai.add(text_reg_CHST_Lempute);
 		text_reg_CHST_Lempute.setColumns(10);
 
-		JLabel lblNewLabel_1 = new JLabel("BAR");
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1.setBounds(90, 137, 40, 20);
-		panel_registrai.add(lblNewLabel_1);
+		JLabel lbl_reg_BAR = new JLabel("BAR");
+		lbl_reg_BAR.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_reg_BAR.setBounds(90, 155, 40, 20);
+		panel_registrai.add(lbl_reg_BAR);
 
-		textField = new JTextField();
-		textField.setHorizontalAlignment(SwingConstants.CENTER);
-		textField.setText("00");
-		textField.setBounds(130, 137, 40, 20);
-		panel_registrai.add(textField);
-		textField.setColumns(10);
+		text_reg_BAR = new JTextField();
+		text_reg_BAR.setHorizontalAlignment(SwingConstants.CENTER);
+		text_reg_BAR.setText("00");
+		text_reg_BAR.setBounds(130, 155, 40, 20);
+		panel_registrai.add(text_reg_BAR);
+		text_reg_BAR.setColumns(10);
 		
-		next_command = new JTextField();
-		next_command.setHorizontalAlignment(SwingConstants.CENTER);
-		next_command.setBounds(257, 137, 50, 20);
-		panel_registrai.add(next_command);
-		next_command.setColumns(10);
+		JLabel lbl_reg_next_command = new JLabel("Kita komanda:");
+		lbl_reg_next_command.setBounds(240, 137, 90, 20);
+		panel_registrai.add(lbl_reg_next_command);
 		
-		JLabel lblEinamojiKomanda = new JLabel("Einamoji komanda:");
-		lblEinamojiKomanda.setBounds(234, 118, 122, 14);
-		panel_registrai.add(lblEinamojiKomanda);
+		text_reg_next_command = new JTextField();
+		text_reg_next_command.setBounds(330, 137, 40, 20);
+		panel_registrai.add(text_reg_next_command);
+		text_reg_next_command.setColumns(10);
 		// ----------------------------------------------------------------
 
 		// ------------ATMINTIS--------------------------------------------
@@ -597,13 +600,13 @@ public class MainWindow extends JFrame {
 
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = fc.getSelectedFile();
-					if (kreipimusi_skaicius >= 1) {
-						PageTable tbl = new PageTable();
-						RM.PTR.setPageTable(tbl.getAdress());    // leidzia ikelti kelias programas, bet uzraso
-					}											   // viena ank kitos realioj atminty
-					kreipimusi_skaicius += 1;
+					//if (kreipimusi_skaicius >= 1) {
+						//PageTable tbl = new PageTable();
+						//RM.PTR.setPageTable(tbl.getAdress());    // leidzia ikelti kelias programas, bet uzraso
+					//}											   // viena ank kitos realioj atminty
+					//kreipimusi_skaicius += 1;
 					try {
-						RM.updateReg();
+						RM.resetReg();
 						FileReader fr = new FileReader(file); 
 						BufferedReader br = new BufferedReader(fr); 
 						String s; 
@@ -633,18 +636,28 @@ public class MainWindow extends JFrame {
 						txtpnconsole.setText(txtpnconsole.getText()
 								+ "\n>>> Program load failed.");
 					}
-					RM.IP.set("0");
+					RM.IP.set(0);
 					// listas.setSelectedIndex(0);
 					scrollPane_RA.revalidate();
 					scrollPane_RA.repaint();
 					updateListRM(RM.memory);
+					
+					
+					btn_Load.setEnabled(false);
+					btn_Start.setEnabled(true);
+					btn_Step.setEnabled(true);
 				}
 				else {
 					// Vartotojas atðaukia pasirinkimà
 					txtpnconsole.setText(txtpnconsole.getText()
 							+ "\n> File Chooser closed.");
+					btn_Load.setEnabled(true);
+					btn_Start.setEnabled(false);
+					btn_Step.setEnabled(false);
 				}
+				btn_End.setEnabled(false);
 			}
+			
 		});
 
 		btn_Load.setBounds(10, 335, 111, 22);
@@ -658,6 +671,8 @@ public class MainWindow extends JFrame {
 		});
 		btn_Start.setBounds(127, 335, 83, 22);
 		contentPane.add(btn_Start);
+		btn_Start.setEnabled(false);
+		
 		btn_End.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Iðsaugom duomenis iðorinë atmintyje
@@ -668,13 +683,13 @@ public class MainWindow extends JFrame {
 				RM.S.set("0");
 				RM.C.set("0");
 				RM.B.set("0");
-				RM.IP.set("0");
+				RM.IP.set(0);
 				RM.AR.set("0000");
 				RM.BR.set("0000");
 				RM.SI.set(0);
 				RM.PI.set(0);
 				RM.TI.set(0);
-				RM.TIMER.update();
+				RM.TIMER.reset();
 				RM.MODE.set(0);
 
 				text_reg_AR.setText(RM.AR.get());
@@ -683,7 +698,7 @@ public class MainWindow extends JFrame {
 				text_flag_C.setText(RM.C.get());
 				text_flag_S.setText(RM.S.get());
 				text_flag_B.setText(RM.B.get());
-				text_reg_IP.setText(RM.IP.get());
+				text_reg_IP.setText(Integer.toHexString(RM.IP.get()));
 				text_reg_TIMER.setText(Integer.toString(RM.TIMER.get()));
 				text_reg_SI.setText(Integer.toString(RM.SI.get()));
 				text_reg_PI.setText(Integer.toString(RM.PI.get()));
@@ -695,6 +710,7 @@ public class MainWindow extends JFrame {
 				text_reg_CHST_Output.setText(Integer.toString(RM.CHST.get(3)));
 				text_reg_PTR.setText(RM.PTR.get());
 
+				btn_Load.setEnabled(true);
 				btn_End.setEnabled(false);
 				btn_Start.setEnabled(false);
 				btn_Step.setEnabled(false);
@@ -702,6 +718,7 @@ public class MainWindow extends JFrame {
 		});
 		btn_End.setBounds(216, 335, 83, 22);
 		contentPane.add(btn_End);
+		btn_End.setEnabled(false);
 
 		btn_Step.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -712,6 +729,7 @@ public class MainWindow extends JFrame {
 		});
 		btn_Step.setBounds(305, 335, 83, 22);
 		contentPane.add(btn_Step);
+		btn_Step.setEnabled(false);
 
 		JLabel lblLemput = new JLabel("Lemput\u0117:");
 		lblLemput.setFont(new Font("Tahoma", Font.PLAIN, 11));
@@ -731,6 +749,19 @@ public class MainWindow extends JFrame {
 
 	}
 
+	public static void deactivateStart(){
+		btn_Start.setEnabled(false);
+
+	}
+	public static void deactivateStep(){
+		btn_Step.setEnabled(false);
+
+	}
+	public static void deactivateEnd(){
+		btn_End.setEnabled(false);
+
+	}
+	
 	public static void set(String register, String str_value) {
 
 		switch (register) {
@@ -788,6 +819,12 @@ public class MainWindow extends JFrame {
 		case "LEMPUTE":
 			text_reg_CHST_Lempute.setText(str_value);
 			break;
+		case "BAR":
+			text_reg_BAR.setText(str_value);
+			break;
+		case "KITA_KOMANDA":
+			text_reg_next_command.setText(str_value);
+			break;
 		}
 	}
 
@@ -827,6 +864,10 @@ public class MainWindow extends JFrame {
 			return text_reg_CHST_Lempute.getText();
 		case "OUTPUT":
 			return text_reg_CHST_Output.getText();
+		case "BAR":
+			return text_reg_BAR.getText();
+		case "KITA_KOMANDA":
+			return text_reg_next_command.getText();
 		default:
 			return "Klaida!";
 		}

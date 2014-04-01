@@ -7,6 +7,7 @@ import kontroleris.Main;
 import kontroleris.MainWindow;
 import registers.CHST;
 import registers.Register;
+import registers.IP;
 import registers.ModeRegister;
 import registers.PTRRegister;
 import registers.TimerRegister;
@@ -18,7 +19,7 @@ public class RM {
 	public static PTRRegister PTR; // puslapiavimo reg
 	public static Register AR; // bendras reg
 	public static Register BR; // bendras reg
-	public static Register IP; // komandu skaitliukas
+	public static IP IP; // komandu skaitliukas
 	public static Register Z; // nulio flag
 	public static Register C; // pernesimo flag
 	public static Register S; // zenklo flag
@@ -39,6 +40,8 @@ public class RM {
 	
 	public static int inputKiekis;
 
+	public static boolean HALT = false;
+	
 	public static PageTable PageTable;
 	
 	public RM() {
@@ -51,7 +54,7 @@ public class RM {
 		PTR.setPageTable(PageTable.getAdress());
 		AR = new Register(0000);
 		BR = new Register(0000);
-		IP = new Register(00);
+		IP = new IP(00);
 		Z = new Register(0);
 		C = new Register(0);
 		S = new Register(0);
@@ -258,6 +261,7 @@ public class RM {
 			IP.increase();
 			PI.set(2);
 			MODE.set(1);
+			test();
 			break;
 		}
 		}
@@ -499,13 +503,13 @@ public class RM {
 	}
 
 	public static void JM(int xx) {
-		IP.set(Integer.toHexString(xx));
+		IP.set(xx);
 		updateGUI();
 	}
 
 	public static void JG(int xx) {
 		if ((C.get() == "0") && (S.get() == "0") && (Z.get() == "0")) {
-			IP.set(Integer.toHexString(xx));
+			IP.set(xx);
 		}
 		else {
 			IP.increase();
@@ -515,7 +519,7 @@ public class RM {
 
 	public static void JL(int xx) {
 		if ((C.get() == "1") && (S.get() == "1") && (Z.get() == "0")) {
-			IP.set(Integer.toHexString(xx));
+			IP.set(xx);
 		}
 		else {
 			IP.increase();
@@ -525,7 +529,7 @@ public class RM {
 
 	public static void JC(int xx) {
 		if (C.get() == "1") {
-			IP.set(Integer.toHexString(xx));
+			IP.set(xx);
 		}
 		else {
 			IP.increase();
@@ -535,7 +539,7 @@ public class RM {
 
 	public static void JZ(int xx) {
 		if (Z.get() == "1") {
-			IP.set(Integer.toHexString(xx));
+			IP.set(xx);
 		}
 		else {
 			IP.increase();
@@ -545,7 +549,7 @@ public class RM {
 
 	public static void JN(int xx) {
 		if (Z.get() == "0") {
-			IP.set(Integer.toHexString(xx));
+			IP.set(xx);
 		}
 		else {
 			IP.increase();
@@ -555,7 +559,7 @@ public class RM {
 
 	public static void LP(int xx) {
 		if (Integer.parseInt(BR.get(), 16) > 0) {
-			IP.set(Integer.toHexString(xx));
+			IP.set(xx);
 		}
 		else {
 			IP.increase();
@@ -747,23 +751,29 @@ public class RM {
 		if (SI.get() != 0) {
 			switch (SI.get()) {
 			case 1: {
-				MainWindow.updateConsole("Pertraukimą iššaukė komanda GD.");
+				MainWindow.updateConsole("Pertraukimą i�?�?aukė komanda GD.");
 				break;
 			}
 			case 2: {
-				MainWindow.updateConsole("Pertraukimą iššaukė komanda PD.");
+				MainWindow.updateConsole("Pertraukimą i�?�?aukė komanda PD.");
 				break;
 			}
 			case 3: {
-				MainWindow.updateConsole("Pertraukimą iššaukė komanda HALT.");
+				MainWindow.updateConsole("Pertraukimą i�?�?aukė komanda HALT.");
+				HALT = true;
+				updateGUI();
+				MainWindow.updateConsole(">>> Programa baigė darbą!");
+				MODE.set(1);
+				MainWindow.deactivateStart();
+				MainWindow.deactivateStep();
 				break;
 			}
 			case 4: {
-				MainWindow.updateConsole("Pertraukimą iššaukė komanda LBON.");
+				MainWindow.updateConsole("Pertraukimą i�?�?aukė komanda LBON.");
 				break;
 			}
 			case 5: {
-				MainWindow.updateConsole("Pertraukimą iššaukė komanda LBOF.");
+				MainWindow.updateConsole("Pertraukimą i�?�?aukė komanda LBOF.");
 				break;
 			}
 			default: {
@@ -779,7 +789,7 @@ public class RM {
 				break;
 			}
 			default: {
-				MainWindow.updateConsole("Pertraukimas T neįvyko.");
+				MainWindow.updateConsole("Pertraukimas TI neįvyko.");
 			}
 			}
 		}
@@ -809,7 +819,7 @@ public class RM {
 		}
 		if(SI.get() != 3) {
 			updateGUI();
-			String command = Atmintis.get(Integer.parseInt(IP.get(), 16));
+			String command = Atmintis.get(IP.get());
 			doCommand(command);
 			test();
 		} else {
@@ -817,23 +827,34 @@ public class RM {
 			MainWindow.updateConsole(">>> Programa baigė darbą!");
 			MODE.set(1);
 		}
+		test();
 	}
 	
 	public static void updateReg() {
-		MODE.set(0);
+		SI.set(0);
+		PI.set(0);
 		if(SI.get() != 3) { SI.set(0); }
 		if (CHST.get(3) != 1) {
 			CHST.cleanCHST();
 		}
-		PI.set(0);
-		TI.set(0);
+		MODE.set(0);
 	}
 	
-	public static boolean test() {
+	public static void resetReg() {
+		SI.set(0);
+		PI.set(0);
+		TI.set(0);
+		TIMER.reset();
+		CHST.cleanCHST();
+		MODE.set(0);
+	}
+	
+	private static boolean test() {
 		if (SI.get() + PI.get() + TI.get() != 0) {
 			MODE.set(1);
 			Interrupt();
 			updateGUI();
+			updateReg();
 			return true;
 		} else {
 			return false;
@@ -841,7 +862,7 @@ public class RM {
 	}
 	
 	public static void updateGUI() {
-		MainWindow.set("IP",IP.get());
+		MainWindow.set("IP",Integer.toHexString((IP.get())));
 		MainWindow.set("AR",AR.get());
 		MainWindow.set("BR",BR.get());
 		MainWindow.set("Z",Z.get());
@@ -858,6 +879,7 @@ public class RM {
 		MainWindow.set("OUTPUT",Integer.toString(CHST.get(1)));
 		MainWindow.set("EMEMORY",Integer.toString(CHST.get(2)));
 		MainWindow.set("LEMPUTE",Integer.toString(CHST.get(3)));
+		MainWindow.set("KITA_KOMANDA", Atmintis.get(IP.getNext()));
 		MainWindow.updateListVA(Atmintis);
 		MainWindow.updateListRM(RM.memory);
 		MainWindow.updateListEM(RM.externalMemory);

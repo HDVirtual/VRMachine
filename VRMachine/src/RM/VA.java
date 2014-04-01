@@ -29,6 +29,13 @@ public class VA {
 		return RM.memory.getWord(block, index);
 	}
 	
+	public String get(String string) {
+		int xx = Integer.parseInt(string);
+		int block = RM.PageTable.getRealBlockNumber(extractBlock(xx));
+		int index = extractIndex(xx);
+		return RM.memory.getWord(block, index);
+	}
+	
 	public ArrayList<String> getBlock(int block) {
 		int blokas = RM.PageTable.getRealBlockNumber(block);
 		return getBlock(blokas);
@@ -49,5 +56,7 @@ public class VA {
 			return Integer.parseInt(index, 16);
 		} else { return xx; }
 	}
+
+	
 
 }
