@@ -2,16 +2,16 @@ package registers;
 
 public class TimerRegister {
 
-	private int T;
+	private int TI;
 	public TimerRegister(int T) {
-		this.T = T;
+		this.TI = T;
 	}
 
 	public int get() {
-		return this.T;
+		return this.TI;
 	}
 
 	public void set(int T) {
-		this.T = T;
+		this.TI = T;
 	}
 }

@@ -1,31 +1,30 @@
 package registers;
 
 public class TimerMechRegister {
-	private int TI;
+	private int TIMER;
 	public TimerMechRegister(int TI) {
-		this.TI = TI;
+		this.TIMER = TI;
 	}
 
 	public int get() {
-		return this.TI;
+		return this.TIMER;
 	}
 
-	public void set() {
-		if (this.TI != 1) {
-			this.TI = this.TI - 1;
+	public void update() {
+		if (this.TIMER > 0) {
+			this.TIMER = this.TIMER - 1;
 		} else {
-			this.TI = this.TI - 1;
-			//RM.RM.T.set(1);
+			this.TIMER = this.TIMER - 1;
 			RM.RM.MODE.set(1);
-			update();
+			reset();
 		}
 	}
 	
 	public void cleanTIMER(){
-		this.TI = 0;
+		this.TIMER = 0;
 	}
 
-	public void update() {
-		this.TI = 10;
+	public void reset() {
+		this.TIMER = 10;
 	}
 }
