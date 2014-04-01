@@ -751,15 +751,15 @@ public class RM {
 		if (SI.get() != 0) {
 			switch (SI.get()) {
 			case 1: {
-				MainWindow.updateConsole("Pertraukimą i�?�?aukė komanda GD.");
+				MainWindow.updateConsole("Pertraukimą i�?�?aukė komanda GD.");
 				break;
 			}
 			case 2: {
-				MainWindow.updateConsole("Pertraukimą i�?�?aukė komanda PD.");
+				MainWindow.updateConsole("Pertraukimą i�?�?aukė komanda PD.");
 				break;
 			}
 			case 3: {
-				MainWindow.updateConsole("Pertraukimą i�?�?aukė komanda HALT.");
+				MainWindow.updateConsole("Pertraukimą i�?�?aukė komanda HALT.");
 				HALT = true;
 				updateGUI();
 				MainWindow.updateConsole(">>> Programa baigė darbą!");
@@ -769,11 +769,11 @@ public class RM {
 				break;
 			}
 			case 4: {
-				MainWindow.updateConsole("Pertraukimą i�?�?aukė komanda LBON.");
+				MainWindow.updateConsole("Pertraukimą i�?�?aukė komanda LBON.");
 				break;
 			}
 			case 5: {
-				MainWindow.updateConsole("Pertraukimą i�?�?aukė komanda LBOF.");
+				MainWindow.updateConsole("Pertraukimą i�?�?aukė komanda LBOF.");
 				break;
 			}
 			default: {
@@ -815,7 +815,7 @@ public class RM {
 		TIMER.set();
 		if (TIMER.get() == 0) {
 			TI.set(1);
-			TIMER.update();
+			TIMER.reset();
 		}
 		if(SI.get() != 3) {
 			updateGUI();
@@ -827,12 +827,12 @@ public class RM {
 			MainWindow.updateConsole(">>> Programa baigė darbą!");
 			MODE.set(1);
 		}
-		test();
 	}
 	
 	public static void updateReg() {
 		SI.set(0);
 		PI.set(0);
+		TI.set(0);
 		if(SI.get() != 3) { SI.set(0); }
 		if (CHST.get(3) != 1) {
 			CHST.cleanCHST();
@@ -854,7 +854,6 @@ public class RM {
 			MODE.set(1);
 			Interrupt();
 			updateGUI();
-			updateReg();
 			return true;
 		} else {
 			return false;
@@ -883,7 +882,7 @@ public class RM {
 		MainWindow.updateListVA(Atmintis);
 		MainWindow.updateListRM(RM.memory);
 		MainWindow.updateListEM(RM.externalMemory);
-		MainWindow.set("cmd",Atmintis.get(Integer.parseInt(IP.get(), 16)));
+		MainWindow.set("cmd",Atmintis.get(IP.get()));
 		if (CHST.get(3) == 1) {
 			MainWindow.setLempute(true);
 		} else { MainWindow.setLempute(false); }

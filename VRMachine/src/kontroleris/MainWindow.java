@@ -385,6 +385,7 @@ public class MainWindow extends JFrame {
 		panel_registrai.add(lbl_reg_next_command);
 		
 		text_reg_next_command = new JTextField();
+		text_reg_next_command.setHorizontalAlignment(SwingConstants.CENTER);
 		text_reg_next_command.setBounds(330, 137, 40, 20);
 		panel_registrai.add(text_reg_next_command);
 		text_reg_next_command.setColumns(10);
@@ -766,7 +767,7 @@ public class MainWindow extends JFrame {
 
 		switch (register) {
 		case "cmd":
-			next_command.setText(str_value);
+			text_reg_next_command.setText(str_value);
 			break;
 		case "AR":
 			text_reg_AR.setText(str_value);

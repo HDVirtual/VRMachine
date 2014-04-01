@@ -14,7 +14,7 @@ public class TimerMechRegister {
 	}
 
 	public void set() {
-			this.TI = this.TI - 1;
+			this.TIMER = this.TIMER - 1;
 	}
 	
 	public void cleanTIMER(){
