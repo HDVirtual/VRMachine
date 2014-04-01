@@ -26,7 +26,6 @@ import java.awt.Button;
 import javax.swing.SwingConstants;
 
 import RM.ExternalMemory;
-import RM.PageTable;
 import RM.RM;
 import RM.RealMemory;
 import RM.VA;
@@ -42,11 +41,6 @@ import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-
-import javax.swing.JButton;
-
-import registers.PTRRegister;
-import javax.swing.JTextArea;
 
 public class MainWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -190,6 +184,7 @@ public class MainWindow extends JFrame {
 		text_reg_TIMER.setBounds(130, 20, 40, 20);
 		panel_registrai.add(text_reg_TIMER);
 		text_reg_TIMER.setColumns(10);
+		text_reg_TIMER.setEditable(false);
 
 		// ---MODE---
 		JLabel lbl_reg_MODE = new JLabel("MODE");
@@ -203,6 +198,7 @@ public class MainWindow extends JFrame {
 		text_reg_MODE.setBounds(130, 45, 40, 20);
 		panel_registrai.add(text_reg_MODE);
 		text_reg_MODE.setColumns(10);
+		text_reg_MODE.setEditable(false);
 
 		// ---PTR---
 		JLabel lbl_reg_PTR = new JLabel("PTR");
@@ -216,7 +212,8 @@ public class MainWindow extends JFrame {
 		text_reg_PTR.setBounds(130, 70, 40, 20);
 		panel_registrai.add(text_reg_PTR);
 		text_reg_PTR.setColumns(10);
-
+		text_reg_PTR.setEditable(false);
+		
 		// ---PI---
 		JLabel lbl_reg_PI = new JLabel("PI");
 		lbl_reg_PI.setHorizontalAlignment(SwingConstants.CENTER);
@@ -229,18 +226,21 @@ public class MainWindow extends JFrame {
 		text_reg_PI.setBounds(250, 20, 20, 20);
 		panel_registrai.add(text_reg_PI);
 		text_reg_PI.setColumns(10);
+		text_reg_PI.setEditable(false);
 
 		// ---SI---
 		JLabel lbl_reg_SI = new JLabel("SI");
 		lbl_reg_SI.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_reg_SI.setBounds(230, 45, 20, 20);
 		panel_registrai.add(lbl_reg_SI);
+		
 
 		text_reg_SI = new JTextField();
 		text_reg_SI.setHorizontalAlignment(SwingConstants.CENTER);
 		text_reg_SI.setBounds(250, 45, 20, 20);
 		panel_registrai.add(text_reg_SI);
 		text_reg_SI.setColumns(10);
+		text_reg_SI.setEditable(false);
 
 		// ---TI---
 		JLabel lbl_reg_TI = new JLabel("TI");
@@ -254,6 +254,7 @@ public class MainWindow extends JFrame {
 		text_reg_TI.setBounds(250, 70, 20, 20);
 		panel_registrai.add(text_reg_TI);
 		text_reg_TI.setColumns(10);
+		text_reg_TI.setEditable(false);
 
 		JLabel lbl_reg_CHST = new JLabel("CHST");
 		lbl_reg_CHST.setHorizontalAlignment(SwingConstants.CENTER);
@@ -331,6 +332,7 @@ public class MainWindow extends JFrame {
 		text_reg_CHST_Input.setBounds(130, 95, 20, 20);
 		panel_registrai.add(text_reg_CHST_Input);
 		text_reg_CHST_Input.setColumns(10);
+		text_reg_CHST_Input.setEditable(false);
 
 		JLabel lbl_reg_CHST_Output = new JLabel("O");
 		lbl_reg_CHST_Output.setHorizontalAlignment(SwingConstants.CENTER);
@@ -343,6 +345,7 @@ public class MainWindow extends JFrame {
 		text_reg_CHST_Output.setBounds(150, 95, 20, 20);
 		panel_registrai.add(text_reg_CHST_Output);
 		text_reg_CHST_Output.setColumns(10);
+		text_reg_CHST_Output.setEditable(false);
 
 		JLabel lbl_reg_CHST_EMemory = new JLabel("EM");
 		lbl_reg_CHST_EMemory.setHorizontalAlignment(SwingConstants.CENTER);
@@ -355,6 +358,7 @@ public class MainWindow extends JFrame {
 		text_reg_CHST_EMemory.setBounds(170, 95, 20, 20);
 		panel_registrai.add(text_reg_CHST_EMemory);
 		text_reg_CHST_EMemory.setColumns(10);
+		text_reg_CHST_EMemory.setEditable(false);
 
 		JLabel lbl_reg_CHST_Lempute = new JLabel("L");
 		lbl_reg_CHST_Lempute.setHorizontalAlignment(SwingConstants.CENTER);
@@ -367,6 +371,7 @@ public class MainWindow extends JFrame {
 		text_reg_CHST_Lempute.setBounds(190, 95, 20, 20);
 		panel_registrai.add(text_reg_CHST_Lempute);
 		text_reg_CHST_Lempute.setColumns(10);
+		text_reg_CHST_Lempute.setEditable(false);
 
 		JLabel lbl_reg_BAR = new JLabel("BAR");
 		lbl_reg_BAR.setHorizontalAlignment(SwingConstants.CENTER);
@@ -379,6 +384,7 @@ public class MainWindow extends JFrame {
 		text_reg_BAR.setBounds(130, 155, 40, 20);
 		panel_registrai.add(text_reg_BAR);
 		text_reg_BAR.setColumns(10);
+		text_reg_BAR.setEditable(false);
 		
 		JLabel lbl_reg_next_command = new JLabel("Kita komanda:");
 		lbl_reg_next_command.setBounds(240, 137, 90, 20);
@@ -389,6 +395,7 @@ public class MainWindow extends JFrame {
 		text_reg_next_command.setBounds(330, 137, 40, 20);
 		panel_registrai.add(text_reg_next_command);
 		text_reg_next_command.setColumns(10);
+		text_reg_next_command.setEditable(false);
 		// ----------------------------------------------------------------
 
 		// ------------ATMINTIS--------------------------------------------
@@ -434,9 +441,8 @@ public class MainWindow extends JFrame {
 			boolean[] columnEditables = new boolean[Main.blokoDydis+1];
 
 			public boolean isCellEditable(int row, int column) {
-				columnEditables[0] = false;
-				for (int i = 1; i < Main.blokoDydis+1; i++) {
-					columnEditables[i] = true;
+				for (int i = 0; i < Main.blokoDydis+1; i++) {
+					columnEditables[i] = false;
 				}
 				return columnEditables[column];
 			}
@@ -488,9 +494,8 @@ public class MainWindow extends JFrame {
 			boolean[] columnEditables = new boolean[Main.blokoDydis+1];
 
 			public boolean isCellEditable(int row, int column) {
-				columnEditables[0] = false;
-				for (int i = 1; i < Main.blokoDydis+1; i++) {
-					columnEditables[i] = true;
+				for (int i = 0; i < Main.blokoDydis+1; i++) {
+					columnEditables[i] = false;
 				}
 				return columnEditables[column];
 			}
@@ -513,7 +518,7 @@ public class MainWindow extends JFrame {
 		scrollPane_VA.setBounds(30, 342, 700, 150);
 		panel_atmintis.add(scrollPane_VA);
 
-		table_VA = new JTable();
+		table_VA = (new JTable());
 		table_VA.setRowSelectionAllowed(false);
 		table_VA.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table_VA.setShowGrid(false);
@@ -613,6 +618,7 @@ public class MainWindow extends JFrame {
 						String s; 
 						int block = 0;
 						int index = 0;
+						int progLength = 0;
 						while((s = br.readLine()) != null) {
 							if (s.charAt(0) == '$') {
 								block = Character.digit(s.charAt(2),16);
@@ -620,6 +626,7 @@ public class MainWindow extends JFrame {
 							} else {
 								s = s.replaceAll("\\s", "");
 								RM.Atmintis.set(block, index, s);
+								progLength++;
 								if (index == 15) {
 									index = 0;
 									block += 1;
@@ -628,6 +635,8 @@ public class MainWindow extends JFrame {
 								}
 							}
 						} 
+						progLength = progLength / 16;
+						RM.PTR.setProgramSize(progLength);
 						fr.close(); 
 						RM.updateGUI();
 						txtpnconsole.setText(txtpnconsole.getText()
@@ -644,7 +653,6 @@ public class MainWindow extends JFrame {
 					updateListRM(RM.memory);
 					
 					
-					btn_Load.setEnabled(false);
 					btn_Start.setEnabled(true);
 					btn_Step.setEnabled(true);
 				}
@@ -652,7 +660,6 @@ public class MainWindow extends JFrame {
 					// Vartotojas atðaukia pasirinkimà
 					txtpnconsole.setText(txtpnconsole.getText()
 							+ "\n> File Chooser closed.");
-					btn_Load.setEnabled(true);
 					btn_Start.setEnabled(false);
 					btn_Step.setEnabled(false);
 				}
@@ -665,6 +672,7 @@ public class MainWindow extends JFrame {
 		contentPane.add(btn_Load);
 
 		btn_Start.addActionListener(new ActionListener() {
+			@SuppressWarnings("static-access")
 			public void actionPerformed(ActionEvent e) {
 				rm.startProgram();
 				btn_End.setEnabled(true);
@@ -699,7 +707,7 @@ public class MainWindow extends JFrame {
 				text_flag_C.setText(RM.C.get());
 				text_flag_S.setText(RM.S.get());
 				text_flag_B.setText(RM.B.get());
-				text_reg_IP.setText(Integer.toHexString(RM.IP.get()));
+				text_reg_IP.setText(RM.IP.get());
 				text_reg_TIMER.setText(Integer.toString(RM.TIMER.get()));
 				text_reg_SI.setText(Integer.toString(RM.SI.get()));
 				text_reg_PI.setText(Integer.toString(RM.PI.get()));
@@ -711,7 +719,6 @@ public class MainWindow extends JFrame {
 				text_reg_CHST_Output.setText(Integer.toString(RM.CHST.get(3)));
 				text_reg_PTR.setText(RM.PTR.get());
 
-				btn_Load.setEnabled(true);
 				btn_End.setEnabled(false);
 				btn_Start.setEnabled(false);
 				btn_Step.setEnabled(false);
@@ -722,6 +729,7 @@ public class MainWindow extends JFrame {
 		btn_End.setEnabled(false);
 
 		btn_Step.addActionListener(new ActionListener() {
+			@SuppressWarnings("static-access")
 			public void actionPerformed(ActionEvent e) {
 				btn_End.setEnabled(true);
 				// Vykdyti programà po þingsná
@@ -831,31 +839,31 @@ public class MainWindow extends JFrame {
 
 	public static String get(String register) {
 		switch (register) {
-		case "RM_AR":
+		case "AR":
 			return text_reg_AR.getText();
-		case "RM_BR":
+		case "BR":
 			return text_reg_BR.getText();
-		case "RM_IP":
+		case "IP":
 			return text_reg_IP.getText();
-		case "RM_Z":
+		case "Z":
 			return text_flag_Z.getText();
-		case "RM_C":
+		case "C":
 			return text_flag_C.getText();
-		case "RM_B":
+		case "B":
 			return text_flag_B.getText();
-		case "RM_S":
+		case "S":
 			return text_flag_S.getText();
 		case "TIMER":
 			return text_reg_TIMER.getText();
-		case "RM_MODE":
+		case "MODE":
 			return text_reg_MODE.getText();
-		case "RM_PTR":
+		case "PTR":
 			return text_reg_PTR.getText();
-		case "RM_PI":
+		case "PI":
 			return text_reg_PI.getText();
-		case "RM_SI":
+		case "SI":
 			return text_reg_SI.getText();
-		case "RM_TI":
+		case "TI":
 			return text_reg_TI.getText();
 		case "INPUT":
 			return text_reg_CHST_Input.getText();
@@ -919,5 +927,19 @@ public class MainWindow extends JFrame {
 		}
 		scrollPane_VA.revalidate();
 		scrollPane_VA.repaint();
+	}
+
+	public static String getTable_VA(int row, int column) {
+		return (String) table_VA.getValueAt(row, column);
+	}
+	public static void setTable_VA(String value, int row, int column) {
+		MainWindow.table_VA.setValueAt(value, row, column);
+	}
+	
+	public static String getTable_RA(int row, int column) {
+		return (String) table_RA.getValueAt(row, column);
+	}
+	public static void setTable_RA(String value, int row, int column) {
+		MainWindow.table_RA.setValueAt(value, row, column);
 	}
 }

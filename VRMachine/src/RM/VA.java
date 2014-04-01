@@ -30,7 +30,7 @@ public class VA {
 	}
 	
 	public String get(String string) {
-		int xx = Integer.parseInt(string);
+		int xx = Integer.parseInt(string, 16);
 		int block = RM.PageTable.getRealBlockNumber(extractBlock(xx));
 		int index = extractIndex(xx);
 		return RM.memory.getWord(block, index);

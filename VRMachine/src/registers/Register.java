@@ -11,11 +11,11 @@ public class Register {
 	}
 
 	public Register(int x) {
-		this.reg = String.valueOf(x);
+		this.reg = String.valueOf(x).toUpperCase();
 	}
 
 	public Register(String x) {
-		this.reg = x;
+		this.reg = x.toUpperCase();
 	}
 
 	public String get() {
@@ -23,23 +23,23 @@ public class Register {
 	}
 
 	public void set(String value) {
-		this.reg = value;
+		this.reg = value.toUpperCase();
 	}
 
 	public void setHigh(String value) {
 		String L = value + this.reg.substring(2, 4);
-		this.reg = L;
+		this.reg = L.toUpperCase();
 	}
 
 	public void setLow(String value) {
 		String L = this.reg.substring(0, 2) + value;
-		this.reg = L;
+		this.reg = L.toUpperCase();
 	}
 
 	public void increase() {
 		int register = Integer.parseInt(this.reg, 16);
 		register += 1;
 		String hex = Integer.toHexString(register);
-		this.reg = hex;
+		this.reg = hex.toUpperCase();
 	}
 }

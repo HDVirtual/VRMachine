@@ -1,36 +1,46 @@
 package registers;
-
+/*
+ * @author Haroldas Baltrûnas
+ * @author Deividas Frolovas
+ */
 public class IP {
-	private int reg = 0;
+	private String reg;
 
 	public IP() {
-		this.reg = 0;
+		this.reg = "0";
 	}
 
 	public IP(int x) {
-		this.reg = x;
+		this.reg = Integer.toString(x).toUpperCase();
 	}
 
 	public IP(String x) {
-		this.reg = Integer.parseInt(x);
+		this.reg = x.toUpperCase();
 	}
 
-	public int get() {
+	public String get() {
 		return this.reg;
 	}
 
-	public int getNext() {
-		if (this.reg == 0)
-			return 0;
+	public String getNext() {
+		if (this.reg == "0")
+			return "0";
 		else 
 			return this.reg;
 	}
 
 	public void set(int value) {
-		this.reg = value;
+		this.reg = Integer.toString(value).toUpperCase();
 	}
 
+	public void set(String value) {
+		this.reg = value.toUpperCase();
+	}
+	
 	public void increase() {
-		this.reg++;
+		int register = Integer.parseInt(this.reg, 16);
+		register += 1;
+		String hex = Integer.toHexString(register);
+		this.reg = hex.toUpperCase();
 	}
 }
