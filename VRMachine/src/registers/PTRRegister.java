@@ -28,6 +28,8 @@ public class PTRRegister {
 
 	public void setPageTable(int adress) {
 		String Hex = Integer.toHexString(adress);
+		if (Hex.length() < 2)
+			Hex = "0" + Hex;
 		String L = PTR.substring(0, 2) + Hex;
 		this.PTR = L.toUpperCase();
 	}

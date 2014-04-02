@@ -11,41 +11,64 @@ import RM.RM;
 
 public class PageTable {  // galima padaryti pi=4 jei truksta tusciu bloku
 	
-	int adress;
+	private static int adress;
+	private static ArrayList<Integer> randomList = new ArrayList<Integer>(Main.RMBlokuSkaicius - 1);
+	private static boolean commonCreated = false;
 	
 	public PageTable() {
-		ArrayList<Integer> randomList = new ArrayList<Integer>();
-		int x = 0;
 		int element = 0;
-		for (int i = 0; i < Main.RMBlokuSkaicius; i++) {
-			for (int n = 0; i < Main.blokoDydis; i++) {
-				if (RM.memory.getWord(i, n) != "____") {
-					x = 1;
-				}
-			}
-			if (x == 0) {
+		for (int i = 0; i < Main.RMBlokuSkaicius-1; i++) {
+			if (emptyBlock(i)) {
 				randomList.add(element, i);
 				element += 1;
 			}
-			x = 0;
 		}
-		Collections.shuffle(randomList);
-		this.adress = randomList.get(0);
-		randomList.remove(0);
-		for (int i = 0; i < Main.blokoDydis; i++) {
+		createVM();
+		for (int i = 0; i < Main.blokoDydis; i++){
+			
+		}
+	}
+	
+	
+	public static boolean createVM(){
+		try{
 			Collections.shuffle(randomList);
-			RM.memory.set(this.adress, i, Integer.toHexString(randomList.get(0)));
+			setAdress(randomList.get(0));
+			RM.PTR.setPageTable(PageTable.getAdress());
 			randomList.remove(0);
+			for (int i = 0; i < Main.blokoDydis; i++) {
+				RM.memory.set(getAdress(), i, Integer.toHexString(randomList.get(0)));
+				randomList.remove(0);
+			}
+			return true;
+		}
+		catch(Exception e){
+			return false;
 		}
 	}
-	
-	public int getAdress() {
-		return this.adress;
-	}
-	
+		
 	public int getRealBlockNumber(int VirtualBlock) {
 		String number = RM.memory.getWord(RM.PTR.getPageTable(), VirtualBlock);
 		int cell = Integer.parseInt(number, 16);
 		return cell;
+	}
+	public boolean emptyBlock(int block){
+		boolean x = true;
+		for (int n = 0; n < Main.blokoDydis; n++) {
+			if (RM.memory.getWord(block, n) != "____") {
+				x = false;
+			}
+		}
+		return x;
+	}
+
+
+	public static int getAdress() {
+		return adress;
+	}
+
+
+	public static void setAdress(int adress) {
+		PageTable.adress = adress;
 	}
 }

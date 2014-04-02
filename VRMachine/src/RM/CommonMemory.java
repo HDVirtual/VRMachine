@@ -1,41 +1,36 @@
 package RM;
+
 /*
  * @author Haroldas Baltrûnas
  * @author Deividas Frolovas
  */
-import java.util.ArrayList;
+
+import kontroleris.Main;
 
 public class CommonMemory {
-	
-	ArrayList<String> memory = new ArrayList<String>();
-	
+
+	private boolean[] CSemafor;
+
 	public CommonMemory() {
-		for (int i = 0; i < 16; i++) {
-					memory.add(i, "____");
-    	}
-    }
-	
-	public String getWord(int index) {
-    	String Word = memory.get(index);
-    	return Word;
-    }
-	
-	public String getWord(String adress) {
-		int cell = getAdress(adress);
-    	return memory.get(cell);
-    }
-	
-	private int getAdress(String adress) {
-		String result = adress.substring(3, 4);
-		int cell = Integer.parseInt(result, 16);
-		return cell;
-    }
-	
-	public void set(String adress, String value) {
-		memory.set(getAdress(adress),value);
+		CSemafor = new boolean[Main.blokoDydis];
+
+		for (int i = 0; i < Main.blokoDydis - 1; i++) {
+			CSemafor[i] = false;
+		}
 	}
-	
-	public void set(int index, String value) {
-		memory.set(index,value);
+
+	public void activateCSemafor(int value, int cell) {
+		if (value == 1)
+			CSemafor[cell] = true;
+		else if (value == 0)
+			CSemafor[cell] = false;
+	}
+
+	public boolean usedCSemafor(int cell) {
+		if (CSemafor[cell])
+			return true;
+		else
+			return false;
+
 	}
 }

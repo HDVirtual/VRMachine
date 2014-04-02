@@ -1,4 +1,5 @@
 package RM;
+
 /*
  * @author Haroldas Baltrūnas
  * @author Deividas Frolovas
@@ -29,7 +30,8 @@ public class RM {
 	public static IntRegister PI; // programinio pertraukimo
 	public static TimerRegister TI; // taimerio pertraukimo
 	public static IntRegister IOI; // taimerio pertraukimo
-	public static ModeRegister MODE; // darbo rezimo registras. mode=1 - dirba reali masina; mode=0 - virtuali.
+	public static ModeRegister MODE; // darbo rezimo registras. mode=1 - dirba
+										// reali masina; mode=0 - virtuali.
 	public static BARRegister BAR; // bendros atminties uzimtumo reg
 	public static CHST CHST; // kanalu busenos reg
 	public static Lempute lempute;
@@ -37,21 +39,26 @@ public class RM {
 	public static RealMemory memory;
 	public static ExternalMemory externalMemory;
 	public static CommonMemory commonMemory;
-	
+
 	public static int inputKiekis;
 
 	public static boolean HALT = false;
-	
+
 	public static PageTable PageTable;
-	
+
+	public static boolean[] RSemafor;
+
 	public RM() {
 		memory = new RealMemory(Main.RMBlokuSkaicius);
+		RSemafor = new boolean[Main.RMBlokuSkaicius * Main.blokoDydis];
+
 		externalMemory = new ExternalMemory(Main.EMBlokuSkaicius);
 		Atmintis = new VA(Main.VMBlokuSkaicius);
+
+		commonMemory = new CommonMemory();
 		
 		PTR = new PTRRegister("0F00");
 		PageTable = new PageTable();
-		PTR.setPageTable(PageTable.getAdress());
 		AR = new Register(0000);
 		BR = new Register(0000);
 		IP = new IP(00);
@@ -65,7 +72,7 @@ public class RM {
 		PI = new IntRegister();
 		SI = new IntRegister();
 		MODE = new ModeRegister(1);
-		BAR = new BARRegister();
+		BAR = new BARRegister("FF");
 		CHST = new CHST();
 		lempute = new Lempute();
 
@@ -74,11 +81,11 @@ public class RM {
 
 	private static String getOpk(String zodis) {
 		try {
-			String result = zodis.substring(0, 2); 
+			String result = zodis.substring(0, 2);
 			return result;
 		} catch (StringIndexOutOfBoundsException e) {
 			PI.set(2);
-            return "";
+			return "";
 		}
 	}
 
@@ -88,17 +95,22 @@ public class RM {
 				String result = command.substring(2, 4);
 				int cell = Integer.parseInt(result, 16);
 				return cell;
-			} else {
-				if (!command.equals("HALT") && !command.equals("LXON") && !command.equals("LXOF") && !command.equals("LXCH") && !command.equals("STSB") && !command.equals("LDSB")) {
+			}
+			else {
+				if (!command.equals("HALT") && !command.equals("LXON")
+						&& !command.equals("LXOF") && !command.equals("LXCH")
+						&& !command.equals("STSB") && !command.equals("LDSB")) {
 					PI.set(1);
 				}
-	            return 0;
+				return 0;
 			}
 		} catch (Exception e) {
-			if (!command.equals("HALT") && !command.equals("LXON") && !command.equals("LXCH") && !command.equals("LXOF") && !command.equals("STSB") && !command.equals("LDSB")) {
+			if (!command.equals("HALT") && !command.equals("LXON")
+					&& !command.equals("LXCH") && !command.equals("LXOF")
+					&& !command.equals("STSB") && !command.equals("LDSB")) {
 				PI.set(1);
 			}
-            return 0;
+			return 0;
 		}
 	}
 
@@ -247,6 +259,22 @@ public class RM {
 			}
 			break;
 		}
+		case "LO": {
+			int x = Integer.parseInt(command.substring(2, 3), 16);
+			int y = Integer.parseInt(command.substring(3, 4), 16);
+			LO(x, y);
+			break;
+		}
+
+		case "GT": {
+			GT(xx);
+			break;
+		}
+		case "PT": {
+			PT(xx);
+			break;
+		}
+
 		case "HA": {
 			String result = command.substring(2, 4);
 			switch (result) {
@@ -257,6 +285,7 @@ public class RM {
 			}
 			break;
 		}
+
 		default: {
 			IP.increase();
 			PI.set(2);
@@ -298,13 +327,13 @@ public class RM {
 		Atmintis.set(xx, R);
 		updateGUI();
 	}
-	
+
 	public static void setHighWord(int xx, String R) {
 		String L = R + getWord(xx).substring(2, 4);
 		memory.set(xx, L);
 		updateGUI();
 	}
-	
+
 	public static void setLowWord(int xx, String R) {
 		String L = getWord(xx).substring(0, 2) + R;
 		memory.set(xx, L);
@@ -349,28 +378,28 @@ public class RM {
 	}
 
 	public static void AA(int xx) {
-		try{
-		int number = Integer.parseInt(AR.get(), 16)
-				+ Integer.parseInt(getWord(xx), 16);
-		String hex = Integer.toHexString(number);
-		if (hex.length() > 4) {
-			C.set("1");
-			S.set("0");
-			Z.set("0");
-			AR.set(hex.substring(1, 5));
-		}
-		else if (hex.length() <= 4) {
-			C.set("0");
-			S.set("0");
-			Z.set("0");
-			AR.set(hex);
-		}
-		else if (hex == "10000") {
-			C.set("1");
-			S.set("0");
-			Z.set("1");
-			AR.set("0");
-		}
+		try {
+			int number = Integer.parseInt(AR.get(), 16)
+					+ Integer.parseInt(getWord(xx), 16);
+			String hex = Integer.toHexString(number);
+			if (hex.length() > 4) {
+				C.set("1");
+				S.set("0");
+				Z.set("0");
+				AR.set(hex.substring(1, 5));
+			}
+			else if (hex.length() <= 4) {
+				C.set("0");
+				S.set("0");
+				Z.set("0");
+				AR.set(hex);
+			}
+			else if (hex == "10000") {
+				C.set("1");
+				S.set("0");
+				Z.set("1");
+				AR.set("0");
+			}
 		} catch (Exception e) {
 			PI.set(1);
 		}
@@ -379,28 +408,28 @@ public class RM {
 	}
 
 	public static void AB(int xx) {
-		try{
-		int number = Integer.parseInt(BR.get(), 16)
-				+ Integer.parseInt(getWord(xx), 16);
-		String hex = Integer.toHexString(number);
-		if (hex.length() > 4) {
-			C.set("1");
-			S.set("0");
-			Z.set("0");
-			BR.set(hex.substring(1, 5));
-		}
-		else if (hex.length() <= 4) {
-			C.set("0");
-			S.set("0");
-			Z.set("0");
-			BR.set(hex);
-		}
-		else if (hex == "10000") {
-			C.set("1");
-			S.set("0");
-			Z.set("1");
-			BR.set("0");
-		}
+		try {
+			int number = Integer.parseInt(BR.get(), 16)
+					+ Integer.parseInt(getWord(xx), 16);
+			String hex = Integer.toHexString(number);
+			if (hex.length() > 4) {
+				C.set("1");
+				S.set("0");
+				Z.set("0");
+				BR.set(hex.substring(1, 5));
+			}
+			else if (hex.length() <= 4) {
+				C.set("0");
+				S.set("0");
+				Z.set("0");
+				BR.set(hex);
+			}
+			else if (hex == "10000") {
+				C.set("1");
+				S.set("0");
+				Z.set("1");
+				BR.set("0");
+			}
 		} catch (Exception e) {
 			PI.set(1);
 		}
@@ -409,31 +438,31 @@ public class RM {
 	}
 
 	public static void SA(int xx) {
-		try{
-		int number = Integer.parseInt(AR.get(), 16)
-				- Integer.parseInt(getWord(xx), 16);
-		String hex = Integer.toHexString(number);
-		if (number < 0) {
-			C.set("1");
-			S.set("1");
-			Z.set("0");
-			int n = Integer.parseInt("FFFF", 16)
-					- Integer.parseInt(getWord(xx), 16)
-					+ Integer.parseInt(AR.get(), 16) + 1;
-			AR.set(Integer.toHexString(n));
-		}
-		else if (number > 0) {
-			C.set("0");
-			S.set("0");
-			Z.set("0");
-			AR.set(hex);
-		}
-		else if (hex == "0") {
-			C.set("0");
-			S.set("0");
-			Z.set("1");
-			AR.set("0");
-		}
+		try {
+			int number = Integer.parseInt(AR.get(), 16)
+					- Integer.parseInt(getWord(xx), 16);
+			String hex = Integer.toHexString(number);
+			if (number < 0) {
+				C.set("1");
+				S.set("1");
+				Z.set("0");
+				int n = Integer.parseInt("FFFF", 16)
+						- Integer.parseInt(getWord(xx), 16)
+						+ Integer.parseInt(AR.get(), 16) + 1;
+				AR.set(Integer.toHexString(n));
+			}
+			else if (number > 0) {
+				C.set("0");
+				S.set("0");
+				Z.set("0");
+				AR.set(hex);
+			}
+			else if (hex == "0") {
+				C.set("0");
+				S.set("0");
+				Z.set("1");
+				AR.set("0");
+			}
 		} catch (Exception e) {
 			PI.set(1);
 		}
@@ -442,31 +471,31 @@ public class RM {
 	}
 
 	public static void SB(int xx) {
-		try{
-		int number = Integer.parseInt(BR.get(), 16)
-				- Integer.parseInt(getWord(xx), 16);
-		String hex = Integer.toHexString(number);
-		if (number < 0) {
-			C.set("1");
-			S.set("1");
-			Z.set("0");
-			int n = Integer.parseInt("FFFF", 16)
-					- Integer.parseInt(getWord(xx), 16)
-					+ Integer.parseInt(BR.get(), 16) + 1;
-			BR.set(Integer.toHexString(n));
-		}
-		else if (number > 0) {
-			C.set("0");
-			S.set("0");
-			Z.set("0");
-			BR.set(hex);
-		}
-		else if (hex == "0") {
-			C.set("0");
-			S.set("0");
-			Z.set("1");
-			BR.set("0");
-		}
+		try {
+			int number = Integer.parseInt(BR.get(), 16)
+					- Integer.parseInt(getWord(xx), 16);
+			String hex = Integer.toHexString(number);
+			if (number < 0) {
+				C.set("1");
+				S.set("1");
+				Z.set("0");
+				int n = Integer.parseInt("FFFF", 16)
+						- Integer.parseInt(getWord(xx), 16)
+						+ Integer.parseInt(BR.get(), 16) + 1;
+				BR.set(Integer.toHexString(n));
+			}
+			else if (number > 0) {
+				C.set("0");
+				S.set("0");
+				Z.set("0");
+				BR.set(hex);
+			}
+			else if (hex == "0") {
+				C.set("0");
+				S.set("0");
+				Z.set("1");
+				BR.set("0");
+			}
 		} catch (Exception e) {
 			PI.set(1);
 		}
@@ -617,10 +646,10 @@ public class RM {
 		int pointer = 0;
 		for (int i = 0; i < Main.blokoDydis; i++) {
 			try {
-				setWord(blokas*16+i, buffer.substring(pointer, pointer+4));
+				setWord(blokas * 16 + i, buffer.substring(pointer, pointer + 4));
 				pointer += 4;
 			} catch (Exception e) {
-				setWord(blokas*16+i, "____");
+				setWord(blokas * 16 + i, "____");
 				pointer += 4;
 			}
 		}
@@ -714,10 +743,11 @@ public class RM {
 		if (B.get() == "0") {
 			setHighWord(adress, AL);
 			B.set("1");
-		} else if (B.get() == "1") {
+		}
+		else if (B.get() == "1") {
 			setLowWord(adress, AL);
 			B.set("0");
-			AR.setHigh(Integer.toHexString(adress+1));
+			AR.setHigh(Integer.toHexString(adress + 1));
 		}
 		IP.increase();
 		updateGUI();
@@ -730,14 +760,43 @@ public class RM {
 		if (B.get() == "0") {
 			AR.setLow(memory.substring(0, 2));
 			B.set("1");
-		} else if (B.get() == "1") {
+		}
+		else if (B.get() == "1") {
 			AR.setLow(memory.substring(2, 4));
 			B.set("0");
-			AR.setHigh(Integer.toHexString(adress+1));
+			AR.setHigh(Integer.toHexString(adress + 1));
 		}
 		IP.increase();
 		updateGUI();
 	}
+	
+	public static void LO(int x, int y) {
+		RM.commonMemory.activateCSemafor(x, y);
+		System.out.println(x + "  " + y);
+		IP.increase();
+		updateGUI();
+	}
+
+	public static void GT(int x) {
+		int blokas = Integer.parseInt(BAR.get(), 16);
+		AR.set(memory.getWord(blokas, x));
+		IP.increase();
+		updateGUI();
+	}
+
+	public static void PT(int x) {
+		if (!RM.commonMemory.usedCSemafor(x)) {
+			int blokas = Integer.parseInt(BAR.get(), 16);
+			memory.set(blokas, x, AR.get());
+		}
+		else
+			MainWindow
+					.updateConsole(">>>Bendros atminties ląstelė yra naudojama");
+		IP.increase();
+		updateGUI();
+	}
+
+	
 
 	public static void Interrupt() {
 		if (PI.get() != 0) {
@@ -810,18 +869,20 @@ public class RM {
 			}
 		}
 	}
-	
+
 	public static void startProgram() {
 		do {
 			step();
-		} while(SI.get() != 3);
+		} while (SI.get() != 3);
 	}
+
 	/**
 	 * Vykdomos komandos po þingsn�?
 	 */
 	public static void startProgramStepByStep() {
-			step();
+		step();
 	}
+
 	/**
 	 * Komandos vykdymo þingsnis
 	 */
@@ -833,29 +894,32 @@ public class RM {
 			TI.set(1);
 			TIMER.reset();
 		}
-		if(SI.get() != 3) {
+		if (SI.get() != 3) {
 			updateGUI();
 			String command = Atmintis.get(IP.get());
 			doCommand(command);
 			test();
-		} else {
+		}
+		else {
 			updateGUI();
 			MainWindow.updateConsole(">>> Programa baigė darbą!");
 			MODE.set(1);
 		}
 	}
-	
+
 	public static void updateReg() {
 		SI.set(0);
 		PI.set(0);
 		TI.set(0);
-		if(SI.get() != 3) { SI.set(0); }
+		if (SI.get() != 3) {
+			SI.set(0);
+		}
 		if (CHST.get(3) != 1) {
 			CHST.cleanCHST();
 		}
 		MODE.set(0);
 	}
-	
+
 	public static void resetReg() {
 		SI.set(0);
 		PI.set(0);
@@ -864,47 +928,52 @@ public class RM {
 		CHST.cleanCHST();
 		MODE.set(0);
 	}
-	
+
 	private static boolean test() {
 		if (SI.get() + PI.get() + TI.get() != 0) {
 			MODE.set(1);
 			Interrupt();
 			updateGUI();
 			return true;
-		} else {
+		}
+		else {
 			return false;
 		}
 	}
-	
+
 	public static void updateGUI() {
-		MainWindow.set("IP",(IP.get()));
-		MainWindow.set("AR",AR.get());
-		MainWindow.set("BR",BR.get());
-		MainWindow.set("Z",Z.get());
-		MainWindow.set("C",C.get());
-		MainWindow.set("S",S.get());
-		MainWindow.set("B",B.get());
-		MainWindow.set("PTR",PTR.get());
-		MainWindow.set("TIMER",Integer.toString(TIMER.get()));
-		MainWindow.set("SI",Integer.toString(SI.get()));
-		MainWindow.set("PI",Integer.toString(PI.get()));
-		MainWindow.set("TI",Integer.toString(TI.get()));
-		MainWindow.set("MODE",Integer.toString(MODE.get()));
-		MainWindow.set("INPUT",Integer.toString(CHST.get(0)));
-		MainWindow.set("OUTPUT",Integer.toString(CHST.get(1)));
-		MainWindow.set("EMEMORY",Integer.toString(CHST.get(2)));
-		MainWindow.set("LEMPUTE",Integer.toString(CHST.get(3)));
+		MainWindow.set("IP", (IP.get()));
+		MainWindow.set("AR", AR.get());
+		MainWindow.set("BR", BR.get());
+		MainWindow.set("Z", Z.get());
+		MainWindow.set("C", C.get());
+		MainWindow.set("S", S.get());
+		MainWindow.set("B", B.get());
+		MainWindow.set("PTR", PTR.get());
+		MainWindow.set("TIMER", Integer.toString(TIMER.get()));
+		MainWindow.set("SI", Integer.toString(SI.get()));
+		MainWindow.set("PI", Integer.toString(PI.get()));
+		MainWindow.set("TI", Integer.toString(TI.get()));
+		MainWindow.set("MODE", Integer.toString(MODE.get()));
+		MainWindow.set("BAR", BAR.get());
+		MainWindow.set("INPUT", Integer.toString(CHST.get(0)));
+		MainWindow.set("OUTPUT", Integer.toString(CHST.get(1)));
+		MainWindow.set("EMEMORY", Integer.toString(CHST.get(2)));
+		MainWindow.set("LEMPUTE", Integer.toString(CHST.get(3)));
 		MainWindow.set("KITA_KOMANDA", Atmintis.get(IP.getNext()));
 		MainWindow.updateListVA(Atmintis);
 		MainWindow.updateListRM(RM.memory);
 		MainWindow.updateListEM(RM.externalMemory);
-		MainWindow.set("cmd",Atmintis.get(IP.get()));
+		MainWindow.set("cmd", Atmintis.get(IP.get()));
 		if (CHST.get(3) == 1) {
 			MainWindow.setLempute(true);
-		} else { MainWindow.setLempute(false); }
+		}
+		else {
+			MainWindow.setLempute(false);
+		}
 	}
 
-	public static void takeGUI(){
+	public static void takeGUI() {
 		IP.set(MainWindow.get("IP"));
 		AR.set(MainWindow.get("AR"));
 		BR.set(MainWindow.get("BR"));
@@ -913,22 +982,21 @@ public class RM {
 		S.set(MainWindow.get("S"));
 		B.set(MainWindow.get("B"));
 
-		
 		for (int i = 0; i < Main.RMBlokuSkaicius; i++) {
-			for (int n = 1; n < Main.blokoDydis+1; n++) {
-				String value = MainWindow.getTable_RA(i,n);
-				memory.set(i* Main.blokoDydis + (n-1), value);
+			for (int n = 1; n < Main.blokoDydis + 1; n++) {
+				String value = MainWindow.getTable_RA(i, n);
+				memory.set(i * Main.blokoDydis + (n - 1), value);
 			}
 		}
-		
+
 		for (int i = 0; i < Main.VMBlokuSkaicius; i++) {
-			for (int n = 1; n < Main.blokoDydis+1; n++) {
-				String value = MainWindow.getTable_VA(i,n);
-				Atmintis.set(i* Main.blokoDydis + (n-1), value);
+			for (int n = 1; n < Main.blokoDydis + 1; n++) {
+				String value = MainWindow.getTable_VA(i, n);
+				Atmintis.set(i * Main.blokoDydis + (n - 1), value);
 			}
 		}
-		
-		//MainWindow.updateListRM(RM.memory);
-		//MainWindow.updateListEM(RM.externalMemory);
+
+		// MainWindow.updateListRM(RM.memory);
+		// MainWindow.updateListEM(RM.externalMemory);
 	}
 }

@@ -40,7 +40,7 @@ public class RealMemory {
     }
 	
 	private int getAdress(String adress) {
-		String result = adress.substring(2, 5);
+		String result = adress.substring(2, 4);
 		int cell = Integer.parseInt(result, 16);
 		return cell;
     }
