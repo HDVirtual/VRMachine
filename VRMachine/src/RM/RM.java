@@ -72,7 +72,7 @@ public class RM {
 		PI = new IntRegister();
 		SI = new IntRegister();
 		MODE = new ModeRegister(1);
-		BAR = new BARRegister("FF");
+		BAR = new BARRegister(Integer.toHexString(Main.RMBlokuSkaicius-1));
 		CHST = new CHST();
 		lempute = new Lempute();
 
@@ -771,27 +771,42 @@ public class RM {
 	}
 	
 	public static void LO(int x, int y) {
-		RM.commonMemory.activateCSemafor(x, y);
-		System.out.println(x + "  " + y);
-		IP.increase();
-		updateGUI();
+		MODE.set(1);
+		SI.set(6);
+		if (RM.PageTable.activateCSemafor(x, y)) { 
+			MainWindow.updateConsole("Uzimta sekmingai."); 
+			IP.increase();
+			updateGUI();
+			} else { 
+				MainWindow.updateConsole("Uzimtas, arba blogas veiksmas."); 
+				IP.increase();
+				updateGUI();
+			}
 	}
 
 	public static void GT(int x) {
-		int blokas = Integer.parseInt(BAR.get(), 16);
-		AR.set(memory.getWord(blokas, x));
-		IP.increase();
-		updateGUI();
+		MODE.set(1);
+		SI.set(7);
+		if (RM.PageTable.usedCSemafor(x)) { 
+			int blokas = Integer.parseInt(BAR.get(), 16);
+			AR.set(memory.getWord(blokas, x));
+			IP.increase();
+			updateGUI();
+		} else {
+			MainWindow
+					.updateConsole(">>>nesate uzsieme sitos lasteles");
+			}
 	}
 
 	public static void PT(int x) {
-		if (!RM.commonMemory.usedCSemafor(x)) {
+		MODE.set(1);
+		SI.set(8);
+		if (RM.PageTable.usedCSemafor(x)) { 
 			int blokas = Integer.parseInt(BAR.get(), 16);
 			memory.set(blokas, x, AR.get());
 		}
 		else
-			MainWindow
-					.updateConsole(">>>Bendros atminties ląstelė yra naudojama");
+			MainWindow.updateConsole(">>>nesate uzsieme, arba jau naudojama.");
 		IP.increase();
 		updateGUI();
 	}
@@ -844,11 +859,23 @@ public class RM {
 				break;
 			}
 			case 4: {
-				MainWindow.updateConsole("Pertraukimą iššaukė komanda LBON.");
+				MainWindow.updateConsole("Pertraukimą iššaukė komanda LXON.");
 				break;
 			}
 			case 5: {
-				MainWindow.updateConsole("Pertraukimą iššaukė komanda LBOF.");
+				MainWindow.updateConsole("Pertraukimą iššaukė komanda LXOF.");
+				break;
+			}
+			case 6: {
+				MainWindow.updateConsole("Pertraukimą iššaukė komanda LO.");
+				break;
+			}
+			case 7: {
+				MainWindow.updateConsole("Pertraukimą iššaukė komanda GT.");
+				break;
+			}
+			case 8: {
+				MainWindow.updateConsole("Pertraukimą iššaukė komanda PT.");
 				break;
 			}
 			default: {

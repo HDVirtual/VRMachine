@@ -16,7 +16,7 @@ public class Main {
 
 	public static final int blokoDydis = 16;
 	public static final int EMBlokuSkaicius = 16;
-	public static final int RMBlokuSkaicius = 256;
+	public static final int RMBlokuSkaicius = 70;
 	public static final int VMBlokuSkaicius = 16;
 
 

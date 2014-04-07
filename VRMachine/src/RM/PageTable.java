@@ -13,7 +13,7 @@ public class PageTable {  // galima padaryti pi=4 jei truksta tusciu bloku
 	
 	private static int adress;
 	private static ArrayList<Integer> randomList = new ArrayList<Integer>(Main.RMBlokuSkaicius - 1);
-	private static boolean commonCreated = false;
+	public static boolean[] CSemafor;
 	
 	public PageTable() {
 		int element = 0;
@@ -32,6 +32,11 @@ public class PageTable {  // galima padaryti pi=4 jei truksta tusciu bloku
 	
 	public static boolean createVM(){
 		try{
+			CSemafor = new boolean[Main.blokoDydis];
+
+			for (int i = 0; i < Main.blokoDydis - 1; i++) {
+				CSemafor[i] = false;
+			}
 			Collections.shuffle(randomList);
 			setAdress(randomList.get(0));
 			RM.PTR.setPageTable(PageTable.getAdress());
@@ -45,6 +50,26 @@ public class PageTable {  // galima padaryti pi=4 jei truksta tusciu bloku
 		catch(Exception e){
 			return false;
 		}
+	}
+	
+	public boolean activateCSemafor(int value, int cell) {
+		if (!RM.commonMemory.usedCSemafor(cell)) {
+			if (value == 1) {
+				CSemafor[cell] = true;
+				RM.commonMemory.activateCSemafor(value, cell);
+				System.out.println(CSemafor[cell]);
+				return true;
+			}
+		} else {
+			if (value == 0) {
+				if (CSemafor[cell] == true) {
+					CSemafor[cell] = false;
+					RM.commonMemory.activateCSemafor(value, cell);
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 		
 	public int getRealBlockNumber(int VirtualBlock) {
@@ -65,6 +90,14 @@ public class PageTable {  // galima padaryti pi=4 jei truksta tusciu bloku
 
 	public static int getAdress() {
 		return adress;
+	}
+	
+	public boolean usedCSemafor(int cell) {
+		if (CSemafor[cell])
+			return true;
+		else
+			return false;
+
 	}
 
 
